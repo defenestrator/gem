@@ -54,8 +54,12 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
+            'cache' => [
+                'store' => 'redis',
+                'expire' => 3.154e+7,
+                'prefix' => 'gemx_media_cache',
+            ],
         ],
-
     ],
 
     /*

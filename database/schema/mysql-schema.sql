@@ -290,8 +290,8 @@ CREATE TABLE `media` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `uuid` binary(16) NOT NULL,
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `imageable_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `imageable_id` bigint unsigned NOT NULL,
+  `mediable_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mediable_id` bigint unsigned NOT NULL,
   `license` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '',
   `exif` json DEFAULT NULL,
   `copyright` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -302,8 +302,8 @@ CREATE TABLE `media` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `images_uuid_unique` (`uuid`),
-  KEY `images_imageable_type_imageable_id_index` (`imageable_type`,`imageable_id`)
+  UNIQUE KEY `media_uuid_unique` (`uuid`),
+  KEY `media_mediable_type_mediable_id_index` (`mediable_type`,`mediable_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `migrations`;

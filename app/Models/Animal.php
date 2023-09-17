@@ -30,8 +30,8 @@ class Animal extends Model
         ];
     }
 
-    public function images()
+    public function media()
     {
-        return $this->morphMany(Image::class, 'imageable');
+        return $this->morphMany(Image::class, 'mediable');
     }
 }
