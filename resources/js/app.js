@@ -1,4 +1,4 @@
-import './bootstrap';
+import './bootstrap'
 import 'htmx.org';
 import Alpine from 'alpinejs';
 
