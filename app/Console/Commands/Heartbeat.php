@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class Heartbeat extends Command
 {
@@ -28,9 +29,11 @@ class Heartbeat extends Command
         if (config('app.env') == "production" && config('app.url') == 'https://gemreptiles.com') {
             $blah = 'The gemreptiles.com application is running smoothly!';
             $this->comment($blah);
-            Log::info("$blah");
+            Log::info($blah);
         } else {
-            $this->comment('This command only executes on production');
+            $quack = 'This command only executes on production';
+            $this->comment($quack);
+            Log::info($quack);
         }
         return 0;
     }
