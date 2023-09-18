@@ -27,11 +27,11 @@ class Heartbeat extends Command
     public function handle()
     {
         if (config('app.env') == "production" && config('app.url') == 'https://gemreptiles.com') {
-            $blah = 'The gemreptiles.com application is running smoothly!';
+            $blah = 'The gemreptiles.com application is not dead yet!';
             $this->comment($blah);
             Log::info($blah);
         } else {
-            $quack = 'This command only executes on production';
+            $quack = 'This command only executes on production. Where is your god now?';
             $this->comment($quack);
             Log::info($quack);
         }
