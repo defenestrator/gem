@@ -29,7 +29,20 @@ class MediaController extends Controller
      */
     public function store(StoreMediaRequest $request)
     {
-        //
+        /** 
+         * Media Processing Service Design Notes
+         * 
+         * Validate the input file, obviously, try to determine the upload veracity
+         * then route through the correct processing pipeline for the mimetype
+         * accept images, videos, .pdf, and as many file types that can be 
+         * sanitized and stored without getting the servers hacked
+         * generate base64 url-encoded preview thumbnail
+         * route to queue to process to safe, sanitized
+         * resized, compressed, tweezed and otherwise 
+         * desirable final file format 
+         * format upload on spaces
+         * this feels like 
+        */ 
     }
 
     /**

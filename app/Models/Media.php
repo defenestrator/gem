@@ -66,6 +66,17 @@ class Media extends Model
     }
 
     /**
+     * Scope by FieldObservation
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeFieldObservations($query)
+    {
+        return $this->scopeByType($query, "App\FieldObservation");
+    }
+
+    /**
      * Upload Media
      *
      * @param  mixed $file
