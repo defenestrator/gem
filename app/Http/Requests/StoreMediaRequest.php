@@ -29,7 +29,7 @@ class StoreMediaRequest extends FormRequest
     public function rules()
     {
         return [
-            'image' => 'required|image|mimes:jpeg,jpg,png,bmp,gif,svg|size:max:10000',
+            'media' => 'required|image|mimes:jpeg,jpg,png,bmp,gif,svg|size:max:10000',
         ];
     }
 }
