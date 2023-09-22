@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Dyrynda\Database\Support\GeneratesUuid;
 use Dyrynda\Database\Casts\EfficientUuid;
+use Traits\HasMedia;
 
 class Article extends Model
 {
