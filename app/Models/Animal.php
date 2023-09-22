@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Dyrynda\Database\Support\GeneratesUuid;
 use Dyrynda\Database\Casts\EfficientUuid;
 use Traits\Sluggable;
+use Traits\HasMedia;
 
 class Animal extends Model
 {
-    use HasFactory, Sluggable, GeneratesUuid;
+    use GeneratesUuid, HasFactory, HasMedia, Sluggable;
 
     protected $casts = [
         'uuid' => EfficientUuid::class,
@@ -28,10 +29,5 @@ class Animal extends Model
                 'source' => 'pet_name'
             ]
         ];
-    }
-
-    public function media()
-    {
-        return $this->morphMany(Image::class, 'mediable');
     }
 }
