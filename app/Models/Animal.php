@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Dyrynda\Database\Support\GeneratesUuid;
 use Dyrynda\Database\Casts\EfficientUuid;
-use Cviebrock\EloquentSluggable\Sluggable;
+use Traits\Sluggable;
 
 class Animal extends Model
 {

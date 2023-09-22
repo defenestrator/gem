@@ -1,5 +1,5 @@
 <?php
-namespace App\Traits;
+namespace App\Models\Traits;
 
 use Illuminate\Support\Str;
 

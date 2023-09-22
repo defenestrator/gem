@@ -50,9 +50,9 @@ class MediaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Media $media)
+    public function show($id, Media $media)
     {
-        //
+        return $media->whereId($id)->first();
     }
 
     /**
