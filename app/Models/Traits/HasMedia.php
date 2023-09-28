@@ -3,7 +3,7 @@ namespace App\Models\Traits;
 
 use Illuminate\Support\Str;
 
-trait hasMedia {
+trait HasMedia {
 
     public function media()
     {
