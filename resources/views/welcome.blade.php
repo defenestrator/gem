@@ -42,6 +42,8 @@
                 <div class="flex justify-center">
                     
                     <h2 style="color:#FF9900;">The Wild Type</h2>
+                </div>
+                <div class="flex justify-center">
                     <h3>Coming soon, Q1 2024!</h3>
                 </div>
 
