@@ -38,15 +38,12 @@
                     <h2 class="font-bold dark:text-white text-lg">Gem Reptiles</h2>
                 </div>
                 <div class="flex justify-center"><img src="favicon.png" /></div>
-
-                <div class="flex justify-center">
-                    
+                <div class="flex justify-center">                    
                     <h2 style="color:#FF9900;">The Wild Type</h2>
                 </div>
                 <div class="flex justify-center">
-                    <h3>Coming soon, Q1 2024!</h3>
+                    <h3 style="color:#4b5563;">Coming soon, Q1 2024!</h3>
                 </div>
-
             </div>
         </div>
     </body>
