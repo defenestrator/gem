@@ -42,7 +42,7 @@
                     <h2 style="color:#FF9900;">The Wild Type</h2>
                 </div>
                 <div class="flex justify-center">
-                    <h3 style="color:#4b5563;">Coming soon, Q1 2024!</h3>
+                    <h3 style="color:#4b5563;">Soft-launch in Q1 2024</h3>
                 </div>
             </div>
         </div>
