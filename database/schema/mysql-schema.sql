@@ -9,7 +9,6 @@ DROP TABLE IF EXISTS `addresses`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `addresses` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` binary(16) NOT NULL,
   `addressable_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `addressable_id` bigint unsigned NOT NULL,
   `nickname` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -24,7 +23,6 @@ CREATE TABLE `addresses` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `addresses_uuid_unique` (`uuid`),
   KEY `addresses_addressable_type_addressable_id_index` (`addressable_type`,`addressable_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -52,7 +50,6 @@ DROP TABLE IF EXISTS `animals`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `animals` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` binary(16) NOT NULL,
   `pet_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `acquisition_cost` int unsigned DEFAULT NULL,
@@ -69,7 +66,6 @@ CREATE TABLE `animals` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `animals_uuid_unique` (`uuid`),
   UNIQUE KEY `animals_slug_unique` (`slug`),
   KEY `animals_breeder_id_foreign` (`breeder_id`),
   KEY `animals_brood_id_foreign` (`brood_id`),
@@ -100,7 +96,6 @@ DROP TABLE IF EXISTS `appellations`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `appellations` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` binary(16) NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
@@ -109,7 +104,6 @@ CREATE TABLE `appellations` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `appellations_slug_unique` (`slug`),
   UNIQUE KEY `appellations_name_unique` (`name`),
-  UNIQUE KEY `appellations_uuid_unique` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `articles`;
@@ -117,7 +111,6 @@ DROP TABLE IF EXISTS `articles`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `articles` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` binary(16) NOT NULL,
   `user_id` bigint unsigned NOT NULL,
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -127,7 +120,6 @@ CREATE TABLE `articles` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `articles_uuid_unique` (`uuid`),
   UNIQUE KEY `articles_title_unique` (`title`),
   UNIQUE KEY `articles_slug_unique` (`slug`),
   KEY `articles_user_id_foreign` (`user_id`),
@@ -139,7 +131,6 @@ DROP TABLE IF EXISTS `breeders`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `breeders` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` binary(16) NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(140) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -153,7 +144,6 @@ CREATE TABLE `breeders` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `breeders_uuid_unique` (`uuid`),
   UNIQUE KEY `breeders_slug_unique` (`slug`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -162,7 +152,6 @@ DROP TABLE IF EXISTS `broods`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `broods` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` binary(16) NOT NULL,
   `breeder_id` bigint unsigned NOT NULL,
   `laid_on` date DEFAULT NULL,
   `first_pip` date DEFAULT NULL,
@@ -176,7 +165,6 @@ CREATE TABLE `broods` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `broods_uuid_unique` (`uuid`),
   KEY `broods_breeder_id_foreign` (`breeder_id`),
   CONSTRAINT `broods_breeder_id_foreign` FOREIGN KEY (`breeder_id`) REFERENCES `breeders` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -225,7 +213,6 @@ CREATE TABLE `failed_jobs` (
   `exception` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `feedings`;
@@ -288,7 +275,6 @@ DROP TABLE IF EXISTS `media`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `media` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` binary(16) NOT NULL,
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `mediable_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `mediable_id` bigint unsigned NOT NULL,
@@ -302,7 +288,6 @@ CREATE TABLE `media` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `media_uuid_unique` (`uuid`),
   KEY `media_mediable_type_mediable_id_index` (`mediable_type`,`mediable_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -321,7 +306,6 @@ DROP TABLE IF EXISTS `morphs`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `morphs` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` binary(16) NOT NULL,
   `species_id` bigint unsigned NOT NULL,
   `complex_id` bigint unsigned NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
@@ -330,7 +314,6 @@ CREATE TABLE `morphs` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `morphs_uuid_unique` (`uuid`),
   KEY `1` (`species_id`),
   KEY `morphs_complex_id_foreign` (`complex_id`),
   CONSTRAINT `1` FOREIGN KEY (`species_id`) REFERENCES `species` (`id`),
@@ -430,7 +413,6 @@ DROP TABLE IF EXISTS `pairings`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pairings` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` binary(16) NOT NULL,
   `dam_id` bigint unsigned NOT NULL,
   `sire_id` bigint unsigned NOT NULL,
   `introduced_on_date` date DEFAULT NULL,
@@ -440,7 +422,6 @@ CREATE TABLE `pairings` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `pairings_uuid_unique` (`uuid`),
   KEY `pairings_dam_id_foreign` (`dam_id`),
   KEY `pairings_sire_id_foreign` (`sire_id`),
   CONSTRAINT `pairings_dam_id_foreign` FOREIGN KEY (`dam_id`) REFERENCES `animals` (`id`),
@@ -490,7 +471,6 @@ DROP TABLE IF EXISTS `sellers`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sellers` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` binary(16) NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `email` varchar(140) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -504,7 +484,6 @@ CREATE TABLE `sellers` (
   `facebook` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `vendors_uuid_unique` (`uuid`),
   UNIQUE KEY `vendors_name_unique` (`name`),
   UNIQUE KEY `vendors_slug_unique` (`slug`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

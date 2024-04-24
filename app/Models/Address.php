@@ -4,14 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Dyrynda\Database\Support\GeneratesUuid;
-use Dyrynda\Database\Casts\EfficientUuid;
 
 /**
  * App\Models\Address
  *
  * @property int $id
- * @property mixed $uuid
+
  * @property string $addressable_type
  * @property int $addressable_id
  * @property string|null $nickname
@@ -44,16 +42,11 @@ use Dyrynda\Database\Casts\EfficientUuid;
  * @method static \Illuminate\Database\Eloquent\Builder|Address whereStreetAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Address whereUnitNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Address whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Address whereUuid($value)
  * @mixin \Eloquent
  */
 class Address extends Model
 {
-    use HasFactory, GeneratesUuid;
-
-    protected $casts = [
-        'uuid' => EfficientUuid::class,
-    ];
+    use HasFactory;
 
     protected $fillable = [
         'nickname',
