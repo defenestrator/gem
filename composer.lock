@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ab9697eb54f6ad3c1f1acd979ca22cf",
+    "content-hash": "719792a359b8ebd12e46ceb91cdbdecd",
     "packages": [
         {
             "name": "brick/math",
@@ -500,136 +500,6 @@
                 }
             ],
             "time": "2023-08-10T19:36:49+00:00"
-        },
-        {
-            "name": "dyrynda/laravel-efficient-uuid",
-            "version": "5.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/michaeldyrynda/laravel-efficient-uuid.git",
-                "reference": "c4e80005924c77578ccb13057095c5b839ddc096"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/michaeldyrynda/laravel-efficient-uuid/zipball/c4e80005924c77578ccb13057095c5b839ddc096",
-                "reference": "c4e80005924c77578ccb13057095c5b839ddc096",
-                "shasum": ""
-            },
-            "require": {
-                "dyrynda/laravel-model-uuid": "^7.0",
-                "illuminate/container": "^10.0",
-                "illuminate/contracts": "^10.0",
-                "illuminate/database": "^10.0",
-                "php": "^8.1",
-                "ramsey/uuid": "^4.7"
-            },
-            "require-dev": {
-                "laravel/legacy-factories": "^1.3",
-                "mockery/mockery": "^1.4.4",
-                "orchestra/testbench": "^8.0",
-                "phpunit/phpunit": "^9.6.0 || ^10.0.7"
-            },
-            "type": "utility",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "5.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Dyrynda\\Database\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Michael Dyrynda",
-                    "email": "michael@dyrynda.com.au",
-                    "homepage": "https://dyrynda.com.au"
-                }
-            ],
-            "description": "A package to extend Laravel migrations adding a more efficient storage of UUID fields in your database",
-            "support": {
-                "issues": "https://github.com/michaeldyrynda/laravel-efficient-uuid/issues",
-                "source": "https://github.com/michaeldyrynda/laravel-efficient-uuid/tree/5.0.1"
-            },
-            "abandoned": "dyrynda/laravel-model-uuid",
-            "time": "2024-04-23T23:34:28+00:00"
-        },
-        {
-            "name": "dyrynda/laravel-model-uuid",
-            "version": "7.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/michaeldyrynda/laravel-model-uuid.git",
-                "reference": "f66d590285294cdd015c5c59816adc569f22e1bf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/michaeldyrynda/laravel-model-uuid/zipball/f66d590285294cdd015c5c59816adc569f22e1bf",
-                "reference": "f66d590285294cdd015c5c59816adc569f22e1bf",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/database": "^10.0",
-                "illuminate/events": "^10.0",
-                "illuminate/support": "^10.0",
-                "php": "^8.1",
-                "ramsey/uuid": "^4.7",
-                "spatie/laravel-package-tools": "^1.16"
-            },
-            "require-dev": {
-                "dyrynda/laravel-efficient-uuid": "^5.0",
-                "laravel/legacy-factories": "^1.3",
-                "laravel/pint": "^1.13",
-                "orchestra/testbench": "^8.0",
-                "phpunit/phpunit": "^9.6.0 || ^10.0.7"
-            },
-            "suggest": {
-                "dyrynda/laravel-efficient-uuid": "Override Laravel's default query grammar to efficiently store UUIDs."
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "7.x-dev"
-                },
-                "laravel": {
-                    "providers": [
-                        "Dyrynda\\Database\\Support\\LaravelModelUuidServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Dyrynda\\Database\\Support\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Michael Dyrynda",
-                    "email": "michael@dyrynda.com.au",
-                    "homepage": "https://dyrynda.com.au"
-                }
-            ],
-            "description": "This package allows you to easily work with UUIDs in your Laravel models.",
-            "keywords": [
-                "eloquent",
-                "laravel",
-                "model",
-                "uuid"
-            ],
-            "support": {
-                "issues": "https://github.com/michaeldyrynda/laravel-model-uuid/issues",
-                "source": "https://github.com/michaeldyrynda/laravel-model-uuid/tree/7.1.1"
-            },
-            "time": "2023-09-14T01:14:07+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -4614,66 +4484,6 @@
                 "source": "https://github.com/sendgrid/sendgrid-php/tree/8.1.2"
             },
             "time": "2024-04-18T11:09:09+00:00"
-        },
-        {
-            "name": "spatie/laravel-package-tools",
-            "version": "1.16.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/spatie/laravel-package-tools.git",
-                "reference": "ddf678e78d7f8b17e5cdd99c0c3413a4a6592e53"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/ddf678e78d7f8b17e5cdd99c0c3413a4a6592e53",
-                "reference": "ddf678e78d7f8b17e5cdd99c0c3413a4a6592e53",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/contracts": "^9.28|^10.0|^11.0",
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.5",
-                "orchestra/testbench": "^7.7|^8.0",
-                "pestphp/pest": "^1.22",
-                "phpunit/phpunit": "^9.5.24",
-                "spatie/pest-plugin-test-time": "^1.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Spatie\\LaravelPackageTools\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Freek Van der Herten",
-                    "email": "freek@spatie.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Tools for creating Laravel packages",
-            "homepage": "https://github.com/spatie/laravel-package-tools",
-            "keywords": [
-                "laravel-package-tools",
-                "spatie"
-            ],
-            "support": {
-                "issues": "https://github.com/spatie/laravel-package-tools/issues",
-                "source": "https://github.com/spatie/laravel-package-tools/tree/1.16.4"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/spatie",
-                    "type": "github"
-                }
-            ],
-            "time": "2024-03-20T07:29:11+00:00"
         },
         {
             "name": "starkbank/ecdsa",
@@ -11271,7 +11081,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.1"
+        "php": "^8.2"
     },
     "platform-dev": [],
     "plugin-api-version": "2.6.0"

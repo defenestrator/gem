@@ -77,7 +77,7 @@ CREATE TABLE `animals` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `appellation_species`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `appellation_species` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `appellation_id` bigint unsigned NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE `appellation_species` (
   KEY `appellation_species_species_id_foreign` (`species_id`),
   CONSTRAINT `appellation_species_appellation_id_foreign` FOREIGN KEY (`appellation_id`) REFERENCES `appellations` (`id`),
   CONSTRAINT `appellation_species_species_id_foreign` FOREIGN KEY (`species_id`) REFERENCES `species` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `appellations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -103,7 +103,7 @@ CREATE TABLE `appellations` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `appellations_slug_unique` (`slug`),
-  UNIQUE KEY `appellations_name_unique` (`name`),
+  UNIQUE KEY `appellations_name_unique` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `articles`;
@@ -212,7 +212,7 @@ CREATE TABLE `failed_jobs` (
   `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `exception` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `feedings`;
