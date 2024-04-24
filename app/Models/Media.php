@@ -5,8 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
-use Dyrynda\Database\Support\GeneratesUuid;
-use Dyrynda\Database\Casts\EfficientUuid;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -14,11 +12,7 @@ use Illuminate\Http\UploadedFile;
 
 class Media extends Model
 {
-    use HasFactory, GeneratesUuid;
-
-    protected $casts = [
-        'uuid' => EfficientUuid::class,
-    ];
+    use HasFactory;
 
     protected $fillable = [
         'url', 'license', 'copyright', 'author', 'title'
@@ -154,7 +148,7 @@ class Media extends Model
             ->encode('webp')
             ->stream();
 
-        $hash = Str::uuid();
+        $hash = Str::random();
         $fileName = $hash . '.webp';
         if (config('app.env') == 'production') {
             Storage::disk('s3')->getDriver()->put('/images/'. $fileName, $i->__toString(), $options);
