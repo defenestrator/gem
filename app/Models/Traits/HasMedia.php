@@ -2,6 +2,7 @@
 namespace App\Models\Traits;
 
 use Illuminate\Support\Str;
+use App\Models\Traits\HasMedia;
 
 trait HasMedia {
 
