@@ -1,1 +1,1 @@
-<img src="favicon.png" />
+<img style="width:50px;"src="favicon.png" />
