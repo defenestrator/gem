@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Traits\HasMedia;
+use App\Models\Traits\HasMedia;
 
 class Species extends Model
 {

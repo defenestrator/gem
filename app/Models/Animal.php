@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Traits\Sluggable;
-use Traits\HasMedia;
+use App\Models\Traits\Sluggable;
+use App\Models\Traits\HasMedia;
 
 class Animal extends Model
 {
