@@ -12,13 +12,28 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('welcome')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('welcome')" :active="request()->routeIs('welcome')">
                         {{ __('Home') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('available')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('available')" :active="request()->routeIs('available')">
                         {{ __('Available') }}
                     </x-nav-link>
-                    
+                    @auth
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-nav-link>
+                    @else
+                    <x-nav-link :href="route('login')" :active="request()->routeIs('login')">
+                        {{ __('Log In') }}
+                    </x-nav-link>
+
+                        @if (Route::has('register'))
+                        <x-nav-link :href="route('register')" :active="request()->routeIs('register')">
+                            {{ __('Register') }}
+                        </x-nav-link>
+                        @endif
+                    @endauth
+
                 </div>
             </div>
 

@@ -17,7 +17,7 @@
     <body class="font-sans text-gray-900 antialiased">
         <x-guest-navigation />
         <div class="mx-auto min-h-screen flex flex-col p-8 sm:pt-6 bg-gray-100 dark:bg-gray-900">
-            <div class="w-full mx-auto sm:max-w-7xl mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
+            <div class="w-full mx-auto sm:max-w-7xl mt-6 px-6 py-4">
                 {{ $slot }}
             </div>
         </div>
