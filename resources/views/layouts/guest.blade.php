@@ -16,7 +16,16 @@
     </head>
     <body class="font-sans text-gray-900 antialiased">
         <x-guest-navigation />
+        <!-- Page Heading -->
+        @if (isset($header))
+            <header class="bg-white dark:bg-gray-800 shadow">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    {{ $header }}
+                </div>
+            </header>
+        @endif
         <div class="mx-auto min-h-screen flex flex-col p-8 sm:pt-6 bg-gray-100 dark:bg-gray-900">
+            
             <div class="w-full mx-auto sm:max-w-7xl mt-6 px-6 py-4">
                 {{ $slot }}
             </div>
