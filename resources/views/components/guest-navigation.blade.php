@@ -42,11 +42,20 @@
                 <x-dropdown align="right" width="48">
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+                        
+                        <x-dropdown-link :href="route('welcome')" :active="request()->routeIs('welcome')">
+                            {{ __('Home') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('available')" :active="request()->routeIs('available')">
+                            {{ __('Available') }}
+                        </x-dropdown-link>
+                        @auth
+                        <x-dropdown-link :href="route('profile.edit')" :active="request()->routeIs('profile')">>
                             {{ __('Profile') }}
                         </x-dropdown-link>
-
-                        <!-- Authentication -->
+                        <x-dropdown-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-dropdown-link>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
@@ -56,6 +65,13 @@
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
+                        @else
+                        <x-dropdown-link :href="route('login')" :active="request()->routeIs('login')">
+                            {{ __('Log In') }}
+                        </x-dropdown-link>
+                        
+                        <!-- Authentication -->
+                        @endauth
                     </x-slot>
                 </x-dropdown>
             </div>
@@ -75,23 +91,19 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+            <x-responsive-nav-link :href="route('welcome')" :active="request()->routeIs('welcome')">
+                {{ __('Welcome') }}
             </x-responsive-nav-link>
-        </div>
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-            <div class="px-4">
-                
-                
-            </div>
-
-            <div class="mt-3 space-y-1">
+            <x-responsive-nav-link :href="route('available')" :active="request()->routeIs('available')">
+                {{ __('Available') }}
+            </x-responsive-nav-link>
+            @auth
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
-
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -102,6 +114,14 @@
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>
+            @else
+                <x-responsive-nav-link :href="route('login')" :active="request()->routeIs('login')">
+                    {{ __('Log In') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('register')" :active="request()->routeIs('register')">
+                    {{ __('Register') }}
+                </x-responsive-nav-link>
+            @endauth
             </div>
         </div>
     </div>
