@@ -15,6 +15,9 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
+        
+    
+            
         <x-guest-navigation />
         <!-- Page Heading -->
         @if (isset($header))
@@ -24,11 +27,15 @@
                 </div>
             </header>
         @endif
-        <div class="mx-auto min-h-screen flex flex-col p-8 sm:pt-6 bg-gray-100 dark:bg-gray-900">
-            
-            <div class="w-full mx-auto sm:max-w-7xl mt-6 px-6 py-4">
+
+        @if(isset($background))
+            <div class="w-full min-h-screen flex justify-center items-center bg-[url('https://assets.gemreptiles.com/images/retic-group.jpeg')] bg-bottom bg-center bg-contain bg-no-repeat">
+        @endif
+            <div class="mx-auto min-h-screen flex flex-col p-8 sm:pt-6">
                 {{ $slot }}
             </div>
-        </div>
+        @if(isset($background))
+            </div>
+        @endif
     </body>
 </html>
