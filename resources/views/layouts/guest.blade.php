@@ -14,10 +14,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        
-    
-            
+    <body class="font-sans text-gray-900 antialiased">    
         <x-guest-navigation />
         <!-- Page Heading -->
         @if (isset($header))
@@ -29,7 +26,7 @@
         @endif
 
         @if(isset($background))
-            <div class="w-full min-h-screen flex justify-center items-center bg-[url('https://assets.gemreptiles.com/images/retic-group.jpeg')] bg-bottom bg-center bg-contain bg-no-repeat">
+            <div class="w-full min-h-screen flex justify-center items-center bg-[url('https://assets.gemreptiles.com/images/retic-group-3.png')] bg-top bg-center bg-cover bg-no-repeat">
         @endif
             <div class="mx-auto min-h-screen flex flex-col p-8 sm:pt-6">
                 {{ $slot }}
