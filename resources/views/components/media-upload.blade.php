@@ -207,11 +207,54 @@ if (target.classList.contains("delete")) {
 }
 };
 
-// print all selected files
-document.getElementById("submit").onclick = () => {
-alert(`Submitted Files:\n${JSON.stringify(FILES)}`);
-console.log(FILES);
-};
+    // upload all selected files
+    document.getElementById('submit').addEventListener('click', function () {
+        console.log('children: ' + gallery.children.length)
+        if (gallery.children.length < 2) {
+            return alert('"choose files" first');
+        }
+        // Create a new FormData instance
+        let formData = new FormData();
+
+        // Append each file to the formData instance
+        for (const fileName in FILES) {
+            formData.append('files[]', FILES[fileName]);
+        }
+
+        // Use Axios to send the files
+        axios
+            .post('/admin/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'X-CSRF-TOKEN': document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content'),
+                },
+            })
+            .then((response) => {
+                filelist.classList.remove('hidden');
+                const uploaded = response.data.data; 
+                uploaded.forEach(function (fileUrl) {
+                    var li = document.createElement('li');
+                    li.innerHTML = '<img class="w-40 cursor-pointer" src="' + fileUrl.url + '"/>';
+                    uploadedFiles.appendChild(li);
+                    li.addEventListener("click", (event) => {
+                        const content = "![img](" + fileUrl.url + ")";
+                        navigator.clipboard.writeText(content);
+                    });
+                });
+                while (gallery.children.length > 0) {
+                    gallery.lastChild.remove();
+                }
+                FILES = {};
+                empty.classList.remove('hidden');
+                gallery.append(empty);               
+            })
+            .catch((error) => {
+                alert('There was an error uploading your files: ' + error);
+                console.error(error);
+            });
+    });
 
 // clear entire selection
 document.getElementById("cancel").onclick = () => {

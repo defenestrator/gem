@@ -152,10 +152,11 @@ class Media extends Model
         $fileName = $hash . '.webp';
         if (config('app.env') == 'production') {
             Storage::disk('s3')->getDriver()->put('/images/'. $fileName, $i->__toString(), $options);
-            $filePath = config('filesystems.disks.s3.url' . '/images/', 'https://gemx.sfo3.cdn.digitaloceanspaces.com/images/') . $fileName;
+            $bucketPath = config('filesystems.disks.s3.url' . '/images/', 'https://gemx.sfo3.cdn.digitaloceanspaces.com/images/') . $fileName;
+            $filePath = 'https://assets.gemreptiles.com/images/'. $fileName;
         } else {
             Storage::disk('local')->put('/images/'. $fileName, $i->__toString());
-            $filePath = Storage::disk(env('ASSET_URL', 'local'))->url('images/'. $fileName);
+            $filePath = Storage::disk(config('ASSET_URL', 'local'))->url('images/'. $fileName);
         }
 
         return $filePath;

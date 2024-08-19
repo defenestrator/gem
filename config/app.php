@@ -57,7 +57,7 @@ return [
 
     'url' => env('APP_URL', 'https://gem.test'),
 
-    'asset_url' => env('ASSET_URL'),
+    'asset_url' => env('ASSET_URL', 'local'),
 
     /*
     |--------------------------------------------------------------------------
