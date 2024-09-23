@@ -167,7 +167,7 @@ class Media extends Model
      * Returns an array of latitude and longitude 
      * from the Media file by looking for various possible data
      * @param $exif
-     * @return multitype:array|boolean
+     * @return array|boolean
      */
     protected function yeetImageLocation($exif = '')
     {
