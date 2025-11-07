@@ -15,12 +15,17 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', '@vite/*'],
 
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'http://[::1]:5173',
+        'http://localhost',
+        'http://localhost:3000',
+        'http://localhost:5173',
+        'http://localhost:8000', // Or your Laravel development server address
+        'http://127.0.0.1:5173',
+        'http://[::1]:5173', 
     ],
 
     'allowed_origins_patterns' => [
@@ -34,6 +39,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
 ];
