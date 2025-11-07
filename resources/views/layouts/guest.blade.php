@@ -14,7 +14,7 @@
         <link rel="icon" type="image/png" sizes="100x100" href="{{ '/storage/favicon-100.png' }}">
         <link rel="icon" type="image/png" href="{{ '/storage/favicon.png' }}">
         <link rel="apple-touch-icon" href="{{ '/storage/apple-touch-icon.png' }}">
-        <meta name="msapplication-TileImage" content="{{ 'ms-favicon.png' }}">
+        <meta name="msapplication-TileImage" content="{{ '/storage/ms-favicon.png' }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
