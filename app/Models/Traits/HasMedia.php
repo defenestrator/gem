@@ -2,12 +2,12 @@
 namespace App\Models\Traits;
 
 use Illuminate\Support\Str;
-use App\Models\Traits\HasMedia;
+use App\Models\Media;
 
 trait HasMedia {
 
     public function media()
     {
-        return $this->morphMany(Image::class, 'mediable');
+        return $this->morphMany(Media::class, 'mediable');
     }
 }

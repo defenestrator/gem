@@ -19,9 +19,14 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*.gemreptiles.com'],
+    'allowed_origins' => [
+        'http://[::1]:5173',
+    ],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '/^https?:\/\/([a-zA-Z0-9\-]+\.)?gemreptiles\.com$/',
+        '/^https?:\/\/([a-zA-Z0-9\-]+\.)?gem\.test$/',
+    ],
 
     'allowed_headers' => ['*'],
 
