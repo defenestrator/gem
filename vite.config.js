@@ -5,10 +5,10 @@ import basicSsl from '@vitejs/plugin-basic-ssl'
 export default defineConfig({
     server: {
         https: true,
-        host: 'localhost',
+        host: 'gem.test',
         port: 5173,
         hmr: {
-            host: 'localhost',
+            host: 'gem.test',
             port: 5173,
         },
         cors: true,
@@ -25,7 +25,7 @@ export default defineConfig({
         /** name of certification */
         name: 'test',
         /** custom trust domains */
-        domains: ['*.localhost'],
+        domains: ['*.gem.test'],
         /** optional, days before certificate expires */
         ttlDays: 30,
         /** custom certification directory */

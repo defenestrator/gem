@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="w-full min-h-screen flex justify-center items-center">
-        <div id="main-tile" class="text-left min-h-[70vh] bg-opacity-90 bg-gray-800 text-gray-200 p-12 rounded-xl shadow-l2xl shadow-inner">
-            <h1 class="mt-4 text-3xl" style="color:#ce4f00;">Western Hognose</h1>
+        <div id="main-tile" class="text-left min-h-[70vh] bg-opacity-90 bg-gray-700 text-gray-200 p-12 rounded-xl shadow-l2xl shadow-inner">
+            <h1 class="mt-4 text-3xl text-orange-600">Western Hognose</h1>
             <h2 class="mt-8 text-xl" >Captive-bred Western Hognose</h2>
             <div class="mx-auto flex justify-left">
                 <h2 href="/available">

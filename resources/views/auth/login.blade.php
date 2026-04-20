@@ -1,6 +1,6 @@
 <x-guest-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Login') }}
         </h2>
     </x-slot>
@@ -8,7 +8,7 @@
     <main class="mx-auto max-w-7xl sm:px-6 lg:px-8">
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
-    <div class="bg-white rounded-lg shadow-lg mx-auto max-w-lg p-8 space-y-6">
+    <div class="bg-gray-800 rounded-lg shadow-lg mx-auto max-w-lg p-8 space-y-6">
         <form method="POST" action="{{ route('login') }}" class="p-4">
             @csrf
 
