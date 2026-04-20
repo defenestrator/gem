@@ -25,7 +25,7 @@ export default defineConfig({
         /** name of certification */
         name: 'test',
         /** custom trust domains */
-        domains: ['localhost:5173'],
+        domains: ['*.localhost'],
         /** optional, days before certificate expires */
         ttlDays: 30,
         /** custom certification directory */
