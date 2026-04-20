@@ -1,6 +1,6 @@
 <x-guest-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Available Animals') }}
         </h2>
     </x-slot>
@@ -18,7 +18,7 @@
                 <p class="mt-2 text-white p-2">
                     Description of corn snake species. This species is known for its vibrant colors and friendly nature.
                 </p>
-                <div class="mt-auto flex justify-end">
+                <div class="flex justify-end">
                     <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
                         View Corn Snakes
                     </button>
@@ -50,7 +50,7 @@
                 <p class="mt-2 text-white p-2">
                     Description of ball python species. This species is known for its docile nature and variety of morphs.
                 </p>
-                <div class="mt-auto flex justify-end">
+                <div class="flex justify-end">
                     <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
                         View Ball Pythons
                     </button>
