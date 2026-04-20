@@ -20,6 +20,28 @@
                 
             </div>
             
+            <div class="mt-6 flex flex-wrap gap-2 items-center">
+                <span class="text-gray-300 font-semibold">Sort by:</span>
+                <a href="{{ route('welcome', ['sort' => 'recent']) }}" class="px-4 py-2 rounded-lg {{ $currentSort === 'recent' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm">
+                    <span class="text-xs">Updated</span>
+                </a>
+                <a href="{{ route('welcome', ['sort' => 'price-low']) }}" class="px-4 py-2 rounded-lg {{ $currentSort === 'price-low' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm">
+                    <span class="text-xs">Lowest Price</span>
+                </a>
+                <a href="{{ route('welcome', ['sort' => 'price-high']) }}" class="px-4 py-2 rounded-lg {{ $currentSort === 'price-high' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm">
+                    <span class="text-xs">Highest Price</span>
+                </a>
+                <a href="{{ route('welcome', ['sort' => 'date-new']) }}" class="px-4 py-2 rounded-lg {{ $currentSort === 'date-new' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm">
+                    <span class="text-xs">Newest Hatched</span>
+                </a>
+                <a href="{{ route('welcome', ['sort' => 'category']) }}" class="px-4 py-2 rounded-lg {{ $currentSort === 'category' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm">
+                    <span class="text-xs">Category (Asc)</span>
+                </a>
+                <a href="{{ route('welcome', ['sort' => 'category-desc']) }}" class="px-4 py-2 rounded-lg {{ $currentSort === 'category-desc' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm">
+                    <span class="text-xs">Category (Desc)</span>
+                </a>
+            </div>
+            
             <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($animals as $animal)
                     @if($animal['State'] === 'For Sale' && $animal['Enabled'] === 'Active')

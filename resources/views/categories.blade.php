@@ -1,13 +1,14 @@
 <x-guest-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Available Animals') }}
+            {{ __('Available Animals By Category') }}
         </h2>
     </x-slot>
 
     
     <main class="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            @if(isset($categories['Corn Snakes']))
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
                 <img
                     src="/Corns.jpeg"
@@ -24,6 +25,8 @@
                     </a>
                 </div>
             </div>
+            @endif
+            @if(isset($categories['Carpet Pythons']) && $categories['Carpet Pythons'] > 0)
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
                 <img
                     src="/Carpets.jpeg"
@@ -40,6 +43,8 @@
                     </a>
                 </div>
             </div>
+            @endif
+            @if(isset($categories['Ball Pythons']) && $categories['Ball Pythons'] > 0)
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
                 <img
                     src="/Balls.jpeg"
@@ -56,6 +61,8 @@
                     </a>
                 </div>
             </div>
+            @endif
+            @if(isset($categories['Reticulated Pythons']) && $categories['Reticulated Pythons'] > 0)
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
                 <img
                     src="/Retics.jpeg"
@@ -72,6 +79,8 @@
                     </a>
                 </div>
             </div>
+            @endif
+            @if(isset($categories['Western Hognose']))
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
                 <img
                     src="/Hognose.jpeg"
@@ -88,6 +97,7 @@
                     </a>
                 </div>
             </div>
+            @endif
         </div>
     </main>
 </x-guest-layout>
