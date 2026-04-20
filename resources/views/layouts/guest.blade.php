@@ -33,7 +33,7 @@
                 </div>
             </header>
         @endif
-            <div class="w-full min-h-screen flex justify-center items-center bg-[url('https://gem.test/retic-group-3.png')] bg-top bg-center bg-cover bg-no-repeat">
+            <div class="w-full min-h-screen flex justify-center items-center bg-[url('/retic-group-3.png')] bg-top bg-center bg-cover bg-no-repeat">
             <div class="mx-auto min-h-screen flex flex-col p-8 sm:pt-6">
                 {{ $slot }}
             </div>
