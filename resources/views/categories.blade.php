@@ -19,7 +19,7 @@
                     Description of corn snake species. This species is known for its vibrant colors and friendly nature.
                 </p>
                 <div class="mt-auto">
-                    <a href="{{ route('corn-snakes') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
+                    <a href="{{ route('categories.corn-snakes') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
                         View Corn Snakes
                     </a>
                 </div>
@@ -35,7 +35,7 @@
                     Description of carpet python species. This species is known for its unique patterns and calm demeanor.
                 </p>
                 <div class="mt-auto">
-                    <a href="{{ route('carpet-pythons') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
+                    <a href="{{ route('categories.carpet-pythons') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
                         View Carpet Pythons
                     </a>
                 </div>
@@ -51,7 +51,7 @@
                     Description of ball python species. This species is known for its docile nature and variety of morphs.
                 </p>
                 <div class="mt-auto">
-                    <a href="{{ route('ball-pythons') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
+                    <a href="{{ route('categories.ball-pythons') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
                         View Ball Pythons
                     </a>
                 </div>
@@ -67,7 +67,7 @@
                     Description of reticulated python species. This species is known for its impressive size and striking patterns.
                 </p>
                 <div class="mt-auto">
-                    <a href="{{ route('reticulated-pythons') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
+                    <a href="{{ route('categories.reticulated-pythons') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
                         View Reticulated Pythons
                     </a>
                 </div>
@@ -83,7 +83,7 @@
                     Western Hognose Description
                 </p>
                 <div class="mt-auto">
-                    <a href="{{ route('western-hognose') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
+                    <a href="{{ route('categories.western-hognose') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
                         View Western Hognose
                     </a>
                 </div>

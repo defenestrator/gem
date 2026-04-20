@@ -3,14 +3,6 @@
         <div id="main-tile" class="text-left min-h-[70vh] bg-opacity-90 bg-gray-800 text-gray-200 p-12 rounded-xl shadow-l2xl shadow-inner">
             <h1 class="mt-4 text-3xl" style="color:#ce4f00;">Reticulated Pythons</h1>
             <h2 class="mt-8 text-xl" >Captive-bred Reticulated Pythons</h2>
-            <h4 class="mt-4 font-bold text-2xl"><a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles on MorphMarket">Visit our MorphMarket Store!</a></h4>
-            <h5 class="my-4">
-                <a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles MorphMarket Store">
-                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
-                    Gem Reptiles on MorphMarket
-                    </button>   
-                </a>
-            </h5>
             <div class="mx-auto flex justify-left">
                 <h2 href="/available">
                     Available Reticulated Pythons:
@@ -19,7 +11,7 @@
             </div>
             
             @if(empty($animals))
-                <p class="mt-8 text-gray-300">No animals are currently available in this category.</p>
+                <p class="mt-8 text-gray-300 text-3xl"><em>Sorry, no retics are currently available!</em></p>
             @else
                 <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($animals as $animal)
