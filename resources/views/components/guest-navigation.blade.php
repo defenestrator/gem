@@ -5,7 +5,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('available') }}">
+                    <a href="{{ route('welcome') }}">
                         <x-application-logo style="width:3em;" />
                     </a>
                 </div>
@@ -15,8 +15,8 @@
                     <x-nav-link :href="route('welcome')" :active="request()->routeIs('welcome')">
                         {{ __('Home') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('available')" :active="request()->routeIs('available')">
-                        {{ __('Available') }}
+                    <x-nav-link :href="route('categories')" :active="request()->routeIs('categories')">
+                        {{ __('Categories') }}
                     </x-nav-link>
                     @auth
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
@@ -46,8 +46,8 @@
                         <x-dropdown-link :href="route('welcome')" :active="request()->routeIs('welcome')">
                             {{ __('Home') }}
                         </x-dropdown-link>
-                        <x-dropdown-link :href="route('available')" :active="request()->routeIs('available')">
-                            {{ __('Available') }}
+                        <x-dropdown-link :href="route('categories')" :active="request()->routeIs('categories')">
+                            {{ __('Categories') }}
                         </x-dropdown-link>
                         @auth
                         <x-dropdown-link :href="route('profile.edit')" :active="request()->routeIs('profile')">>
@@ -94,8 +94,8 @@
             <x-responsive-nav-link :href="route('welcome')" :active="request()->routeIs('welcome')">
                 {{ __('Welcome') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('available')" :active="request()->routeIs('available')">
-                {{ __('Available') }}
+            <x-responsive-nav-link :href="route('categories')" :active="request()->routeIs('categories')">
+                {{ __('Categories') }}
             </x-responsive-nav-link>
             @auth
                 <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">

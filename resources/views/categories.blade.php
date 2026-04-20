@@ -18,10 +18,10 @@
                 <p class="mt-2 text-white p-2">
                     Description of corn snake species. This species is known for its vibrant colors and friendly nature.
                 </p>
-                <div class="flex justify-end">
-                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
+                <div class="mt-auto">
+                    <a href="{{ route('corn-snakes') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
                         View Corn Snakes
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
@@ -34,10 +34,10 @@
                 <p class="mt-2 text-white p-2">
                     Description of carpet python species. This species is known for its unique patterns and calm demeanor.
                 </p>
-                <div class="mt-auto flex justify-end">
-                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
+                <div class="mt-auto">
+                    <a href="{{ route('carpet-pythons') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
                         View Carpet Pythons
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
@@ -50,10 +50,10 @@
                 <p class="mt-2 text-white p-2">
                     Description of ball python species. This species is known for its docile nature and variety of morphs.
                 </p>
-                <div class="flex justify-end">
-                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
+                <div class="mt-auto">
+                    <a href="{{ route('ball-pythons') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
                         View Ball Pythons
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
@@ -66,10 +66,26 @@
                 <p class="mt-2 text-white p-2">
                     Description of reticulated python species. This species is known for its impressive size and striking patterns.
                 </p>
-                <div class="mt-auto flex justify-end">
-                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
+                <div class="mt-auto">
+                    <a href="{{ route('reticulated-pythons') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
                         View Reticulated Pythons
-                    </button>
+                    </a>
+                </div>
+            </div>
+            <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
+                <img
+                    src="/Hognose.jpeg"
+                    alt="Western Hognose"
+                    class="w-full h-48 object-cover rounded-t-lg mx-auto"
+                />
+                <h2 class="mt-4 text-xl font-medium text-white">Western Hognose</h2>
+                <p class="mt-2 text-white p-2">
+                    Western Hognose Description
+                </p>
+                <div class="mt-auto">
+                    <a href="{{ route('western-hognose') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
+                        View Western Hognose
+                    </a>
                 </div>
             </div>
         </div>

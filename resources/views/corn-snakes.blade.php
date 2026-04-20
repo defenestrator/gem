@@ -1,10 +1,8 @@
 <x-guest-layout>
-    <x-slot name="background">
-    </x-slot> 
     <div class="w-full min-h-screen flex justify-center items-center">
         <div id="main-tile" class="text-left min-h-[70vh] bg-opacity-90 bg-gray-800 text-gray-200 p-12 rounded-xl shadow-l2xl shadow-inner">
-            <h1 class="mt-4 text-3xl" style="color:#ce4f00;">The Wild Type</h1>
-            <h2 class="mt-8 text-xl" >Captive-bred Pythons and Colubrids</h2>
+            <h1 class="mt-4 text-3xl" style="color:#ce4f00;">Corn Snakes</h1>
+            <h2 class="mt-8 text-xl" >Captive-bred Corn Snakes</h2>
             <h4 class="mt-4 font-bold text-2xl"><a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles on MorphMarket">Visit our MorphMarket Store!</a></h4>
             <h5 class="my-4">
                 <a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles MorphMarket Store">
@@ -15,14 +13,16 @@
             </h5>
             <div class="mx-auto flex justify-left">
                 <h2 href="/available">
-                    Available Animals:
+                    Available Corn Snakes:
                 </h2>
                 
             </div>
             
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach($animals as $animal)
-                    @if($animal['State'] === 'For Sale' && $animal['Enabled'] === 'Active')
+            @if(empty($animals))
+                <p class="mt-8 text-gray-300">No animals are currently available in this category.</p>
+            @else
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($animals as $animal)
                         <div class="bg-gray-700 p-4 rounded-lg shadow-md">
                             @if($animal['Photo_Urls'])
                                 @php
@@ -32,7 +32,6 @@
                                 <img src="{{ $firstPhoto }}" alt="{{ $animal['Title*'] }}" class="w-full h-48 object-cover rounded-md mb-4">
                             @endif
                             <h3 class="text-lg font-semibold text-orange-400 mb-2">{{ $animal['Title*'] }}</h3>
-                            <p class="text-sm text-gray-300 mb-1"><strong>Category:</strong> {{ $animal['Category*'] }}</p>
                             <p class="text-sm text-gray-300 mb-1"><strong>Traits:</strong> {{ $animal['Traits'] }}</p>
                             <p class="text-sm text-gray-300 mb-1"><strong>Maturity:</strong> {{ $animal['Maturity'] }}</p>
                             <p class="text-sm text-gray-300 mb-1"><strong>Sex:</strong> {{ $animal['Sex'] }}</p>
@@ -41,10 +40,9 @@
                                 View on MorphMarket
                             </a>
                         </div>
-                    @endif
-                @endforeach
-            </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </div>
 </x-guest-layout>
-
