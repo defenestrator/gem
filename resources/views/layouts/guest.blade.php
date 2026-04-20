@@ -35,7 +35,7 @@
         @endif
 
         
-            <div class="w-full min-h-screen flex justify-center items-center bg-[url('{{ config('app.url') }}/retic-group-3.png')] bg-top bg-center bg-cover bg-no-repeat">
+            <div class="w-full min-h-screen flex justify-center items-center bg-[url('https://gemreptiles.com/retic-group-3.png')] bg-top bg-center bg-cover bg-no-repeat">
         
             <div class="mx-auto min-h-screen flex flex-col p-8 sm:pt-6">
                 {{ $slot }}
