@@ -5,19 +5,10 @@
         <div id="main-tile" class="text-left min-h-[70vh] bg-opacity-90 bg-gray-700 text-gray-200 p-12 rounded-xl shadow-l2xl shadow-inner">
             <h1 class="mt-4 text-3xl text-orange-600">The Wild Type</h1>
             <h2 class="mt-8 text-xl" >Captive-bred Pythons and Colubrids</h2>
-            <h4 class="mt-4 font-bold text-2xl"><a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles on MorphMarket">Visit our MorphMarket Store!</a></h4>
-            <h5 class="my-4">
-                <a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles MorphMarket Store">
-                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
-                    Gem Reptiles on MorphMarket
-                    </button>   
-                </a>
-            </h5>
             <div class="mx-auto flex justify-left">
                 <h2 href="/available">
                     Available Animals:
-                </h2>
-                
+                </h2>                
             </div>
             
             <div class="mt-6 flex flex-wrap gap-2 items-center">
@@ -66,6 +57,14 @@
                     @endif
                 @endforeach
             </div>
+            <h4 class="mt-4 font-bold text-2xl"><a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles on MorphMarket">Visit our MorphMarket Store!</a></h4>
+            <h5 class="my-4">
+                <a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles MorphMarket Store">
+                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
+                    Gem Reptiles on MorphMarket
+                    </button>   
+                </a>
+            </h5>
         </div>
     </div>
 </x-guest-layout>
