@@ -34,14 +34,14 @@
             </header>
         @endif
 
-        @if(isset($background))
+        
             <div class="w-full min-h-screen flex justify-center items-center bg-[url('/retic-group-3.png')] bg-top bg-center bg-cover bg-no-repeat">
-        @endif
+        
             <div class="mx-auto min-h-screen flex flex-col p-8 sm:pt-6">
                 {{ $slot }}
             </div>
-        @if(isset($background))
+        
             </div>
-        @endif
+        
     </body>
 </html>
