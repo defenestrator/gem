@@ -3,32 +3,32 @@
     </x-slot> 
     <div class="w-full min-h-screen flex justify-center items-center">
         <div id="main-tile" class="text-left min-h-[70vh] bg-opacity-90 bg-gray-700 text-gray-200 p-12 rounded-xl shadow-l2xl shadow-inner">
-            <h1 class="mt-4 text-3xl text-orange-600">The Wild Type</h1>
-            <h2 class="mt-8 text-xl" >Captive-bred Pythons and Colubrids</h2>
+            <h1 class="my-2 text-3xl text-orange-500 font-serif">The Wild Type</h1>
+            <h2 class="my-2 text-xl" >Captive-bred Pythons and Colubrids by <span class="text-orange-400">Gem Reptiles</span></h2>
             <div class="mx-auto flex justify-left">
                 <h2 href="/available">
                     Available Animals:
                 </h2>                
             </div>
             
-            <div class="mt-6 flex flex-wrap gap-2 items-center">
+            <div class="mt-6 flex flex-wrap gap-1 items-center">
                 <span class="text-gray-300 font-semibold">Sort by:</span>
-                <a href="{{ route('welcome', ['sort' => 'recent']) }}" class="px-2 py-1 rounded-lg {{ $currentSort === 'recent' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm">
+                <a href="{{ route('welcome', ['sort' => 'recent']) }}" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'recent' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
                     <span class="text-xs">Updated</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'price-low']) }}" class="px-2 py-1 rounded-lg {{ $currentSort === 'price-low' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm">
+                <a href="{{ route('welcome', ['sort' => 'price-low']) }}" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'price-low' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
                     <span class="text-xs">Lowest Price</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'price-high']) }}" class="px-2 py-1 rounded-lg {{ $currentSort === 'price-high' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm">
+                <a href="{{ route('welcome', ['sort' => 'price-high']) }}" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'price-high' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
                     <span class="text-xs">Highest Price</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'date-new']) }}" class="px-2 py-1 rounded-lg {{ $currentSort === 'date-new' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm">
+                <a href="{{ route('welcome', ['sort' => 'date-new']) }}" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'date-new' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
                     <span class="text-xs">Newest Hatched</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'category']) }}" class="px-2 py-1 rounded-lg {{ $currentSort === 'category' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm">
+                <a href="{{ route('welcome', ['sort' => 'category']) }}" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'category' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
                     <span class="text-xs">Category (Asc)</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'category-desc']) }}" class="px-2 py-1 rounded-lg {{ $currentSort === 'category-desc' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm">
+                <a href="{{ route('welcome', ['sort' => 'category-desc']) }}" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'category-desc' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
                     <span class="text-xs">Category (Desc)</span>
                 </a>
             </div>
