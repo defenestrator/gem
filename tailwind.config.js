@@ -24,7 +24,18 @@ export default {
                     '700': '#29571e',
                     '800': '#183f0d',
                     '900': '#0A2602',
-                }
+                },
+                 orange: {
+                    '100': '#fbcaaa',
+                    '200': '#ffa673',
+                    '300': '#f18a4b',
+                    '400': '#f37a30',
+                    '500': '#d4631c',
+                    '600': '#ce4f00',
+                    '700': '#933c06',
+                    '800': '#722c00',
+                    '900': '#3a1600'                 
+                 }
             },
             fontFamily: {
                 sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
