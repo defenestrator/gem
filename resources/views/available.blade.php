@@ -10,7 +10,7 @@
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
                 <img
-                    src="/favicon.png"
+                    src="/Corns.jpeg"
                     alt="Corn Snakes"
                     class="w-full h-48 object-cover rounded-t-lg mx-auto"
                 />
@@ -19,14 +19,14 @@
                     Description of corn snake species. This species is known for its vibrant colors and friendly nature.
                 </p>
                 <div class="mt-auto flex justify-end">
-                    <button class="bg-orange-800 text-white py-2 px-4 rounded-lg hover:bg-orange-900">
-                        View Details
+                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
+                        View Corn Snakes
                     </button>
                 </div>
             </div>
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
                 <img
-                    src="/favicon.png"
+                    src="/Carpets.jpeg"
                     alt="Carpet Pythons"
                     class="w-full h-48 object-cover rounded-t-lg mx-auto"
                 />
@@ -35,14 +35,14 @@
                     Description of carpet python species. This species is known for its unique patterns and calm demeanor.
                 </p>
                 <div class="mt-auto flex justify-end">
-                    <button class="bg-orange-800 text-white py-2 px-4 rounded-lg hover:bg-orange-900">
-                        View Details
+                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
+                        View Carpet Pythons
                     </button>
                 </div>
             </div>
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
                 <img
-                    src="/favicon.png"
+                    src="/Balls.jpeg"
                     alt="Ball Pythons"
                     class="w-full h-48 object-cover rounded-t-lg mx-auto"
                 />
@@ -51,14 +51,14 @@
                     Description of ball python species. This species is known for its docile nature and variety of morphs.
                 </p>
                 <div class="mt-auto flex justify-end">
-                    <button class="bg-orange-800 text-white py-2 px-4 rounded-lg hover:bg-orange-900">
-                        View Details
+                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
+                        View Ball Pythons
                     </button>
                 </div>
             </div>
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
                 <img
-                    src="/favicon.png"
+                    src="/Retics.jpeg"
                     alt="Reticulated Pythons"
                     class="w-full h-48 object-cover rounded-t-lg mx-auto"
                 />
@@ -67,8 +67,8 @@
                     Description of reticulated python species. This species is known for its impressive size and striking patterns.
                 </p>
                 <div class="mt-auto flex justify-end">
-                    <button class="bg-orange-800 text-white py-2 px-4 rounded-lg hover:bg-orange-900">
-                        View Details
+                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
+                        View Reticulated Pythons
                     </button>
                 </div>
             </div>
