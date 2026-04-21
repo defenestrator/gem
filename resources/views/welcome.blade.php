@@ -52,10 +52,24 @@
                                 <img src="{{ $firstPhoto }}" alt="{{ $animal['Title*'] }}" class="w-full h-48 object-cover rounded-md mb-4">
                             @endif
                             <h3 class="text-lg font-semibold text-orange-400 mb-2">{{ $animal['Title*'] }}</h3>
-                            <p class="text-sm text-gray-300 mb-1"><strong>Category:</strong> {{ $animal['Category*'] }}</p>
-                            <p class="text-sm text-gray-300 mb-1"><strong>Traits:</strong> {{ $animal['Traits'] }}</p>
-                            <p class="text-sm text-gray-300 mb-1"><strong>Maturity:</strong> {{ $animal['Maturity'] }}</p>
-                            <p class="text-sm text-gray-300 mb-1"><strong>Sex:</strong> {{ $animal['Sex'] }}</p>
+                            <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Category:</span> {{ $animal['Category*'] }}</p>
+                            <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Traits:</span> {{ $animal['Traits'] }}</p>
+                            <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Maturity:</span> {{ $animal['Maturity'] }}</p>
+                            <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Sex:</span> {{ $animal['Sex'] }}</p>
+                            <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Origin:</span> {{ $animal['Origin'] }}</p>
+                            @if($animal['Desc'])
+                                <p class="text-sm text-gray-300 mb-2"><span class="font-serif font-bold">Description:</span> {{ Str::limit($animal['Desc'], 150) }}</p>
+                            @endif
+                            @if($animal['Diet'])
+                                <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Diet:</span> {{ $animal['Diet'] }}</p>
+                            @endif
+                            <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Shipping:</span> ${{ $animal['Min_Shipping'] }} - ${{ $animal['Max_Shipping'] }}</p>
+                            @if($animal['Is_Negotiable'] === 'Will Consider')
+                                <p class="text-sm text-green-400 mb-1"><span class="font-serif font-bold">Negotiable:</span> Yes</p>
+                            @endif
+                            @if($animal['Is_For_Trade'] === 'Will Consider')
+                                <p class="text-sm text-blue-400 mb-1"><span class="font-serif font-bold">Trades:</span> Considered</p>
+                            @endif
                             <p class="text-lg font-bold text-green-400 mb-4">${{ $animal['Price'] }}</p>
                             <a href="{{ $animal['Mm_Url**'] }}" target="_blank" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 inline-block">
                                 View on MorphMarket

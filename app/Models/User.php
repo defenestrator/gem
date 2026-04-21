@@ -43,4 +43,11 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    /**
+     * Get the classifieds posted by the user.
+     */
+    public function classifieds()
+    {
+        return $this->hasMany(Classified::class);
+    }
 }
