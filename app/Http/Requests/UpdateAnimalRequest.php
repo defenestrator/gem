@@ -6,23 +6,22 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateAnimalRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'pet_name'         => 'required|string|max:255',
+            'description'      => 'nullable|string|max:5000',
+            'date_of_birth'    => 'nullable|date',
+            'female'           => 'nullable|boolean',
+            'proven_breeder'   => 'nullable|boolean',
+            'acquisition_date' => 'nullable|date',
+            'acquisition_cost' => 'nullable|integer|min:0',
+            'status'           => 'in:draft,published',
         ];
     }
 }

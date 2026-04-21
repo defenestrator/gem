@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClassifiedController;
 use Illuminate\Support\Facades\Route;
@@ -187,13 +188,20 @@ Route::get('/dashboard', function () {
 Route::get('/classifieds', [ClassifiedController::class, 'index'])->name('classifieds.index');
 Route::get('/classifieds/{classified:slug}', [ClassifiedController::class, 'show'])->name('classifieds.show');
 
+// Animals Routes
+Route::get('/animals', [AnimalController::class, 'index'])->name('animals.index');
+Route::get('/animals/{animal:slug}', [AnimalController::class, 'show'])->name('animals.show');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-    // Dashboard Classifieds CRUD
-    Route::resource('dashboard/classifieds', ClassifiedController::class)->middleware('verified');
+    // Dashboard CRUD
+    Route::name('dashboard.')->group(function () {
+        Route::resource('dashboard/classifieds', ClassifiedController::class)->middleware('verified');
+        Route::resource('dashboard/animals', AnimalController::class)->middleware('verified');
+    });
 });
 
 require __DIR__.'/auth.php';
