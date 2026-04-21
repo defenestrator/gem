@@ -1,10 +1,17 @@
 <x-guest-layout>
     <x-slot name="background">
     </x-slot> 
-    <div class="w-full min-h-screen flex justify-center items-center">
-        <div id="main-tile" class="text-left min-h-[70vh] bg-opacity-90 bg-gray-700 text-gray-200 p-6 rounded-xl shadow-l2xl shadow-inner">
+    <div class="w-full min-h-screen flex justify-center items-center pb-12">
+        <div id="main-tile" class="text-left min-h-[70vh] bg-opacity-90 bg-gray-700 text-gray-200 p-6 rounded-xl shadow-l2xl shadow-inner pb-12">
             <h1 class="my-2 text-3xl text-orange-500 font-serif">The Wild Type</h1>
-            <h2 class="my-2 text-xl" >Captive-bred Pythons and Colubrids by <span class="text-orange-400">Gem Reptiles</span></h2>
+            <h2 class="my-2 text-l" >Captive-bred Pythons and Colubrids by <span class="text-orange-400">Gem Reptiles</span></h2>
+            {{-- <h5 class="my-4">
+                <a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles MorphMarket Store">
+                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
+                    Gem Reptiles on MorphMarket
+                    </button>   
+                </a>
+            </h5> --}}
             <div class="mx-auto flex justify-left">
                 <h2 href="/available">
                     Available Animals:
