@@ -27,7 +27,7 @@
         <x-guest-navigation />
         <!-- Page Heading -->
         @if (isset($header))
-            <header class="bg-gray-800 shadow">
+            <header class="bg-gray-300 shadow">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
                 </div>
@@ -37,7 +37,7 @@
         @if(isset($background))
             <div class="w-full min-h-screen flex justify-center items-center bg-[url('https://gemreptiles.com/retic-group-3.png')] bg-top bg-center bg-cover bg-no-repeat">
         @endif
-            <div class="bg-gray-900 mx-auto min-h-screen flex flex-col p-8 sm:pt-6">
+            <div class="bg-gray-300 mx-auto min-h-screen flex flex-col p-8 sm:pt-6">
                 {{ $slot }}
             </div>
         @if(isset($background))
