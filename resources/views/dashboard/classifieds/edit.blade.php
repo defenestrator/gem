@@ -18,7 +18,7 @@
                             <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Title <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" id="title" name="title" value="{{ old('title', $classified->title) }}" 
+                            <input type="text" id="title" name="title" value="{{ old('title', $classified->title) }}"
                                 class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
                                 placeholder="e.g., Beautiful Ball Python - Yellow Belly Morph" required>
                             @error('title')
@@ -64,7 +64,7 @@
                             <label for="price" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Price ($) <span class="text-red-500">*</span>
                             </label>
-                            <input type="number" id="price" name="price" value="{{ old('price', $classified->price) }}" 
+                            <input type="number" id="price" name="price" value="{{ old('price', $classified->price) }}"
                                 step="0.01" min="0"
                                 class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
                                 placeholder="0.00" required>

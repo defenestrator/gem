@@ -7,6 +7,12 @@
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            @if(session('success'))
+                <div class="mb-4 bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded-lg">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <!-- Status Badge -->
                 <div class="mb-6">
@@ -32,18 +38,6 @@
                         ${{ number_format($classified->price, 2) }}
                     </p>
                 </div>
-
-                <!-- Seller Info -->
-                @if ($classified->user)
-                    <div class="mb-6 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                        <p class="text-gray-700 dark:text-gray-300">
-                            <span class="font-semibold">Seller:</span> {{ $classified->user->name }}
-                        </p>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm">
-                            <span class="font-semibold">Posted:</span> {{ $classified->created_at->format('M d, Y') }}
-                        </p>
-                    </div>
-                @endif
 
                 <!-- Animal Info -->
                 @if ($classified->animal)
@@ -72,10 +66,24 @@
                     </p>
                 </div>
 
+                <!-- Action Buttons -->
+                <div class="flex gap-4 mb-6">
+                    <a href="{{ route('dashboard.classifieds.edit', $classified) }}" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 font-semibold">
+                        Edit
+                    </a>
+                    <form action="{{ route('dashboard.classifieds.destroy', $classified) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this classified?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-700 font-semibold">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+
                 <!-- Back Link -->
                 <div>
-                    <a href="{{ route('classifieds.index') }}" class="text-orange-600 dark:text-orange-400 hover:underline font-semibold">
-                        ← Back to All Classifieds
+                    <a href="{{ route('dashboard.classifieds.index') }}" class="text-orange-600 dark:text-orange-400 hover:underline font-semibold">
+                        ← Back to My Classifieds
                     </a>
                 </div>
             </div>

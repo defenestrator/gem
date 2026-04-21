@@ -1,186 +1,110 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ $isDashboard ? 'My Classifieds' : 'Classified Ads' }}
+            Classified Ads
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if ($isDashboard)
-                <!-- Dashboard View - User's Classifieds -->
-                <div class="mb-6">
-                    <a href="{{ route('dashboard.classifieds.create') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 inline-block">
-                        Create New Classified
-                    </a>
-                </div>
-
-                @if ($classifieds->count())
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @foreach ($classifieds as $classified)
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
-                                <div class="mb-3">
-                                    <span class="inline-block px-3 py-1 text-sm rounded-full 
-                                        @if ($classified->status === 'published')
-                                            bg-green-100 text-green-800
-                                        @elseif ($classified->status === 'draft')
-                                            bg-gray-100 text-gray-800
-                                        @else
-                                            bg-red-100 text-red-800
-                                        @endif
-                                    ">
-                                        {{ ucfirst($classified->status) }}
-                                    </span>
-                                </div>
-                                <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400 mb-2">
-                                    {{ $classified->title }}
-                                </h3>
-                                <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
-                                    {{ Str::limit($classified->description, 100) }}
-                                </p>
-                                @if ($classified->animal)
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                                        <span class="font-semibold">Animal:</span> {{ $classified->animal->pet_name ?? 'N/A' }}
-                                    </p>
-                                @endif
-                                <p class="text-lg font-bold text-green-600 dark:text-green-400 mb-4">
-                                    ${{ number_format($classified->price, 2) }}
-                                </p>
-                                <div class="flex gap-2">
-                                    <a href="{{ route('dashboard.classifieds.show', $classified) }}" class="bg-blue-500 text-white py-1 px-3 rounded text-sm hover:bg-blue-700">
-                                        View
-                                    </a>
-                                    <a href="{{ route('dashboard.classifieds.edit', $classified) }}" class="bg-yellow-500 text-white py-1 px-3 rounded text-sm hover:bg-yellow-700">
-                                        Edit
-                                    </a>
-                                    <form action="{{ route('dashboard.classifieds.destroy', $classified) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="bg-red-500 text-white py-1 px-3 rounded text-sm hover:bg-red-700">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        @endforeach
+            <!-- Search & Filter -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Search & Filter</h3>
+                <form method="GET" action="{{ route('classifieds.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
+                        <input type="text" name="search" value="{{ $search }}" placeholder="Search classifieds..." class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg">
                     </div>
 
-                    <!-- Pagination -->
-                    <div class="mt-6">
-                        {{ $classifieds->links() }}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Animal</label>
+                        <select name="category" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg">
+                            <option value="">All Animals</option>
+                            @foreach ($animals as $animal)
+                                <option value="{{ $animal->id }}" {{ $categoryFilter == $animal->id ? 'selected' : '' }}>
+                                    {{ $animal->pet_name ?? 'Unknown' }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
-                @else
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
-                        <p class="text-gray-600 dark:text-gray-300 mb-4">You haven't created any classifieds yet.</p>
-                        <a href="{{ route('dashboard.classifieds.create') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 inline-block">
-                            Create Your First Classified
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Min Price</label>
+                        <input type="number" name="min_price" value="{{ $minPrice }}" placeholder="Min" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Max Price</label>
+                        <input type="number" name="max_price" value="{{ $maxPrice }}" placeholder="Max" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg">
+                    </div>
+
+                    <div class="flex items-end gap-2">
+                        <button type="submit" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 flex-1">
+                            Filter
+                        </button>
+                        <a href="{{ route('classifieds.index') }}" class="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-700 flex-1 text-center">
+                            Reset
                         </a>
                     </div>
-                @endif
-            @else
-                <!-- Public View - Published Classifieds -->
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Search & Filter</h3>
-                    <form method="GET" action="{{ route('classifieds.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <!-- Search -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
-                            <input type="text" name="search" value="{{ $search }}" placeholder="Search classifieds..." class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg">
-                        </div>
+                </form>
+            </div>
 
-                        <!-- Category Filter -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Animal</label>
-                            <select name="category" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg">
-                                <option value="">All Animals</option>
-                                @foreach ($animals as $animal)
-                                    <option value="{{ $animal->id }}" {{ $categoryFilter == $animal->id ? 'selected' : '' }}>
-                                        {{ $animal->pet_name ?? 'Unknown' }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+            <!-- Sort Options -->
+            <div class="mb-6 flex flex-wrap gap-2">
+                <span class="text-gray-600 dark:text-gray-400 font-semibold">Sort by:</span>
+                <a href="{{ route('classifieds.index', array_merge(request()->query(), ['sort' => 'recent'])) }}" class="px-3 py-1 rounded-lg text-sm font-medium {{ $currentSort === 'recent' ? 'bg-orange-600 text-white' : 'bg-orange-500 text-white hover:bg-orange-600' }}">
+                    Newest
+                </a>
+                <a href="{{ route('classifieds.index', array_merge(request()->query(), ['sort' => 'price-low'])) }}" class="px-3 py-1 rounded-lg text-sm font-medium {{ $currentSort === 'price-low' ? 'bg-orange-600 text-white' : 'bg-orange-500 text-white hover:bg-orange-600' }}">
+                    Lowest Price
+                </a>
+                <a href="{{ route('classifieds.index', array_merge(request()->query(), ['sort' => 'price-high'])) }}" class="px-3 py-1 rounded-lg text-sm font-medium {{ $currentSort === 'price-high' ? 'bg-orange-600 text-white' : 'bg-orange-500 text-white hover:bg-orange-600' }}">
+                    Highest Price
+                </a>
+                <a href="{{ route('classifieds.index', array_merge(request()->query(), ['sort' => 'oldest'])) }}" class="px-3 py-1 rounded-lg text-sm font-medium {{ $currentSort === 'oldest' ? 'bg-orange-600 text-white' : 'bg-orange-500 text-white hover:bg-orange-600' }}">
+                    Oldest
+                </a>
+            </div>
 
-                        <!-- Price Range -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Min Price</label>
-                            <input type="number" name="min_price" value="{{ $minPrice }}" placeholder="Min" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Max Price</label>
-                            <input type="number" name="max_price" value="{{ $maxPrice }}" placeholder="Max" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg">
-                        </div>
-
-                        <div class="flex items-end gap-2">
-                            <button type="submit" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 flex-1">
-                                Filter
-                            </button>
-                            <a href="{{ route('classifieds.index') }}" class="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-700 flex-1 text-center">
-                                Reset
+            @if ($classifieds->count())
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach ($classifieds as $classified)
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition">
+                            <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400 mb-2">
+                                <a href="{{ route('classifieds.show', $classified) }}" class="hover:underline">
+                                    {{ $classified->title }}
+                                </a>
+                            </h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                                {{ Str::limit($classified->description, 100) }}
+                            </p>
+                            @if ($classified->animal)
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                                    <span class="font-semibold">Animal:</span> {{ $classified->animal->pet_name ?? 'N/A' }}
+                                </p>
+                            @endif
+                            @if ($classified->user)
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                                    <span class="font-semibold">Seller:</span> {{ $classified->user->name }}
+                                </p>
+                            @endif
+                            <p class="text-lg font-bold text-green-600 dark:text-green-400 mb-4">
+                                ${{ number_format($classified->price, 2) }}
+                            </p>
+                            <a href="{{ route('classifieds.show', $classified) }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 inline-block">
+                                View Details
                             </a>
                         </div>
-                    </form>
+                    @endforeach
                 </div>
 
-                <!-- Sort Options -->
-                <div class="mb-6 flex flex-wrap gap-2">
-                    <span class="text-gray-600 dark:text-gray-400 font-semibold">Sort by:</span>
-                    <a href="{{ route('classifieds.index', array_merge(request()->query(), ['sort' => 'recent'])) }}" class="px-3 py-1 rounded-lg text-sm font-medium {{ $currentSort === 'recent' ? 'bg-orange-600 text-white' : 'bg-orange-500 text-white hover:bg-orange-600' }}">
-                        Newest
-                    </a>
-                    <a href="{{ route('classifieds.index', array_merge(request()->query(), ['sort' => 'price-low'])) }}" class="px-3 py-1 rounded-lg text-sm font-medium {{ $currentSort === 'price-low' ? 'bg-orange-600 text-white' : 'bg-orange-500 text-white hover:bg-orange-600' }}">
-                        Lowest Price
-                    </a>
-                    <a href="{{ route('classifieds.index', array_merge(request()->query(), ['sort' => 'price-high'])) }}" class="px-3 py-1 rounded-lg text-sm font-medium {{ $currentSort === 'price-high' ? 'bg-orange-600 text-white' : 'bg-orange-500 text-white hover:bg-orange-600' }}">
-                        Highest Price
-                    </a>
-                    <a href="{{ route('classifieds.index', array_merge(request()->query(), ['sort' => 'oldest'])) }}" class="px-3 py-1 rounded-lg text-sm font-medium {{ $currentSort === 'oldest' ? 'bg-orange-600 text-white' : 'bg-orange-500 text-white hover:bg-orange-600' }}">
-                        Oldest
-                    </a>
+                <div class="mt-6">
+                    {{ $classifieds->links() }}
                 </div>
-
-                @if ($classifieds->count())
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @foreach ($classifieds as $classified)
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition">
-                                <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400 mb-2">
-                                    <a href="{{ route('classifieds.show', $classified) }}" class="hover:underline">
-                                        {{ $classified->title }}
-                                    </a>
-                                </h3>
-                                <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
-                                    {{ Str::limit($classified->description, 100) }}
-                                </p>
-                                @if ($classified->animal)
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                                        <span class="font-semibold">Animal:</span> {{ $classified->animal->pet_name ?? 'N/A' }}
-                                    </p>
-                                @endif
-                                @if ($classified->user)
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                                        <span class="font-semibold">Seller:</span> {{ $classified->user->name }}
-                                    </p>
-                                @endif
-                                <p class="text-lg font-bold text-green-600 dark:text-green-400 mb-4">
-                                    ${{ number_format($classified->price, 2) }}
-                                </p>
-                                <a href="{{ route('classifieds.show', $classified) }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 inline-block">
-                                    View Details
-                                </a>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    <!-- Pagination -->
-                    <div class="mt-6">
-                        {{ $classifieds->links() }}
-                    </div>
-                @else
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
-                        <p class="text-gray-600 dark:text-gray-300">No classifieds found matching your criteria.</p>
-                    </div>
-                @endif
+            @else
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
+                    <p class="text-gray-600 dark:text-gray-300">No classifieds found matching your criteria.</p>
+                </div>
             @endif
         </div>
     </div>

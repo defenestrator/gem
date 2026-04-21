@@ -15,11 +15,11 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard.animals.index')" :active="request()->routeIs('dashboard.animals.*')">
-                        {{ __('My Animals') }}
+                    <x-nav-link :href="route('animals.index')" :active="request()->routeIs('animals.*')">
+                        {{ __('Animals') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard.classifieds.index')" :active="request()->routeIs('dashboard.classifieds.*')">
-                        {{ __('My Classifieds') }}
+                    <x-nav-link :href="route('classifieds.index')" :active="request()->routeIs('classifieds.*')">
+                        {{ __('Classifieds') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -82,11 +82,11 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('dashboard.animals.index')" :active="request()->routeIs('dashboard.animals.*')">
-                {{ __('My Animals') }}
+            <x-responsive-nav-link :href="route('animals.index')" :active="request()->routeIs('animals.*')">
+                {{ __('Animals') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('dashboard.classifieds.index')" :active="request()->routeIs('dashboard.classifieds.*')">
-                {{ __('My Classifieds') }}
+            <x-responsive-nav-link :href="route('classifieds.index')" :active="request()->routeIs('classifieds.*')">
+                {{ __('Classifieds') }}
             </x-responsive-nav-link>
         </div>
 

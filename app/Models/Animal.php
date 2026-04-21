@@ -12,6 +12,7 @@ class Animal extends Model
     use HasFactory, HasMedia, Sluggable;
 
     protected $fillable = [
+        'slug',
         'pet_name',
         'description',
         'date_of_birth',

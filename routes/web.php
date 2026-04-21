@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\DashboardAnimalController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClassifiedController;
+use App\Http\Controllers\DashboardClassifiedController;
+use App\Http\Controllers\AnimalImportController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
@@ -20,7 +23,7 @@ use Illuminate\Http\Request;
 
 // Helper function to load animals from JSON and sort by most recent first
 $getAnimals = function() {
-    $file = base_path('resources/js/animals.json');
+    $file = storage_path('app/public/animals.json');
     $mtime = filemtime($file);
     $key = 'animals_' . $mtime;
     $animals = Cache::remember($key, 30*60, function() use ($file) {
@@ -40,6 +43,12 @@ $getAnimals = function() {
     });
     return $animals;
 };
+
+    // Animal import routes
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/dashboard/animals/import', [AnimalImportController::class, 'showForm'])->name('dashboard.animals.import');
+        Route::post('/dashboard/animals/import', [AnimalImportController::class, 'upload'])->name('dashboard.animals.import.upload');
+    });
 
 Route::get('/', function (Request $request) use ($getAnimals) {
     $sort = $request->query('sort', 'recent');
@@ -199,8 +208,8 @@ Route::middleware('auth')->group(function () {
     
     // Dashboard CRUD
     Route::name('dashboard.')->group(function () {
-        Route::resource('dashboard/classifieds', ClassifiedController::class)->middleware('verified');
-        Route::resource('dashboard/animals', AnimalController::class)->middleware('verified');
+        Route::resource('dashboard/classifieds', DashboardClassifiedController::class)->middleware('verified');
+        Route::resource('dashboard/animals', DashboardAnimalController::class)->middleware('verified');
     });
 });
 

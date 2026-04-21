@@ -47,3 +47,4 @@ A multi-vendor Laravel application for buying/selling exotic reptiles (snakes, l
 * DO NOT create code with security vulnerabilities
 * ALWAYS follow safe coding best-practices for PHP and Laravel
 * ALWAYS follow secure coding best-practices for JavaScript
+* ALWAYS run `php artisan optimize` at the end of each set of significant changes

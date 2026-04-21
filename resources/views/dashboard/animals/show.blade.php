@@ -62,10 +62,16 @@
                                 <p class="text-gray-800 dark:text-gray-200">{{ $animal->date_of_birth->format('M d, Y') }}</p>
                             </div>
                         @endif
-                        @if ($animal->user)
+                        @if ($animal->acquisition_date)
                             <div>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 font-semibold">Owner</p>
-                                <p class="text-gray-800 dark:text-gray-200">{{ $animal->user->name }}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 font-semibold">Acquired</p>
+                                <p class="text-gray-800 dark:text-gray-200">{{ $animal->acquisition_date->format('M d, Y') }}</p>
+                            </div>
+                        @endif
+                        @if ($animal->acquisition_cost !== null)
+                            <div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 font-semibold">Acquisition Cost</p>
+                                <p class="text-gray-800 dark:text-gray-200">${{ number_format($animal->acquisition_cost) }}</p>
                             </div>
                         @endif
                     </div>
@@ -77,10 +83,27 @@
                         </div>
                     @endif
 
+                    {{-- Action Buttons --}}
+                    <div class="flex gap-4 mb-6">
+                        <a href="{{ route('dashboard.animals.edit', $animal) }}"
+                            class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 font-semibold">
+                            Edit
+                        </a>
+                        <form action="{{ route('dashboard.animals.destroy', $animal) }}" method="POST"
+                            class="inline-block" onsubmit="return confirm('Delete this animal?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-700 font-semibold">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+
                     <div>
-                        <a href="{{ route('animals.index') }}"
+                        <a href="{{ route('dashboard.animals.index') }}"
                             class="text-orange-600 dark:text-orange-400 hover:underline font-semibold">
-                            ← Back to Animals
+                            ← Back to My Animals
                         </a>
                     </div>
                 </div>
