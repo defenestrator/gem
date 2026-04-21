@@ -7,7 +7,7 @@
 
     
     <main class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <div id="main-tile" class="text-left min-h-[70vh] bg-opacity-90 bg-gray-700 text-gray-200 p-12 rounded-xl shadow-l2xl shadow-inner">
+        <div id="main-tile" class="text-left min-h-[70vh] bg-opacity-90 bg-gray-700 text-gray-200 p-6 rounded-xl shadow-l2xl shadow-inner">
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             @if(isset($categories['Corn Snakes']))
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">

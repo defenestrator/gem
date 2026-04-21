@@ -2,7 +2,7 @@
     <x-slot name="background">
     </x-slot> 
     <div class="w-full min-h-screen flex justify-center items-center">
-        <div id="main-tile" class="text-left min-h-[70vh] bg-opacity-90 bg-gray-700 text-gray-200 p-12 rounded-xl shadow-l2xl shadow-inner">
+        <div id="main-tile" class="text-left min-h-[70vh] bg-opacity-90 bg-gray-700 text-gray-200 p-6 rounded-xl shadow-l2xl shadow-inner">
             <h1 class="my-2 text-3xl text-orange-500 font-serif">The Wild Type</h1>
             <h2 class="my-2 text-xl" >Captive-bred Pythons and Colubrids by <span class="text-orange-400">Gem Reptiles</span></h2>
             <div class="mx-auto flex justify-left">
@@ -33,7 +33,7 @@
                 </a>
             </div>
             
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($animals as $animal)
                     @if($animal['State'] === 'For Sale' && $animal['Enabled'] === 'Active')
                         <div class="bg-gray-700 p-4 rounded-lg shadow-md">
