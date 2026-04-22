@@ -78,9 +78,15 @@
                                     <span class="font-semibold">Seller:</span> {{ $classified->user->name }}
                                 </p>
                             @endif
-                            <p class="text-lg font-bold text-green-600 dark:text-green-400 mb-4">
-                                ${{ number_format($classified->price, 2) }}
-                            </p>
+                            <div class="flex items-center gap-3 mb-4">
+                                <p class="text-lg font-bold text-green-600 dark:text-green-400">
+                                    ${{ number_format($classified->price, 2) }}
+                                </p>
+                                <a href="{{ route('classifieds.inquiries.create', $classified) }}"
+                                    class="bg-orange-500 hover:bg-orange-700 text-white text-xs font-semibold py-1 px-3 rounded-lg transition">
+                                    Inquire
+                                </a>
+                            </div>
                             <a href="{{ route('classifieds.show', $classified) }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 inline-block">
                                 View Details
                             </a>

@@ -9,6 +9,8 @@ use App\Http\Controllers\ClassifiedController;
 use App\Http\Controllers\DashboardClassifiedController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\AnimalImportController;
+use App\Http\Controllers\InquiryController;
+use App\Http\Controllers\ClassifiedInquiryController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
@@ -203,10 +205,14 @@ Route::get('/sellers/{seller:slug}', [SellerController::class, 'show'])->name('s
 // Classifieds Routes
 Route::get('/classifieds', [ClassifiedController::class, 'index'])->name('classifieds.index');
 Route::get('/classifieds/{classified:slug}', [ClassifiedController::class, 'show'])->name('classifieds.show');
+Route::get('/classifieds/{classified:slug}/inquire', [ClassifiedInquiryController::class, 'create'])->name('classifieds.inquiries.create');
+Route::post('/classifieds/{classified:slug}/inquire', [ClassifiedInquiryController::class, 'store'])->name('classifieds.inquiries.store');
 
 // Animals Routes
 Route::get('/animals', [AnimalController::class, 'index'])->name('animals.index');
 Route::get('/animals/{animal:slug}', [AnimalController::class, 'show'])->name('animals.show');
+Route::get('/animals/{animal:slug}/inquire', [InquiryController::class, 'create'])->name('animals.inquiries.create');
+Route::post('/animals/{animal:slug}/inquire', [InquiryController::class, 'store'])->name('animals.inquiries.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

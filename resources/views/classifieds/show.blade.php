@@ -47,14 +47,28 @@
                     </div>
                 @endif
 
-                <!-- Title and Price -->
+                <!-- Title, Price, and Inquire -->
                 <div class="mb-6">
                     <h1 class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">
                         {{ $classified->title }}
                     </h1>
-                    <p class="text-3xl font-bold text-green-600 dark:text-green-400">
-                        ${{ number_format($classified->price, 2) }}
-                    </p>
+                    <div class="flex items-center gap-6">
+                        <p class="text-3xl font-bold text-green-600 dark:text-green-400">
+                            ${{ number_format($classified->price, 2) }}
+                        </p>
+                        @if ($classified->status === 'published')
+                            @if (session('inquiry_sent'))
+                                <span class="inline-flex items-center gap-2 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 px-4 py-2 rounded-lg font-semibold">
+                                    Inquiry sent — we'll be in touch!
+                                </span>
+                            @else
+                                <a href="{{ route('classifieds.inquiries.create', $classified) }}"
+                                    class="bg-orange-500 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded-lg transition">
+                                    Inquire
+                                </a>
+                            @endif
+                        @endif
+                    </div>
                 </div>
 
                 <!-- Seller Info -->

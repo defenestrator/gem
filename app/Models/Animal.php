@@ -25,6 +25,7 @@ class Animal extends Model
         'acquisition_cost',
         'status',
         'availability',
+        'price',
         'user_id',
     ];
 
@@ -34,6 +35,7 @@ class Animal extends Model
         'female'           => 'boolean',
         'proven_breeder'   => 'boolean',
         'availability'     => AnimalAvailability::class,
+        'price'            => 'decimal:2',
     ];
 
     public function sluggable(): array

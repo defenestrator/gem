@@ -22,10 +22,10 @@ enum AnimalAvailability: string
     public function badgeClasses(): string
     {
         return match ($this) {
-            self::ForSale    => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-            self::Breeder    => 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
-            self::Sold       => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-            self::NotForSale => 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+            self::ForSale    => 'bg-green-600 text-white dark:bg-green-700',
+            self::Breeder    => 'bg-purple-600 text-white dark:bg-purple-700',
+            self::Sold       => 'bg-red-600 text-white dark:bg-red-700',
+            self::NotForSale => 'bg-gray-500 text-white dark:bg-gray-600',
         };
     }
 

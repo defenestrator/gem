@@ -99,6 +99,17 @@
                                         <span class="font-semibold">DOB:</span> {{ $animal->date_of_birth->format('M d, Y') }}
                                     </p>
                                 @endif
+                                @if ($animal->availability === \App\Enums\AnimalAvailability::ForSale && $animal->price)
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100">
+                                            ${{ number_format($animal->price, 2) }}
+                                        </p>
+                                        <a href="{{ route('animals.inquiries.create', $animal) }}"
+                                            class="bg-orange-500 hover:bg-orange-700 text-white text-xs font-semibold py-1 px-3 rounded-lg transition">
+                                            Inquire
+                                        </a>
+                                    </div>
+                                @endif
                                 @if ($animal->description)
                                     <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
                                         {{ Str::limit($animal->description, 80) }}

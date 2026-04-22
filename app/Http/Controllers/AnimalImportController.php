@@ -34,11 +34,14 @@ class AnimalImportController extends Controller
         }
 
         $userId  = auth()->id();
-        $status  = $request->boolean('publish') ? 'published' : 'draft';
         $synced  = 0;
 
         foreach ($data as $item) {
             if (empty($item['Animal_Id*'])) continue;
+
+            $status = (($item['Enabled'] ?? '') === 'Active' && ($item['Visibility'] ?? '') === 'Public')
+                ? 'published'
+                : 'draft';
 
             $animal = Animal::query()->updateOrCreate(
                 ['slug' => $item['Animal_Id*']],
@@ -52,6 +55,7 @@ class AnimalImportController extends Controller
                     'user_id'      => $userId,
                     'status'       => $status,
                     'availability' => AnimalAvailability::fromJsonState($item['State'] ?? ''),
+                    'price'        => isset($item['Price']) && $item['Price'] > 0 ? $item['Price'] : null,
                 ]
             );
 

@@ -52,9 +52,31 @@
                         @endif
                     </div>
 
-                    <h1 class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-6">
+                    <h1 class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">
                         {{ $animal->pet_name }}
                     </h1>
+
+                    @if ($animal->availability === \App\Enums\AnimalAvailability::ForSale)
+                        <div class="flex items-center gap-6 mb-6">
+                            @if ($animal->price)
+                                <span class="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                                    ${{ number_format($animal->price, 2) }}
+                                </span>
+                            @endif
+                            @if (session('inquiry_sent'))
+                                <span class="inline-flex items-center gap-2 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 px-4 py-2 rounded-lg font-semibold">
+                                    Inquiry sent — we'll be in touch!
+                                </span>
+                            @else
+                                <a href="{{ route('animals.inquiries.create', $animal) }}"
+                                    class="bg-orange-500 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded-lg transition">
+                                    Inquire
+                                </a>
+                            @endif
+                        </div>
+                    @else
+                        <div class="mb-6"></div>
+                    @endif
 
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                         @if ($animal->category)
