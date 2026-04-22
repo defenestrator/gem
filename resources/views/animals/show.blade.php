@@ -56,16 +56,16 @@
                     </h1>
 
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        @if ($animal->category)
+                            <div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 font-semibold">Category</p>
+                                <p class="text-gray-800 dark:text-gray-200">{{ $animal->category }}</p>
+                            </div>
+                        @endif
                         @if ($animal->date_of_birth)
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 font-semibold">Date of Birth</p>
                                 <p class="text-gray-800 dark:text-gray-200">{{ $animal->date_of_birth->format('M d, Y') }}</p>
-                            </div>
-                        @endif
-                        @if ($animal->user)
-                            <div>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 font-semibold">Owner</p>
-                                <p class="text-gray-800 dark:text-gray-200">{{ $animal->user->name }}</p>
                             </div>
                         @endif
                     </div>

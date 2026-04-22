@@ -61,24 +61,26 @@
                                         {{ $animal->female ? 'Female' : 'Male' }}
                                     </span>
                                 </div>
+                                @if ($animal->category)
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                                        <span class="font-semibold">Category:</span> {{ $animal->category }}
+                                    </p>
+                                @endif
                                 @if ($animal->slug)
                                     <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
                                         <span class="font-semibold">Unique ID:</span>
-                                        <a href="https://www.morphmarket.com/us/c/?q={{ urlencode($animal->slug) }}"
-                                            target="_blank"
-                                            class="text-orange-500 hover:underline">
+                                        @if ($animal->mm_url)
+                                            <a href="{{ $animal->mm_url }}" target="_blank" class="text-orange-500 hover:underline">
+                                                {{ $animal->slug }}
+                                            </a>
+                                        @else
                                             {{ $animal->slug }}
-                                        </a>
+                                        @endif
                                     </p>
                                 @endif
                                 @if ($animal->date_of_birth)
                                     <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
                                         <span class="font-semibold">DOB:</span> {{ $animal->date_of_birth->format('M d, Y') }}
-                                    </p>
-                                @endif
-                                @if ($animal->user)
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                                        <span class="font-semibold">Owner:</span> {{ $animal->user->name }}
                                     </p>
                                 @endif
                                 @if ($animal->description)

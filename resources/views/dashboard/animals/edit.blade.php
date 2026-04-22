@@ -26,6 +26,17 @@
                             @enderror
                         </div>
 
+                        <!-- Category -->
+                        <div class="mb-6">
+                            <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
+                            <input type="text" id="category" name="category" value="{{ old('category', $animal->category) }}"
+                                class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                                placeholder="e.g. Ball Pythons">
+                            @error('category')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- Sex -->
                         <div class="mb-6">
                             <label for="female" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sex</label>

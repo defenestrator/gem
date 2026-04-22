@@ -15,6 +15,7 @@ class UpdateAnimalRequest extends FormRequest
     {
         return [
             'pet_name'         => 'required|string|max:255',
+            'category'         => 'nullable|string|max:100',
             'description'      => 'nullable|string|max:5000',
             'date_of_birth'    => 'nullable|date',
             'female'           => 'nullable|boolean',

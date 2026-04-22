@@ -43,6 +43,8 @@ class AnimalImportController extends Controller
                     'description'   => $item['Desc'] ?? null,
                     'date_of_birth' => $this->parseDob($item['Dob'] ?? null),
                     'female'        => isset($item['Sex']) ? strtolower($item['Sex']) === 'female' : false,
+                    'mm_url'        => $item['Mm_Url**'] ?? null,
+                    'category'      => $item['Category*'] ?? null,
                     'user_id'       => $userId,
                     'status'        => $status,
                 ]
