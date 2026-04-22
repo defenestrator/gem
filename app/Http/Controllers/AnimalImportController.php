@@ -29,8 +29,9 @@ class AnimalImportController extends Controller
             return back()->withErrors(['animals_json' => 'Invalid JSON structure.']);
         }
 
-        $userId = auth()->id();
-        $synced = 0;
+        $userId  = auth()->id();
+        $status  = $request->boolean('publish') ? 'published' : 'draft';
+        $synced  = 0;
 
         foreach ($data as $item) {
             if (empty($item['Animal_Id*'])) continue;
@@ -43,6 +44,7 @@ class AnimalImportController extends Controller
                     'date_of_birth' => $this->parseDob($item['Dob'] ?? null),
                     'female'        => isset($item['Sex']) ? strtolower($item['Sex']) === 'female' : false,
                     'user_id'       => $userId,
+                    'status'        => $status,
                 ]
             );
 

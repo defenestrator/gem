@@ -65,6 +65,14 @@
                         <input type="file" id="animals_json" name="animals_json" accept="application/json" required
                             class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500">
                     </div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <input type="hidden" name="publish" value="0">
+                        <input type="checkbox" id="publish" name="publish" value="1"
+                            class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                        <label for="publish" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Publish imported
+                        </label>
+                    </div>
                     <button type="submit" class="bg-orange-500 text-white py-2 px-6 rounded-lg hover:bg-orange-700 font-semibold">
                         Upload & Sync
                     </button>
