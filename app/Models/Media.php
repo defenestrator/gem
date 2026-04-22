@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -45,7 +45,7 @@ class Media extends Model
      */
     public function scopeAnimals($query)
     {
-        return $this->ScopeByType($query, "App\Animal");
+        return $this->scopeType($query, "App\Animal");
     }
 
     /**
@@ -56,7 +56,7 @@ class Media extends Model
      */
     public function scopeSpecies($query)
     {
-        return $this->scopeByType($query, "App\Species");
+        return $this->scopeType($query, "App\Species");
     }
 
     /**
@@ -67,7 +67,7 @@ class Media extends Model
      */
     public function scopeFieldObservations($query)
     {
-        return $this->scopeByType($query, "App\FieldObservation");
+        return $this->scopeType($query, "App\FieldObservation");
     }
 
     /**
@@ -81,7 +81,7 @@ class Media extends Model
     {
         $exif = exif_read_data($file, 0, true);
 
-        $title = $file->originalName;
+        $title = $file->getClientOriginalName();
 
         $location = $this->yeetImageLocation($exif);
 
@@ -91,22 +91,19 @@ class Media extends Model
 
         $lat = $long = null;
 
-        $newImage = $this->processImage($file, $size);
+        $newImage = $this->processMedia($file, $size);
 
         if ($location != false && is_array($location)) {
-            $lat = $location->latitude;
-            $long = $location->longitude;
+            $lat = $location['latitude'];
+            $long = $location['longitude'];
         }
 
 
         $this->forceFill([
-            $this->url => $newImage,
-            $this->exif => $exif,
-            $this->latitude => $lat,
-            $this->longitude => $long,
-            $this->title => $title,
-            $this->license => $license,
-            $this->copyright => $copyright
+            'url'       => $newImage,
+            'title'     => $title,
+            'license'   => $license,
+            'copyright' => $copyright,
         ])->save();
 
         return $newImage;
@@ -152,10 +149,10 @@ class Media extends Model
         $fileName = $hash . '.webp';
         if (config('app.env') == 'production') {
             Storage::disk('s3')->getDriver()->put('/images/'. $fileName, $i->__toString(), $options);
-            $filePath = config('filesystems.disks.s3.url' . '/images/', 'https://gemx.sfo3.cdn.digitaloceanspaces.com/images/') . $fileName;
+            $filePath = config('filesystems.disks.s3.url', 'https://gemx.sfo3.cdn.digitaloceanspaces.com') . '/images/' . $fileName;
         } else {
             Storage::disk('local')->put('/images/'. $fileName, $i->__toString());
-            $filePath = Storage::disk(env('ASSET_URL', 'local'))->url('/images/'. $fileName);
+            $filePath = Storage::disk('public')->url('/images/' . $fileName);
         }
 
         return $filePath;
@@ -171,10 +168,10 @@ class Media extends Model
     protected function yeetImageLocation($exif = '')
     {
         if (isset($exif['GPS'])) {
-            $GPSLatitudeRef = [$exif['GPS']['GPSLatitudeRef']];
-            $GPSLatitude    = [$exif['GPS']['GPSLatitude']];
-            $GPSLongitudeRef= [$exif['GPS']['GPSLongitudeRef']];
-            $GPSLongitude   = [$exif['GPS']['GPSLongitude']];
+            $GPSLatitudeRef  = $exif['GPS']['GPSLatitudeRef'];
+            $GPSLatitude     = $exif['GPS']['GPSLatitude'];
+            $GPSLongitudeRef = $exif['GPS']['GPSLongitudeRef'];
+            $GPSLongitude    = $exif['GPS']['GPSLongitude'];
 
             $lat_degrees = count($GPSLatitude) > 0 ? $this->gps2Num($GPSLatitude[0]) : 0;
             $lat_minutes = count($GPSLatitude) > 1 ? $this->gps2Num($GPSLatitude[1]) : 0;

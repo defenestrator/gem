@@ -13,9 +13,9 @@
                 @if ($animal->media->isNotEmpty())
                     @php $photos = $animal->media; @endphp
                     <div x-data="{ active: '{{ $photos->first()->url }}' }">
-                        <div class="w-full bg-black" style="max-height:520px;">
+                        <div class="w-full aspect-square bg-black overflow-hidden">
                             <img :src="active" alt="{{ $animal->pet_name }}"
-                                class="w-full object-contain mx-auto" style="max-height:520px;">
+                                class="w-full h-full object-contain">
                         </div>
 
                         @if ($photos->count() > 1)

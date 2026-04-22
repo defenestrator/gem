@@ -28,10 +28,10 @@
                             @if ($thumb)
                                 <a href="{{ route('dashboard.animals.show', $animal) }}">
                                     <img src="{{ $thumb->url }}" alt="{{ $animal->pet_name }}"
-                                        class="w-full h-48 object-cover">
+                                        class="w-full aspect-square object-cover">
                                 </a>
                             @else
-                                <div class="w-full h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                <div class="w-full aspect-square bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                                     <span class="text-gray-400 text-sm">No photo</span>
                                 </div>
                             @endif
