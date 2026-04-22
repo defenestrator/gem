@@ -22,26 +22,26 @@ class AnimalPolicy
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->is_admin;
     }
 
     public function update(User $user, Animal $animal): bool
     {
-        return $user->id === $animal->user_id;
+        return $user->is_admin;
     }
 
     public function delete(User $user, Animal $animal): bool
     {
-        return $user->id === $animal->user_id;
+        return $user->is_admin;
     }
 
     public function restore(User $user, Animal $animal): bool
     {
-        return $user->id === $animal->user_id;
+        return $user->is_admin;
     }
 
     public function forceDelete(User $user, Animal $animal): bool
     {
-        return $user->id === $animal->user_id;
+        return $user->is_admin;
     }
 }

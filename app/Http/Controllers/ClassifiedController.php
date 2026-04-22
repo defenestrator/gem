@@ -15,7 +15,7 @@ class ClassifiedController extends Controller
         $search = $request->query('search', null);
 
         $query = Classified::where('status', 'published')
-            ->with('user');
+            ->with('user', 'media');
 
         if ($minPrice !== null) {
             $query->where('price', '>=', $minPrice);
@@ -52,6 +52,6 @@ class ClassifiedController extends Controller
     {
         $this->authorize('view', $classified);
 
-        return view('classifieds.show', ['classified' => $classified->load('user')]);
+        return view('classifieds.show', ['classified' => $classified->load('user', 'media')]);
     }
 }

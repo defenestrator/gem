@@ -20,14 +20,16 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
                 <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 mb-4">Quick Actions</h3>
                 <div class="flex flex-wrap gap-3">
-                    <a href="{{ route('dashboard.animals.index') }}"
-                        class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 text-sm font-semibold">
-                        My Animals
-                    </a>
-                    <a href="{{ route('dashboard.animals.create') }}"
-                        class="border border-orange-500 text-orange-600 dark:text-orange-400 py-2 px-4 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700 text-sm font-semibold">
-                        + Add Animal
-                    </a>
+                    @if($user->is_admin)
+                        <a href="{{ route('dashboard.animals.index') }}"
+                            class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 text-sm font-semibold">
+                            My Animals
+                        </a>
+                        <a href="{{ route('dashboard.animals.create') }}"
+                            class="border border-orange-500 text-orange-600 dark:text-orange-400 py-2 px-4 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700 text-sm font-semibold">
+                            + Add Animal
+                        </a>
+                    @endif
                     <a href="{{ route('dashboard.classifieds.index') }}"
                         class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 text-sm font-semibold">
                         My Classifieds
@@ -43,6 +45,7 @@
                 </div>
             </div>
 
+            @if($user->is_admin)
             {{-- Import MorphMarket JSON --}}
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
                 <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 mb-4">Import MorphMarket.com Data</h3>
@@ -79,6 +82,8 @@
                 </form>
             </div>
 
+            @endif
+
             {{-- Welcome --}}
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
@@ -98,16 +103,18 @@
 
             {{-- Stats --}}
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 flex flex-col gap-1">
-                    <span class="text-3xl font-bold text-orange-500">{{ $totalAnimals }}</span>
-                    <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Animals</span>
-                    <span class="text-xs text-gray-400 dark:text-gray-500">{{ $publishedAnimals }} published</span>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 flex flex-col gap-1">
-                    <span class="text-3xl font-bold text-green-500">{{ $publishedAnimals }}</span>
-                    <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Published Animals</span>
-                    <span class="text-xs text-gray-400 dark:text-gray-500">visible to all</span>
-                </div>
+                @if($user->is_admin)
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 flex flex-col gap-1">
+                        <span class="text-3xl font-bold text-orange-500">{{ $totalAnimals }}</span>
+                        <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Animals</span>
+                        <span class="text-xs text-gray-400 dark:text-gray-500">{{ $publishedAnimals }} published</span>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 flex flex-col gap-1">
+                        <span class="text-3xl font-bold text-green-500">{{ $publishedAnimals }}</span>
+                        <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Published Animals</span>
+                        <span class="text-xs text-gray-400 dark:text-gray-500">visible to all</span>
+                    </div>
+                @endif
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 flex flex-col gap-1">
                     <span class="text-3xl font-bold text-orange-500">{{ $totalClassifieds }}</span>
                     <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Classifieds</span>
@@ -120,11 +127,6 @@
                 </div>
             </div>
 
-            {{-- Media upload --}}
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 mb-4">Upload Media</h3>
-                <x-media-upload />
-            </div>
 
 
         </div>

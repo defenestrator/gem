@@ -22,7 +22,14 @@
             @if ($classifieds->count())
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach ($classifieds as $classified)
-                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                            @if ($classified->media->isNotEmpty())
+                                <a href="{{ route('dashboard.classifieds.show', $classified) }}">
+                                    <img src="{{ $classified->media->first()->url }}" alt="{{ $classified->title }}"
+                                        class="w-full aspect-square object-cover">
+                                </a>
+                            @endif
+                            <div class="p-4">
                             <div class="mb-3">
                                 <span class="inline-block px-3 py-1 text-sm rounded-full
                                     @if ($classified->status === 'published')
@@ -59,6 +66,7 @@
                                         Delete
                                     </button>
                                 </form>
+                            </div>
                             </div>
                         </div>
                     @endforeach

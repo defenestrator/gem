@@ -5,14 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreClassifiedRequest;
 use App\Http\Requests\UpdateClassifiedRequest;
 use App\Models\Classified;
-use Illuminate\Support\Facades\Storage;
 
 class DashboardClassifiedController extends Controller
 {
     public function index()
     {
         $classifieds = auth()->user()->classifieds()
-            ->with('user')
+            ->with('user', 'media')
             ->latest()
             ->paginate(12);
 
@@ -36,7 +35,10 @@ class DashboardClassifiedController extends Controller
 
         foreach ($request->file('images', []) as $file) {
             $path = $file->store('images', 'public');
-            $classified->media()->create(['url' => Storage::disk('public')->url($path)]);
+            $classified->media()->create([
+                'url'     => url("storage/{$path}"),
+                'user_id' => auth()->id(),
+            ]);
         }
 
         return redirect()->route('dashboard.classifieds.show', $classified)
@@ -69,7 +71,10 @@ class DashboardClassifiedController extends Controller
 
         foreach ($request->file('images', []) as $file) {
             $path = $file->store('images', 'public');
-            $classified->media()->create(['url' => Storage::disk('public')->url($path)]);
+            $classified->media()->create([
+                'url'     => url("storage/{$path}"),
+                'user_id' => auth()->id(),
+            ]);
         }
 
         return redirect()->route('dashboard.classifieds.show', $classified)

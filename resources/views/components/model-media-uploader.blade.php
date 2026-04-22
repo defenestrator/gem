@@ -13,6 +13,7 @@
                     this.files.push(file);
                 }
             });
+            this.$refs.fileInput.value = '';
             this.syncInput();
         },
         removeFile(index) {
@@ -44,7 +45,7 @@
         multiple
         accept="{{ $accept }}"
         class="hidden"
-        @change="addFiles($event.target.files); $event.target.value = ''"
+        @change="addFiles($event.target.files)"
     >
 
     {{-- Drop zone --}}

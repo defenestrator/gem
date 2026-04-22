@@ -4,38 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use App\Models\Traits\HasMedia;
-use App\Models\Traits\Sluggable;
 
 class Classified extends Model
 {
-    /** @use HasFactory<\Database\Factories\ClassifiedFactory> */
-    use HasFactory, HasMedia, Sluggable;
+    use HasFactory, HasMedia;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
+        'slug',
         'title',
         'description',
         'price',
         'status',
     ];
 
-    /**
-     * Return the sluggable configuration array for this model.
-     *
-     * @return array
-     */
-    public function sluggable(): array
+    protected static function boot(): void
     {
-        return [
-            'slug' => [
-                'source' => 'title'
-            ]
-        ];
+        parent::boot();
+
+        static::creating(function (Classified $classified) {
+            if (empty($classified->slug)) {
+                $classified->slug = (string) Str::ulid();
+            }
+        });
     }
 
     /**

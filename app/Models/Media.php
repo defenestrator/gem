@@ -155,7 +155,7 @@ class Media extends Model
             $filePath = config('filesystems.disks.s3.url' . '/images/', 'https://gemx.sfo3.cdn.digitaloceanspaces.com/images/') . $fileName;
         } else {
             Storage::disk('local')->put('/images/'. $fileName, $i->__toString());
-            $filePath = Storage::disk(env('ASSET_URL', 'local'))->url('images/'. $fileName);
+            $filePath = Storage::disk(env('ASSET_URL', 'local'))->url('/images/'. $fileName);
         }
 
         return $filePath;

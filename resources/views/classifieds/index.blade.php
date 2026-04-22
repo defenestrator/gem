@@ -57,7 +57,14 @@
             @if ($classifieds->count())
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach ($classifieds as $classified)
-                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition overflow-hidden">
+                            @if ($classified->media->isNotEmpty())
+                                <a href="{{ route('classifieds.show', $classified) }}">
+                                    <img src="{{ $classified->media->first()->url }}" alt="{{ $classified->title }}"
+                                        class="w-full aspect-square object-cover">
+                                </a>
+                            @endif
+                            <div class="p-4">
                             <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400 mb-2">
                                 <a href="{{ route('classifieds.show', $classified) }}" class="hover:underline">
                                     {{ $classified->title }}
@@ -77,6 +84,7 @@
                             <a href="{{ route('classifieds.show', $classified) }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 inline-block">
                                 View Details
                             </a>
+                            </div>
                         </div>
                     @endforeach
                 </div>

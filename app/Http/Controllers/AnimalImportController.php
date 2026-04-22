@@ -11,11 +11,14 @@ class AnimalImportController extends Controller
 {
     public function showForm()
     {
+        $this->authorize('create', Animal::class);
+
         return view('dashboard.import-animals');
     }
 
     public function upload(Request $request)
     {
+        $this->authorize('create', Animal::class);
         $request->validate([
             'animals_json' => 'required|file|mimes:json',
         ]);
