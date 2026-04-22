@@ -21,6 +21,9 @@
                     <x-nav-link :href="route('classifieds.index')" :active="request()->routeIs('classifieds.*')">
                         {{ __('Classifieds') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('sellers.index')" :active="request()->routeIs('sellers.*')">
+                        {{ __('Sellers') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -87,6 +90,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('classifieds.index')" :active="request()->routeIs('classifieds.*')">
                 {{ __('Classifieds') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('sellers.index')" :active="request()->routeIs('sellers.*')">
+                {{ __('Sellers') }}
             </x-responsive-nav-link>
         </div>
 

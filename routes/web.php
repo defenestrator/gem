@@ -4,8 +4,10 @@ use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\DashboardAnimalController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SellerProfileController;
 use App\Http\Controllers\ClassifiedController;
 use App\Http\Controllers\DashboardClassifiedController;
+use App\Http\Controllers\SellerController;
 use App\Http\Controllers\AnimalImportController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
@@ -194,6 +196,10 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Sellers Routes
+Route::get('/sellers', [SellerController::class, 'index'])->name('sellers.index');
+Route::get('/sellers/{seller:slug}', [SellerController::class, 'show'])->name('sellers.show');
+
 // Classifieds Routes
 Route::get('/classifieds', [ClassifiedController::class, 'index'])->name('classifieds.index');
 Route::get('/classifieds/{classified:slug}', [ClassifiedController::class, 'show'])->name('classifieds.show');
@@ -205,8 +211,11 @@ Route::get('/animals/{animal:slug}', [AnimalController::class, 'show'])->name('a
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/photo', [ProfileController::class, 'uploadPhoto'])->name('profile.photo.update');
+    Route::delete('/profile/photo', [ProfileController::class, 'destroyPhoto'])->name('profile.photo.destroy');
+    Route::patch('/profile/seller', [SellerProfileController::class, 'save'])->name('profile.seller.save');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // Dashboard CRUD
     Route::name('dashboard.')->group(function () {
         Route::resource('dashboard/classifieds', DashboardClassifiedController::class)->middleware('verified');

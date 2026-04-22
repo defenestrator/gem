@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasMedia;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, HasMedia, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'is_admin',
         'email_verified_at',
+        'profile_photo_path',
     ];
 
     /**
@@ -46,9 +49,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_admin' => 'boolean',
     ];
 
-    /**
-     * Get the classifieds posted by the user.
-     */
     public function classifieds()
     {
         return $this->hasMany(Classified::class);
@@ -57,5 +57,23 @@ class User extends Authenticatable implements MustVerifyEmail
     public function animals()
     {
         return $this->hasMany(Animal::class);
+    }
+
+    public function seller()
+    {
+        return $this->hasOne(Seller::class);
+    }
+
+    public function getProfilePhotoUrlAttribute(): string
+    {
+        if ($this->profile_photo_path) {
+            return Storage::disk('public')->url($this->profile_photo_path);
+        }
+        return '';
+    }
+
+    public function profileComplete(): bool
+    {
+        return (bool) ($this->profile_photo_path && $this->seller);
     }
 }

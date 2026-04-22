@@ -2,65 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreSellerRequest;
-use App\Http\Requests\UpdateSellerRequest;
+use App\Models\Classified;
 use App\Models\Seller;
+use Illuminate\Http\Request;
 
 class SellerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $search = $request->query('search');
+
+        $sellers = Seller::query()
+            ->with('user')
+            ->selectSub(
+                Classified::query()
+                    ->selectRaw('count(*)')
+                    ->whereColumn('classifieds.user_id', 'sellers.user_id')
+                    ->where('classifieds.status', 'published'),
+                'classifieds_count'
+            )
+            ->addSelect('sellers.*')
+            ->when($search, fn ($q) => $q
+                ->where('sellers.name', 'ilike', "%{$search}%")
+                ->orWhere('sellers.description', 'ilike', "%{$search}%"))
+            ->orderBy('sellers.name')
+            ->paginate(18)
+            ->withQueryString();
+
+        return view('sellers.index', compact('sellers', 'search'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreSellerRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Seller $seller)
     {
-        //
-    }
+        $seller->load('user');
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Seller $seller)
-    {
-        //
-    }
+        $classifieds = $seller->user
+            ? $seller->user->classifieds()
+                ->where('status', 'published')
+                ->with('media')
+                ->latest()
+                ->paginate(12)
+            : collect();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateSellerRequest $request, Seller $seller)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Seller $seller)
-    {
-        //
+        return view('sellers.show', compact('seller', 'classifieds'));
     }
 }
