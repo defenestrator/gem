@@ -14,7 +14,7 @@ class DashboardAnimalController extends Controller
         $animals = auth()->user()->animals()
             ->with('media')
             ->latest()
-            ->paginate(12);
+            ->paginate(24);
 
         return view('dashboard.animals.index', ['animals' => $animals]);
     }

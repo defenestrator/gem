@@ -29,7 +29,7 @@ class AnimalController extends Controller
         };
 
         return view('animals.index', [
-            'animals'     => $query->paginate(12),
+            'animals'     => $query->paginate(24),
             'currentSort' => $sort,
             'search'      => $search,
         ]);
