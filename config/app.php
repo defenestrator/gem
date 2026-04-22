@@ -21,6 +21,8 @@ return [
     // Set to true to re-enable public user registration
     'registration_enabled' => env('REGISTRATION_ENABLED', false),
 
+    'admin_password' => env('ADMIN_PASSWORD'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
