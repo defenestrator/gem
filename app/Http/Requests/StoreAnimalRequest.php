@@ -15,6 +15,7 @@ class StoreAnimalRequest extends FormRequest
     {
         return [
             'pet_name'         => 'required|string|max:255',
+            'slug'             => 'required|string|max:255|unique:animals,slug|alpha_dash',
             'description'      => 'nullable|string|max:5000',
             'date_of_birth'    => 'nullable|date',
             'female'           => 'nullable|boolean',

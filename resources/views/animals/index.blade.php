@@ -61,6 +61,16 @@
                                         {{ $animal->female ? 'Female' : 'Male' }}
                                     </span>
                                 </div>
+                                @if ($animal->slug)
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                                        <span class="font-semibold">Unique ID:</span>
+                                        <a href="https://www.morphmarket.com/us/c/?q={{ urlencode($animal->slug) }}"
+                                            target="_blank"
+                                            class="text-orange-500 hover:underline">
+                                            {{ $animal->slug }}
+                                        </a>
+                                    </p>
+                                @endif
                                 @if ($animal->date_of_birth)
                                     <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
                                         <span class="font-semibold">DOB:</span> {{ $animal->date_of_birth->format('M d, Y') }}
