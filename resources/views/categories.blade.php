@@ -17,7 +17,7 @@
                 <div class="p-6 flex flex-col flex-1">
                     <h2 class="text-xl font-medium text-white">Corn Snakes</h2>
                     <p class="mt-2 text-white">
-                        A colubrid native to the eastern US and one of the most beginner-friendly reptiles in the hobby. Centuries of captive breeding have produced hundreds of stunning color morphs.
+                        A colubrid native to the eastern US and one of the most beginner-friendly reptiles in the hobby. Decades of captive breeding have produced hundreds of stunning color morphs.
                     </p>
                     <div class="mt-auto pt-4">
                         <a href="{{ route('categories.corn-snakes') }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 w-full inline-block text-center">
