@@ -2,80 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreMediaRequest;
-use App\Http\Requests\UpdateMediaRequest;
 use App\Models\Media;
+use Illuminate\Support\Facades\Storage;
 
 class MediaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreMediaRequest $request, Media $media)
-    {
-        if ($request->hasFile('media') && $request->file('media')->isValid() ) {
-
-            $model = [
-                'mediable_type' => $request->imageable_type,
-                'mediable_id' => $request->imageable_id
-            ];
-
-            $file = $media->uploadImage($request->file('media'), $model);
-
-            return $media->create($file);
-        }
-
-        return response('Error', 422, [
-            'error' => 'The file you uploaded is an unsupported file type or corrupted.'
-        ]);
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show($id, Media $media)
-    {
-        return $media->whereId($id)->first();
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Media $media)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateMediaRequest $request, Media $media)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Media $media)
     {
-        //
+        $mediable = $media->mediable;
+
+        if (!$mediable || $mediable->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        // Derive storage-relative path from the stored public URL
+        $relativePath = ltrim(
+            str_replace(Storage::disk('public')->url(''), '', $media->url),
+            '/'
+        );
+
+        if ($relativePath && Storage::disk('public')->exists($relativePath)) {
+            Storage::disk('public')->delete($relativePath);
+        }
+
+        $media->delete();
+
+        return back()->with('success', 'Image deleted.');
     }
 }

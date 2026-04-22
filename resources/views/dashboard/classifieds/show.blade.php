@@ -29,6 +29,30 @@
                     </span>
                 </div>
 
+                <!-- Photo Gallery -->
+                @if ($classified->media->isNotEmpty())
+                    @php $photos = $classified->media; @endphp
+                    <div class="mb-6" x-data="{ active: '{{ $photos->first()->url }}' }">
+                        <div class="w-full bg-black rounded-lg overflow-hidden" style="max-height:480px;">
+                            <img :src="active" alt="{{ $classified->title }}"
+                                class="w-full object-contain mx-auto" style="max-height:480px;">
+                        </div>
+                        @if ($photos->count() > 1)
+                            <div class="flex gap-2 mt-2 overflow-x-auto">
+                                @foreach ($photos as $photo)
+                                    <button type="button"
+                                        @click="active = '{{ $photo->url }}'"
+                                        :class="active === '{{ $photo->url }}' ? 'ring-2 ring-orange-500' : 'opacity-70 hover:opacity-100'"
+                                        class="flex-shrink-0 rounded overflow-hidden transition">
+                                        <img src="{{ $photo->url }}" alt="{{ $classified->title }}"
+                                            class="h-16 w-16 object-cover">
+                                    </button>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                @endif
+
                 <!-- Title and Price -->
                 <div class="mb-6">
                     <h1 class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">

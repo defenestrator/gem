@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Traits\HasMedia;
 use App\Models\Traits\Sluggable;
 
 class Classified extends Model
 {
     /** @use HasFactory<\Database\Factories\ClassifiedFactory> */
-    use HasFactory, Sluggable;
+    use HasFactory, HasMedia, Sluggable;
 
     /**
      * The attributes that are mass assignable.

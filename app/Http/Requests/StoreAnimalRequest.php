@@ -22,6 +22,8 @@ class StoreAnimalRequest extends FormRequest
             'acquisition_date' => 'nullable|date',
             'acquisition_cost' => 'nullable|integer|min:0',
             'status'           => 'in:draft,published',
+            'images'           => 'nullable|array',
+            'images.*'         => 'image|mimes:jpeg,jpg,png,gif,webp|max:10240',
         ];
     }
 }

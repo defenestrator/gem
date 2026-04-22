@@ -9,7 +9,7 @@
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form method="POST" action="{{ route('dashboard.classifieds.update', $classified) }}">
+                    <form method="POST" action="{{ route('dashboard.classifieds.update', $classified) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PATCH')
 
@@ -87,6 +87,38 @@
                             @error('status')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
+                        </div>
+
+                        <!-- Photos -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Photos</label>
+
+                            @if ($classified->media->isNotEmpty())
+                                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 mb-4">
+                                    @foreach ($classified->media as $photo)
+                                        <div class="relative group aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 shadow-sm">
+                                            <img src="{{ $photo->url }}" alt="{{ $classified->title }}" class="w-full h-full object-cover">
+                                            <div class="absolute inset-0 flex items-start justify-end p-1.5 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-lg">
+                                                <form action="{{ route('dashboard.media.destroy', $photo) }}" method="POST"
+                                                    onsubmit="return confirm('Delete this image?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-white hover:text-red-300 focus:outline-none" title="Delete">
+                                                        <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <path d="M3 6l3 18h12l3-18h-18zm19-4v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.316c0 .901.73 2 1.631 2h5.711z"/>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            @error('images.*')
+                                <p class="text-red-500 text-sm mb-2">{{ $message }}</p>
+                            @enderror
+                            <x-model-media-uploader name="images" />
                         </div>
 
                         <!-- Buttons -->

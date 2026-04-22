@@ -11,11 +11,12 @@
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             @if(isset($categories['Corn Snakes']))
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
+                <a href="{{ route('categories.corn-snakes') }}">
                 <img
                     src="/Corns.jpeg"
                     alt="Corn Snakes"
                     class="w-full h-48 object-cover rounded-t-lg mx-auto"
-                />
+                /></a>
                 <h2 class="mt-4 text-xl font-medium text-white">Corn Snakes</h2>
                 <p class="mt-2 text-white p-2">
                     Description of corn snake species. This species is known for its vibrant colors and friendly nature.
@@ -29,11 +30,12 @@
             @endif
             @if(isset($categories['Carpet Pythons']) && $categories['Carpet Pythons'] > 0)
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
+                <a href="{{ route('categories.carpet-pythons') }}">
                 <img
                     src="/Carpets.jpeg"
                     alt="Carpet Pythons"
                     class="w-full h-48 object-cover rounded-t-lg mx-auto"
-                />
+                /></a>
                 <h2 class="mt-4 text-xl font-medium text-white">Carpet Pythons</h2>
                 <p class="mt-2 text-white p-2">
                     Description of carpet python species. This species is known for its unique patterns and calm demeanor.
@@ -47,11 +49,12 @@
             @endif
             @if(isset($categories['Ball Pythons']) && $categories['Ball Pythons'] > 0)
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
+                <a href="{{ route('categories.ball-pythons') }}">
                 <img
                     src="/Balls.jpeg"
                     alt="Ball Pythons"
                     class="w-full h-48 object-cover rounded-t-lg mx-auto"
-                />
+                /></a>
                 <h2 class="mt-4 text-xl font-medium text-white">Ball Pythons</h2>
                 <p class="mt-2 text-white p-2">
                     Description of ball python species. This species is known for its docile nature and variety of morphs.
@@ -65,11 +68,12 @@
             @endif
             @if(isset($categories['Reticulated Pythons']) && $categories['Reticulated Pythons'] > 0)
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
+                <a href="{{ route('categories.reticulated-pythons') }}">
                 <img
                     src="/Retics.jpeg"
                     alt="Reticulated Pythons"
                     class="w-full h-48 object-cover rounded-t-lg mx-auto"
-                />
+                /></a>
                 <h2 class="mt-4 text-xl font-medium text-white">Reticulated Pythons</h2>
                 <p class="mt-2 text-white p-2">
                     Description of reticulated python species. This species is known for its impressive size and striking patterns.
@@ -83,11 +87,12 @@
             @endif
             @if(isset($categories['Western Hognose']))
             <div class="bg-gray-700 p-6 rounded-lg shadow-md flex flex-col text-white">
+                <a href="{{ route('categories.western-hognose') }}">
                 <img
                     src="/Hognose.jpeg"
                     alt="Western Hognose"
                     class="w-full h-48 object-cover rounded-t-lg mx-auto"
-                />
+                /></a>
                 <h2 class="mt-4 text-xl font-medium text-white">Western Hognose</h2>
                 <p class="mt-2 text-white p-2">
                     Western Hognose Description

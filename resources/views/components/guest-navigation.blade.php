@@ -14,14 +14,8 @@
                     <x-nav-link :href="route('welcome')" :active="request()->routeIs('welcome')">
                         {{ __('Home') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('categories')" :active="request()->routeIs('categories')">
+                    <x-nav-link :href="route('categories')" :active="request()->routeIs('categories') || request()->routeIs('categories.*')">
                         {{ __('Categories') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('animals.index')" :active="request()->routeIs('animals.*')">
-                        {{ __('Animals') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('classifieds.index')" :active="request()->routeIs('classifieds.*')">
-                        {{ __('Classifieds') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -71,14 +65,8 @@
             <x-responsive-nav-link :href="route('welcome')" :active="request()->routeIs('welcome')">
                 {{ __('Home') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('categories')" :active="request()->routeIs('categories')">
+            <x-responsive-nav-link :href="route('categories')" :active="request()->routeIs('categories') || request()->routeIs('categories.*')">
                 {{ __('Categories') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('animals.index')" :active="request()->routeIs('animals.*')">
-                {{ __('Animals') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('classifieds.index')" :active="request()->routeIs('classifieds.*')">
-                {{ __('Classifieds') }}
             </x-responsive-nav-link>
             @auth
                 <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">

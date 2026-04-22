@@ -6,6 +6,7 @@ use App\Http\Requests\StoreClassifiedRequest;
 use App\Http\Requests\UpdateClassifiedRequest;
 use App\Models\Animal;
 use App\Models\Classified;
+use Illuminate\Support\Facades\Storage;
 
 class DashboardClassifiedController extends Controller
 {
@@ -31,7 +32,14 @@ class DashboardClassifiedController extends Controller
     {
         $this->authorize('create', Classified::class);
 
-        $classified = auth()->user()->classifieds()->create($request->validated());
+        $classified = auth()->user()->classifieds()->create(
+            $request->safe()->except(['images'])
+        );
+
+        foreach ($request->file('images', []) as $file) {
+            $path = $file->store('images', 'public');
+            $classified->media()->create(['url' => Storage::disk('public')->url($path)]);
+        }
 
         return redirect()->route('dashboard.classifieds.show', $classified)
             ->with('success', 'Classified ad created successfully.');
@@ -41,7 +49,9 @@ class DashboardClassifiedController extends Controller
     {
         $this->authorize('view', $classified);
 
-        return view('dashboard.classifieds.show', ['classified' => $classified->load('animal', 'user')]);
+        return view('dashboard.classifieds.show', [
+            'classified' => $classified->load('animal', 'user', 'media'),
+        ]);
     }
 
     public function edit(Classified $classified)
@@ -50,8 +60,8 @@ class DashboardClassifiedController extends Controller
         $animals = Animal::all();
 
         return view('dashboard.classifieds.edit', [
-            'classified' => $classified,
-            'animals' => $animals,
+            'classified' => $classified->load('media'),
+            'animals'    => $animals,
         ]);
     }
 
@@ -59,7 +69,12 @@ class DashboardClassifiedController extends Controller
     {
         $this->authorize('update', $classified);
 
-        $classified->update($request->validated());
+        $classified->update($request->safe()->except(['images']));
+
+        foreach ($request->file('images', []) as $file) {
+            $path = $file->store('images', 'public');
+            $classified->media()->create(['url' => Storage::disk('public')->url($path)]);
+        }
 
         return redirect()->route('dashboard.classifieds.show', $classified)
             ->with('success', 'Classified ad updated successfully.');

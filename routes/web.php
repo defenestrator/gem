@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\DashboardAnimalController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClassifiedController;
 use App\Http\Controllers\DashboardClassifiedController;
@@ -210,6 +211,7 @@ Route::middleware('auth')->group(function () {
     Route::name('dashboard.')->group(function () {
         Route::resource('dashboard/classifieds', DashboardClassifiedController::class)->middleware('verified');
         Route::resource('dashboard/animals', DashboardAnimalController::class)->middleware('verified');
+        Route::delete('dashboard/media/{media}', [MediaController::class, 'destroy'])->name('dashboard.media.destroy')->middleware('verified');
     });
 });
 
