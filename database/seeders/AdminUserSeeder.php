@@ -12,9 +12,11 @@ class AdminUserSeeder extends Seeder
         User::query()->updateOrCreate(
             ['email' => 'jeremyblc@gmail.com'],
             [
-                'name'      => 'Jeremy',
-                'password'  => config('app.admin_password'),
-                'is_admin'  => true,
+                'name'               => 'Jeremy',
+                'email'              => 'jeremyblc@gmail.com',   
+                'password'           => config('app.admin_password'),
+                'is_admin'           => true,
+                'email_verified_at'  => now(),
             ]
         );
     }

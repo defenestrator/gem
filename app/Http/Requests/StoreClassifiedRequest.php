@@ -25,7 +25,6 @@ class StoreClassifiedRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:5000',
             'price' => 'required|numeric|min:0',
-            'animal_id' => 'required|exists:animals,id',
             'status'   => 'in:draft,published,sold',
             'images'   => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,jpg,png,gif,webp|max:10240',

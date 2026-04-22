@@ -42,11 +42,6 @@
                             <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
                                 {{ Str::limit($classified->description, 100) }}
                             </p>
-                            @if ($classified->animal)
-                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                                    <span class="font-semibold">Animal:</span> {{ $classified->animal->pet_name ?? 'N/A' }}
-                                </p>
-                            @endif
                             <p class="text-lg font-bold text-green-600 dark:text-green-400 mb-4">
                                 ${{ number_format($classified->price, 2) }}
                             </p>

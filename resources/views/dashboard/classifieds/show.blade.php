@@ -63,25 +63,6 @@
                     </p>
                 </div>
 
-                <!-- Animal Info -->
-                @if ($classified->animal)
-                    <div class="mb-6 border-b border-gray-300 dark:border-gray-600 pb-6">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">
-                            Animal Information
-                        </h3>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 font-semibold">Name</p>
-                                <p class="text-gray-800 dark:text-gray-200">{{ $classified->animal->pet_name ?? 'N/A' }}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 font-semibold">Species</p>
-                                <p class="text-gray-800 dark:text-gray-200">{{ $classified->animal->species_id ?? 'N/A' }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
                 <!-- Description -->
                 <div class="mb-6">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">Description</h3>

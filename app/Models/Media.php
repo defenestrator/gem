@@ -15,7 +15,7 @@ class Media extends Model
     use HasFactory;
 
     protected $fillable = [
-        'url', 'license', 'copyright', 'author', 'title'
+        'url', 'user_id', 'license', 'copyright', 'author', 'title'
     ];
 
     public function mediable()

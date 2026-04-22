@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreClassifiedRequest;
 use App\Http\Requests\UpdateClassifiedRequest;
-use App\Models\Animal;
 use App\Models\Classified;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,7 +12,7 @@ class DashboardClassifiedController extends Controller
     public function index()
     {
         $classifieds = auth()->user()->classifieds()
-            ->with('animal', 'user')
+            ->with('user')
             ->latest()
             ->paginate(12);
 
@@ -23,9 +22,8 @@ class DashboardClassifiedController extends Controller
     public function create()
     {
         $this->authorize('create', Classified::class);
-        $animals = Animal::all();
 
-        return view('dashboard.classifieds.create', ['animals' => $animals]);
+        return view('dashboard.classifieds.create');
     }
 
     public function store(StoreClassifiedRequest $request)
@@ -50,18 +48,16 @@ class DashboardClassifiedController extends Controller
         $this->authorize('view', $classified);
 
         return view('dashboard.classifieds.show', [
-            'classified' => $classified->load('animal', 'user', 'media'),
+            'classified' => $classified->load('user', 'media'),
         ]);
     }
 
     public function edit(Classified $classified)
     {
         $this->authorize('update', $classified);
-        $animals = Animal::all();
 
         return view('dashboard.classifieds.edit', [
             'classified' => $classified->load('media'),
-            'animals'    => $animals,
         ]);
     }
 

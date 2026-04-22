@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Animal;
@@ -32,21 +33,47 @@ class AnimalImportController extends Controller
         $synced = 0;
 
         foreach ($data as $item) {
-            if (empty($item['Animal_Id'])) continue;
+            if (empty($item['Animal_Id*'])) continue;
 
-            Animal::query()->updateOrCreate(
-                ['slug' => $item['Animal_Id']],
+            $animal = Animal::query()->updateOrCreate(
+                ['slug' => $item['Animal_Id*']],
                 [
-                    'pet_name'         => $item['Name'] ?? 'Unknown',
-                    'description'      => $item['Description'] ?? null,
-                    'date_of_birth'    => $item['DOB'] ?? null,
-                    'female'           => isset($item['Sex']) ? strtolower($item['Sex']) === 'female' : false,
-                    'user_id'          => $userId,
+                    'pet_name'      => $item['Title*'] ?? 'Unknown',
+                    'description'   => $item['Desc'] ?? null,
+                    'date_of_birth' => $this->parseDob($item['Dob'] ?? null),
+                    'female'        => isset($item['Sex']) ? strtolower($item['Sex']) === 'female' : false,
+                    'user_id'       => $userId,
                 ]
             );
+
+            $urls = array_filter(explode(' ', $item['Photo_Urls'] ?? ''));
+            if (!empty($urls)) {
+                $animal->media()->delete();
+                foreach ($urls as $url) {
+                    $animal->media()->create(['url' => $url, 'user_id' => $userId]);
+                }
+            }
+
             $synced++;
         }
 
         return redirect()->route('dashboard')->with('import_success', "Synced {$synced} animals successfully.");
+    }
+
+    private function parseDob(?string $dob): ?string
+    {
+        if (empty($dob)) return null;
+
+        $formats = ['n/j/Y', 'n/Y', 'Y'];
+
+        foreach ($formats as $format) {
+            try {
+                return Carbon::createFromFormat($format, $dob)->toDateString();
+            } catch (\Exception) {
+                continue;
+            }
+        }
+
+        return null;
     }
 }

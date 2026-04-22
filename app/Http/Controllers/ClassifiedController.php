@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Animal;
 use App\Models\Classified;
 use Illuminate\Http\Request;
 
@@ -11,19 +10,12 @@ class ClassifiedController extends Controller
     public function index(Request $request)
     {
         $sort = $request->query('sort', 'recent');
-        $categoryFilter = $request->query('category', null);
         $minPrice = $request->query('min_price', null);
         $maxPrice = $request->query('max_price', null);
         $search = $request->query('search', null);
 
         $query = Classified::where('status', 'published')
-            ->with('animal', 'user');
-
-        if ($categoryFilter) {
-            $query->whereHas('animal', function ($q) use ($categoryFilter) {
-                $q->where('id', $categoryFilter);
-            });
-        }
+            ->with('user');
 
         if ($minPrice !== null) {
             $query->where('price', '>=', $minPrice);
@@ -46,16 +38,13 @@ class ClassifiedController extends Controller
         };
 
         $classifieds = $query->paginate(12);
-        $animals = Animal::all();
 
         return view('classifieds.index', [
             'classifieds' => $classifieds,
             'currentSort' => $sort,
-            'animals' => $animals,
-            'categoryFilter' => $categoryFilter,
-            'minPrice' => $minPrice,
-            'maxPrice' => $maxPrice,
-            'search' => $search,
+            'minPrice'    => $minPrice,
+            'maxPrice'    => $maxPrice,
+            'search'      => $search,
         ]);
     }
 
@@ -63,6 +52,6 @@ class ClassifiedController extends Controller
     {
         $this->authorize('view', $classified);
 
-        return view('classifieds.show', ['classified' => $classified->load('animal', 'user')]);
+        return view('classifieds.show', ['classified' => $classified->load('user')]);
     }
 }

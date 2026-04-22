@@ -38,26 +38,6 @@
                             @enderror
                         </div>
 
-                        <!-- Animal Selection -->
-                        <div class="mb-6">
-                            <label for="animal_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Animal <span class="text-red-500">*</span>
-                            </label>
-                            <select id="animal_id" name="animal_id"
-                                class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                                required>
-                                <option value="">-- Select an Animal --</option>
-                                @foreach ($animals as $animal)
-                                    <option value="{{ $animal->id }}" {{ old('animal_id') == $animal->id ? 'selected' : '' }}>
-                                        {{ $animal->pet_name ?? 'Unknown' }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('animal_id')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
                         <!-- Price -->
                         <div class="mb-6">
                             <label for="price" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

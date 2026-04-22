@@ -53,7 +53,7 @@ $getAnimals = function() {
 
 Route::get('/', function (Request $request) use ($getAnimals) {
     $sort = $request->query('sort', 'recent');
-    $file = base_path('resources/js/animals.json');
+    $file = storage_path('app/public/animals.json');
     $mtime = filemtime($file);
     $responseKey = 'welcome_' . $sort . '_' . $mtime;
     $response = Cache::remember($responseKey, 30*60, function() use ($getAnimals, $sort) {
@@ -211,7 +211,7 @@ Route::middleware('auth')->group(function () {
     Route::name('dashboard.')->group(function () {
         Route::resource('dashboard/classifieds', DashboardClassifiedController::class)->middleware('verified');
         Route::resource('dashboard/animals', DashboardAnimalController::class)->middleware('verified');
-        Route::delete('dashboard/media/{media}', [MediaController::class, 'destroy'])->name('dashboard.media.destroy')->middleware('verified');
+        Route::delete('dashboard/media/{media}', [MediaController::class, 'destroy'])->name('media.destroy')->middleware('verified');
     });
 });
 

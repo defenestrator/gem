@@ -22,7 +22,6 @@ class Classified extends Model
         'description',
         'price',
         'status',
-        'animal_id',
     ];
 
     /**
@@ -47,11 +46,4 @@ class Classified extends Model
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the animal associated with the classified.
-     */
-    public function animal()
-    {
-        return $this->belongsTo(Animal::class);
-    }
 }

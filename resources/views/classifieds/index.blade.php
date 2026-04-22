@@ -17,18 +17,6 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Animal</label>
-                        <select name="category" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg">
-                            <option value="">All Animals</option>
-                            @foreach ($animals as $animal)
-                                <option value="{{ $animal->id }}" {{ $categoryFilter == $animal->id ? 'selected' : '' }}>
-                                    {{ $animal->pet_name ?? 'Unknown' }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Min Price</label>
                         <input type="number" name="min_price" value="{{ $minPrice }}" placeholder="Min" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg">
                     </div>
@@ -78,11 +66,6 @@
                             <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
                                 {{ Str::limit($classified->description, 100) }}
                             </p>
-                            @if ($classified->animal)
-                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                                    <span class="font-semibold">Animal:</span> {{ $classified->animal->pet_name ?? 'N/A' }}
-                                </p>
-                            @endif
                             @if ($classified->user)
                                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
                                     <span class="font-semibold">Seller:</span> {{ $classified->user->name }}
