@@ -35,17 +35,18 @@
                 @endif
 
                 <div class="p-6">
-                    {{-- Status & Sex badges --}}
-                    <div class="mb-4 flex gap-3 flex-wrap">
-                        <span class="inline-block px-3 py-1 text-sm rounded-full
-                            {{ $animal->status === 'published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }}">
-                            {{ ucfirst($animal->status) }}
-                        </span>
-                        <span class="inline-block px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-800">
+                    {{-- Availability + Sex badges --}}
+                    <div class="mb-4 flex gap-2 flex-wrap">
+                        @if ($animal->availability)
+                            <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full {{ $animal->availability->badgeClasses() }}">
+                                {{ $animal->availability->label() }}
+                            </span>
+                        @endif
+                        <span class="inline-block px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
                             {{ $animal->female ? 'Female' : 'Male' }}
                         </span>
                         @if ($animal->proven_breeder)
-                            <span class="inline-block px-3 py-1 text-sm rounded-full bg-purple-100 text-purple-800">
+                            <span class="inline-block px-3 py-1 text-sm rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
                                 Proven Breeder
                             </span>
                         @endif

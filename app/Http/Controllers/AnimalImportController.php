@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AnimalAvailability;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -42,14 +43,15 @@ class AnimalImportController extends Controller
             $animal = Animal::query()->updateOrCreate(
                 ['slug' => $item['Animal_Id*']],
                 [
-                    'pet_name'      => $item['Title*'] ?? 'Unknown',
-                    'description'   => $item['Desc'] ?? null,
-                    'date_of_birth' => $this->parseDob($item['Dob'] ?? null),
-                    'female'        => isset($item['Sex']) ? strtolower($item['Sex']) === 'female' : false,
-                    'mm_url'        => $item['Mm_Url**'] ?? null,
-                    'category'      => $item['Category*'] ?? null,
-                    'user_id'       => $userId,
-                    'status'        => $status,
+                    'pet_name'     => $item['Title*'] ?? 'Unknown',
+                    'description'  => $item['Desc'] ?? null,
+                    'date_of_birth'=> $this->parseDob($item['Dob'] ?? null),
+                    'female'       => isset($item['Sex']) ? strtolower($item['Sex']) === 'female' : false,
+                    'mm_url'       => $item['Mm_Url**'] ?? null,
+                    'category'     => $item['Category*'] ?? null,
+                    'user_id'      => $userId,
+                    'status'       => $status,
+                    'availability' => AnimalAvailability::fromJsonState($item['State'] ?? ''),
                 ]
             );
 

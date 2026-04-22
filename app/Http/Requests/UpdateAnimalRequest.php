@@ -23,6 +23,7 @@ class UpdateAnimalRequest extends FormRequest
             'acquisition_date' => 'nullable|date',
             'acquisition_cost' => 'nullable|integer|min:0',
             'status'           => 'in:draft,published',
+            'availability'     => 'nullable|in:for_sale,breeder,sold,not_for_sale',
             'images'           => 'nullable|array',
             'images.*'         => 'image|mimes:jpeg,jpg,png,gif,webp|max:10240',
         ];

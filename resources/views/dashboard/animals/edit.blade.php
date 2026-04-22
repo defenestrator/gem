@@ -100,6 +100,23 @@
                             <label for="proven_breeder" class="text-sm font-medium text-gray-700 dark:text-gray-300">Proven Breeder</label>
                         </div>
 
+                        <!-- Availability -->
+                        <div class="mb-6">
+                            @php $currentAvailability = old('availability', $animal->availability?->value ?? ''); @endphp
+                            <label for="availability" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Availability</label>
+                            <select id="availability" name="availability"
+                                class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                                <option value="" {{ $currentAvailability === '' ? 'selected' : '' }}>— Not set —</option>
+                                <option value="for_sale" {{ $currentAvailability === 'for_sale' ? 'selected' : '' }}>For Sale</option>
+                                <option value="breeder" {{ $currentAvailability === 'breeder' ? 'selected' : '' }}>Breeder</option>
+                                <option value="sold" {{ $currentAvailability === 'sold' ? 'selected' : '' }}>Sold</option>
+                                <option value="not_for_sale" {{ $currentAvailability === 'not_for_sale' ? 'selected' : '' }}>Not For Sale</option>
+                            </select>
+                            @error('availability')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- Status -->
                         <div class="mb-6">
                             <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Visibility</label>

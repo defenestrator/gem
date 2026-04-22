@@ -37,11 +37,18 @@
                             @endif
 
                             <div class="p-4">
-                                <div class="mb-3 flex items-center justify-between">
-                                    <span class="inline-block px-3 py-1 text-sm rounded-full
-                                        {{ $animal->status === 'published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }}">
-                                        {{ ucfirst($animal->status) }}
-                                    </span>
+                                <div class="mb-3 flex items-center justify-between flex-wrap gap-1">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        @if ($animal->availability)
+                                            <span class="inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full {{ $animal->availability->badgeClasses() }}">
+                                                {{ $animal->availability->label() }}
+                                            </span>
+                                        @endif
+                                        <span class="inline-block px-2.5 py-0.5 text-xs rounded-full
+                                            {{ $animal->status === 'published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }}">
+                                            {{ ucfirst($animal->status) }}
+                                        </span>
+                                    </div>
                                     <span class="text-sm text-gray-500 dark:text-gray-400">
                                         {{ $animal->female ? 'Female' : 'Male' }}
                                     </span>

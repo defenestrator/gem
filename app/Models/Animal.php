@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AnimalAvailability;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Traits\Sluggable;
@@ -23,14 +24,16 @@ class Animal extends Model
         'acquisition_date',
         'acquisition_cost',
         'status',
+        'availability',
         'user_id',
     ];
 
     protected $casts = [
-        'date_of_birth' => 'date',
+        'date_of_birth'    => 'date',
         'acquisition_date' => 'date',
-        'female' => 'boolean',
-        'proven_breeder' => 'boolean',
+        'female'           => 'boolean',
+        'proven_breeder'   => 'boolean',
+        'availability'     => AnimalAvailability::class,
     ];
 
     public function sluggable(): array
