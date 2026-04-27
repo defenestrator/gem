@@ -52,7 +52,7 @@
                                 <img src="{{ $firstPhoto }}" alt="{{ $animal['Title*'] }}" class="w-full aspect-square object-cover">
                             @endif
                             <div class="p-4 flex flex-col flex-1">
-                            <h3 class="text-lg font-semibold text-orange-400 mb-2">{{ $animal['Title*'] }}</h3>
+                            <h3 class="text-lg font-semibold font-serif text-orange-400 mb-2">{{ $animal['Title*'] }}</h3>
                             <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Category:</span> {{ $animal['Category*'] }}</p>
                             <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Traits:</span> {{ $animal['Traits'] }}</p>
                             <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Maturity:</span> {{ $animal['Maturity'] }}</p>
@@ -66,12 +66,12 @@
                             @endif
                             <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Shipping:</span> ${{ $animal['Min_Shipping'] }} - ${{ $animal['Max_Shipping'] }}</p>
                             @if($animal['Is_Negotiable'] === 'Will Consider')
-                                <p class="text-sm text-green-400 mb-1"><span class="font-serif font-bold">Negotiable:</span> Yes</p>
+                                <p class="text-sm mb-1"><span class="font-serif font-bold">Negotiable:</span> Yes</p>
                             @endif
                             @if($animal['Is_For_Trade'] === 'Will Consider')
-                                <p class="text-sm text-blue-400 mb-1"><span class="font-serif font-bold">Trades:</span> Considered</p>
+                                <p class="text-sm mb-1"><span class="font-serif font-bold">Trades:</span> Considered</p>
                             @endif
-                            <p class="text-lg font-bold text-green-400 mb-4 mt-auto">${{ $animal['Price'] }}</p>
+                            <p class="text-lg font-serif font-black text-green-200 mb-4 mt-auto">${{ $animal['Price'] }}</p>
                             <div class="flex gap-2">
                                 <a href="{{ $animal['Mm_Url**'] }}" target="_blank" class="flex-1 bg-orange-500 text-white py-2 px-2 rounded-lg hover:bg-orange-700 text-sm text-center font-semibold">
                                     MorphMarket
