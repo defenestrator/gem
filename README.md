@@ -1,90 +1,90 @@
 ## About gemreptiles.com v3
 
-We are a boutique hobbyist reptile breeding operation owned and operated by the love of my life, Becky and myself. I do all the web/business development, some of the husbandry and all of the marketing. Becky does most of the husbandry, even though I have the most experience with reptiles, we have more than 60 years of combined experience keeping and breeding exotics.  
+We are a boutique hobbyist reptile breeding operation owned and operated by the love of my life, Becky and myself. I do all the web/business development, some of the husbandry and all of the marketing. Becky does most of the husbandry, even though I have the most experience with reptiles, we have more than 60 years of combined experience keeping and breeding exotics.
 
-Thbe primary market for selling reptiles online is morphmarket.com so our site must have facilities for data export in a format their site can ingest, so we can bulk upload our available animals.
+The primary marketplace for selling reptiles online is morphmarket.com. This site imports our inventory from MorphMarket and presents it on gemreptiles.com with our own branding and storefront experience.
 
-### Example Schema for Bulk Import 2.x on morphmarket.com
+### Tech Stack
 
-```json
-[
-  {
-    "Category": "ball python",
-    "Title": "Firefly Ball Python",
-    "Maturity": "adult",
-    "Price": "1500",
-    "Serial": "MM-100",
-    "Quantity": "1",
-    "Sex": "male",
-    "Dob": "02-28-2008",
-    "Weight": "150",
-    "Length": "1.2",
-    "Length_Type": "total_length_m",
-    "Traits": "pastel pinstripe clown",
-    "Clutch": "2015-9",
-    "Photo_Urls": "https://example.com/some-test-photo.png",
-    "Video_Url": "https://youtube.com/watch?v=1234",
-    "Proven_Breeder": "yes",
-    "Desc": "Fantastic eater and very docile.",
-    "Is_Group": "TRUE",
-    "Availability": "available",
-    "Origin": "domestically produced",
-    "Prey_State": "live",
-    "Prey_Food": "rat",
-    "Min_Shipping": "50",
-    "Max_Shipping": "100",
-    "Is_Rep_Photo": "FALSE",
-    "Is_Negotiable": "TRUE",
-    "Is_For_Trade": "TRUE"
-  },
-  {
-    "Category": "",
-    "Title": "",
-    "Maturity": "",
-    "Price": "",
-    "Serial": "",
-    "Quantity": "",
-    "Sex": "",
-    "Dob": "",
-    "Weight": "",
-    "Length": "",
-    "Length_Type": "",
-    "Traits": [],
-    "Clutch": "",
-    "Photo_Urls": [],
-    "Video_Url": "",
-    "Proven_Breeder": "",
-    "Desc": "",
-    "Is_Group": "",
-    "Availability": "",
-    "Origin": "",
-    "Prey_State": "",
-    "Prey_Food": "",
-    "Min_Shipping": "",
-    "Max_Shipping": "",
-    "Is_Rep_Photo": "",
-    "Is_Negotiable": "",
-    "Is_For_Trade": ""
-  },
-]
+- **Backend:** Laravel 11, PHP 8.2+
+- **Frontend:** Tailwind CSS 3, Alpine.js
+- **Database:** PostgreSQL
+- **Cache:** Redis (predis)
+- **Mail:** SendGrid
+- **Assets:** Vite
+
+### Application Architecture
+
+The app has two data paths for animal listings:
+
+1. **JSON import (public storefront):** An admin uploads a JSON export from MorphMarket via the dashboard. This file is saved to `storage/app/public/animals.json` and drives the homepage, category pages, and category filtering. These routes are cached by file mtime (30 min TTL) and never hit the database.
+
+2. **Database-backed listings:** The `/animals` and `/classifieds` routes serve Eloquent-backed records with full search, filtering, and pagination. Animals are synced from the JSON import into the `animals` table via `AnimalImportController`.
+
+Auth uses a simple `is_admin` flag on `User`. Only admins can create, edit, or delete animal records. The `Seller` model is a profile linked 1:1 to a `User` and is editable from the profile page.
+
+### MorphMarket JSON Import Format
+
+The dashboard import accepts the JSON export from MorphMarket. Key fields used by the importer:
+
+| Field | Description |
+|---|---|
+| `Animal_Id*` | Used as the slug |
+| `Title*` | Pet name |
+| `Category*` | Species category (e.g. Ball Pythons, Corn Snakes) |
+| `State` | `For Sale`, `Breeder`, `Sold`, `Not For Sale` |
+| `Enabled` | `Active` or inactive |
+| `Visibility` | `Public` or private |
+| `Price` | Listing price |
+| `Dob` | Date of birth (supports `n/j/Y`, `n/Y`, `Y` formats) |
+| `Sex` | `male` / `female` |
+| `Photo_Urls` | Space-separated image URLs |
+| `Mm_Url**` | Link back to the MorphMarket listing |
+| `Desc` | Description |
+
+### Feature Flags
+
+| Flag | Default (prod) | Default (non-prod) | Description |
+|---|---|---|---|
+| `FEATURE_CLASSIFIEDS` | `false` | `true` | Enables the classifieds marketplace feature |
+
+### Setup
+
+```bash
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan storage:link
+npm run build
 ```
-### Notes on technology 
 
-This is a Laravel app, you can install it and run it as your own reptile store, you could even just rebrand it and you're off to the races. That is once I build the dang thing. Docs will be in this, and possibly other .md files within the code repository itself. Everything except your secrets belongs in git, kiddos. Okay maybe also BLOBS, put those in S3 or similar, not your dang database and not in git, silly geese.
+For local development:
 
-We use htmx and AlpineJS on the front end, with an emphasis on htmx, which I think is really cool.
+```bash
+npm run dev        # Vite dev server with HMR
+php artisan serve  # or use Laravel Herd / Valet
+```
 
-The source is open, our content, logos and UI designs are &copy; All rights Reserved 2024
+### Notes
+
+The source is open. Our content, logos, and UI designs are &copy; All Rights Reserved 2024–2026.
+
+Everything except secrets belongs in git. Blobs go in S3 or similar — not in the database, not in git.
 
 ### Changelog
 
-#### 2024-04-24 Major overhaul and launch preparation, one quarter-year late.
+#### 2026-04-27
+- Added `FEATURE_CLASSIFIEDS` feature flag (disabled on production by default)
+- Removed HTMX and Hyperscript; Alpine.js only
+
+#### 2024-04-24 Major overhaul and launch preparation
 
 - Updated to Laravel 11
-- removed uuids from models 
-- removed Dyrynda's deprecated uuid packages
-- updated package.json dependencies
-- updated composer.json dependencies 
-- removed Daisy UI
-- added @tailwind/typography
-- updated root .gitignore
+- Removed UUIDs from models
+- Removed Dyrynda's deprecated UUID packages
+- Updated package.json and composer.json dependencies
+- Removed Daisy UI
+- Added @tailwindcss/typography
+- Updated root .gitignore

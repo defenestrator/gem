@@ -12,22 +12,25 @@ class SellerController extends Controller
     {
         $search = $request->query('search');
 
-        $sellers = Seller::query()
+        $query = Seller::query()
             ->with('user')
-            ->selectSub(
+            ->addSelect('sellers.*')
+            ->when($search, fn ($q) => $q
+                ->where('sellers.name', 'ilike', "%{$search}%")
+                ->orWhere('sellers.description', 'ilike', "%{$search}%"))
+            ->orderBy('sellers.name');
+
+        if (config('features.classifieds')) {
+            $query->selectSub(
                 Classified::query()
                     ->selectRaw('count(*)')
                     ->whereColumn('classifieds.user_id', 'sellers.user_id')
                     ->where('classifieds.status', 'published'),
                 'classifieds_count'
-            )
-            ->addSelect('sellers.*')
-            ->when($search, fn ($q) => $q
-                ->where('sellers.name', 'ilike', "%{$search}%")
-                ->orWhere('sellers.description', 'ilike', "%{$search}%"))
-            ->orderBy('sellers.name')
-            ->paginate(18)
-            ->withQueryString();
+            );
+        }
+
+        $sellers = $query->paginate(18)->withQueryString();
 
         return view('sellers.index', compact('sellers', 'search'));
     }
@@ -36,7 +39,7 @@ class SellerController extends Controller
     {
         $seller->load('user');
 
-        $classifieds = $seller->user
+        $classifieds = (config('features.classifieds') && $seller->user)
             ? $seller->user->classifieds()
                 ->where('status', 'published')
                 ->with('media')

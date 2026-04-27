@@ -203,10 +203,12 @@ Route::get('/sellers', [SellerController::class, 'index'])->name('sellers.index'
 Route::get('/sellers/{seller:slug}', [SellerController::class, 'show'])->name('sellers.show');
 
 // Classifieds Routes
-Route::get('/classifieds', [ClassifiedController::class, 'index'])->name('classifieds.index');
-Route::get('/classifieds/{classified:slug}', [ClassifiedController::class, 'show'])->name('classifieds.show');
-Route::get('/classifieds/{classified:slug}/inquire', [ClassifiedInquiryController::class, 'create'])->name('classifieds.inquiries.create');
-Route::post('/classifieds/{classified:slug}/inquire', [ClassifiedInquiryController::class, 'store'])->name('classifieds.inquiries.store');
+if (config('features.classifieds')) {
+    Route::get('/classifieds', [ClassifiedController::class, 'index'])->name('classifieds.index');
+    Route::get('/classifieds/{classified:slug}', [ClassifiedController::class, 'show'])->name('classifieds.show');
+    Route::get('/classifieds/{classified:slug}/inquire', [ClassifiedInquiryController::class, 'create'])->name('classifieds.inquiries.create');
+    Route::post('/classifieds/{classified:slug}/inquire', [ClassifiedInquiryController::class, 'store'])->name('classifieds.inquiries.store');
+}
 
 // Animals Routes
 Route::get('/animals', [AnimalController::class, 'index'])->name('animals.index');
@@ -224,10 +226,16 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard CRUD
     Route::name('dashboard.')->group(function () {
-        Route::resource('dashboard/classifieds', DashboardClassifiedController::class)->middleware('verified');
+        if (config('features.classifieds')) {
+            Route::resource('dashboard/classifieds', DashboardClassifiedController::class)->middleware('verified');
+        }
         Route::resource('dashboard/animals', DashboardAnimalController::class)->middleware('verified');
         Route::delete('dashboard/media/{media}', [MediaController::class, 'destroy'])->name('media.destroy')->middleware('verified');
     });
 });
+
+// Legal
+Route::get('/privacy', fn () => view('legal.privacy'))->name('legal.privacy');
+Route::get('/terms', fn () => view('legal.terms'))->name('legal.terms');
 
 require __DIR__.'/auth.php';

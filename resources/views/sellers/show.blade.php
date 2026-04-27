@@ -101,6 +101,7 @@
                 </div>
             </div>
 
+            @if(config('features.classifieds'))
             {{-- Active listings --}}
             <div>
                 <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">
@@ -153,6 +154,7 @@
                     </div>
                 @endif
             </div>
+            @endif
 
             {{-- Back --}}
             <div>

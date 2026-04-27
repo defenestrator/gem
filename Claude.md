@@ -1,50 +1,69 @@
-# CLAUDE.md: Reptile Marketplace Project
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-A multi-vendor Laravel application for buying/selling exotic reptiles (snakes, lizards, chelonians) invertebrates (spiders, isopods, beetles), and related supplies. It has an existing data schema and some backend code, we are primarily implementing front-end views, populating data and enhnancing the existing code. Use standards-compliant modern PHP, vanilla javascript and blade templates whenever possible, do not take on new external code package dependencies without approval.
 
-## Core Principles
-1. **Reusability First:** Before creating new code, check for existing traits, services, policies, or helpers.
-2. **Minimize Dependencies:** Do not add new `composer` packages unless absolutely required. Rely on Laravel core, php, tailwind and blade.
-3. **Domain Focus:** Reptiles require specific data fields (scientific name, morph (genetic traits list), age, hatch date, and CITES status).
-4. **Safety & Compliance:** Implement reliable validation for shipping reptile rates and legal regulations.
-
-## Technical Guidelines
-
-### 1. Database & Models
-* Use Laravel Eloquent relationships for vendor products (`Seller` -> `Product`).
-* Create a dedicated `Species` table/model to avoid repeated data entry.
-* **Product Table Fields:** Use nullable fields for reptile-specific data (e.g., `morph`, `hatch_date`).
-* Use `spatie/laravel-medialibrary` (existing) for image management (reptiles need multiple high-quality photos).
-
-### 2. Code Organization
-* **Actions:** Use Action classes (`App\Actions`) for complex business logic (e.g., `CreateReptileListing`, `ProcessOrder`) to keep controllers skinny.
-* **Controllers:** Use common Laravel conventions for method names of CRUD functionality in Controllers, prefer creating a new Controller over adding more than five methods per controller. Acceptable method names include index(), create(), store(), show(), edit(), and destroy().
-* **Traits:** Utilize Traits for shared logic across models (e.g., `HasSpecies` for the Taxonomic name of an animal, `HasMorph` for genetics and phenotype, `HasMedia` for images and other media files).
-* **Services:** Create `App\Services` for interactions with shipping APIs or compliance checks.
-
-### 3. Marketplace Functionality
-* Use built-in Auth for Vendor/Buyer separation.
-* Leverage Laravel's queue system for sending notifications to buyers regarding shipping updates.
-
-### 4. Testing
-* **Pest:** Use Pest for testing (`php artisan make:test --pest`).
-* **Crucial Tests:** Focus on inventory management (prevent double selling) and vendor commission calculations.
-
-## Reptile-Specific Constraints
-* Listing validation must include **"captive-bred"** status.
-* Use Enum for habitat types (terrestrial, arboreal, aquatic).
+Gem Reptiles — multi-vendor Laravel 11 marketplace for buying/selling reptiles and invertebrates. Primary work is front-end views, data population, and feature enhancement on an existing schema/backend. Use standards-compliant modern PHP, vanilla JS, and Blade. No new composer packages without approval.
 
 ## Commands
-* `php artisan migrate` - Run migrations.
-* `php artisan test` - Run test suite.
-* `npm run dev` - Start Vite.
 
-## Rules
-* ALWAYS use `Model::query()` instead of `DB::table()`.
-* DO NOT remove existing validation or business logic without approval.
-* DO NOT expose user PII without opting in. 
-* DO NOT create code with security vulnerabilities
-* ALWAYS follow safe coding best-practices for PHP and Laravel
-* ALWAYS follow secure coding best-practices for JavaScript
-* ALWAYS run `php artisan optimize` at the end of each set of significant changes
+```bash
+php artisan migrate          # run migrations
+php artisan test             # full test suite (Pest)
+php artisan test --filter=FooTest  # single test
+php artisan pint             # lint/format PHP
+php artisan optimize         # run after significant changes
+npm run dev                  # Vite dev server
+npm run build                # production assets
+```
+
+## Architecture
+
+### Dual Data Source
+
+Public-facing homepage and category pages (`/`, `/categories/*`) read from a flat JSON file at `storage/app/public/animals.json`. This file is uploaded by an admin via `AnimalImportController` (imported from MorphMarket). These routes use file-mtime-keyed cache (30 min TTL) and never hit the DB.
+
+The `/animals` and `/classifieds` routes serve DB-backed models with full search/filter/pagination.
+
+### Auth & Roles
+
+`User.is_admin` gates all animal and classified CRUD. There is no seller-facing listing management — only admins can create/edit/delete `Animal` records. `Seller` is a profile linked to a `User` via `hasOne`, editable from the profile page.
+
+### Key Models & Relationships
+
+- `User` → `hasOne Seller`, `hasMany Animal`, `hasMany Classified`
+- `Animal` → `belongsTo User`, `hasMany Classified`, `morphMany Media` (via `HasMedia` trait)
+- `Classified` → `belongsTo User`, `morphMany Media`
+- `Seller` → `belongsTo User`, `morphMany Media`
+
+### Media
+
+Custom `App\Models\Media` model with polymorphic `mediable` relation. **Not** spatie/laravel-medialibrary. The `HasMedia` trait (at `app/Models/Traits/HasMedia.php`) adds `morphMany(Media::class, 'mediable')` to any model. Images stored to `public` disk, URL saved in `media.url`.
+
+### Slugs
+
+`Sluggable` trait provides `createSlug()` / `getTitleFromSlug()` helpers. `Animal` slugs are set from the MorphMarket `Animal_Id*` field on import (not the pet name). `Classified` slugs are ULIDs. `Seller` slugs are `Str::slug(name) . '-' . random(6)`.
+
+### Policies
+
+Every model has a Policy registered in `AuthServiceProvider`. `AnimalPolicy` requires `is_admin` for all write operations. `ClassifiedPolicy` and others follow the same pattern — check before assuming any user can mutate data.
+
+### Inquiry Flow
+
+Public visitors submit inquiries via `/animals/{slug}/inquire` or `/classifieds/{slug}/inquire`. A queued `Mailable` is dispatched to the animal/classified owner's email. No auth required to inquire.
+
+### Frontend Stack
+
+Tailwind CSS 3 + Alpine.js for reactive UI and component state. No TypeScript.
+
+## Core Rules
+
+- `Model::query()` not `DB::table()`
+- No new composer packages without approval
+- Do not remove existing validation or business logic without approval
+- Do not expose user PII without opt-in
+- Run `php artisan optimize` after each set of significant changes
+- Always use caveman mode
+- `AnimalAvailability` enum must be used for animal state — do not store raw strings
+- Captive-bred status required in listing validation

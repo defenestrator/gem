@@ -18,9 +18,11 @@
                     <x-nav-link :href="route('animals.index')" :active="request()->routeIs('animals.*')">
                         {{ __('Animals') }}
                     </x-nav-link>
+                    @if(config('features.classifieds'))
                     <x-nav-link :href="route('classifieds.index')" :active="request()->routeIs('classifieds.*')">
                         {{ __('Classifieds') }}
                     </x-nav-link>
+                    @endif
                     <x-nav-link :href="route('sellers.index')" :active="request()->routeIs('sellers.*')">
                         {{ __('Sellers') }}
                     </x-nav-link>
@@ -88,9 +90,11 @@
             <x-responsive-nav-link :href="route('animals.index')" :active="request()->routeIs('animals.*')">
                 {{ __('Animals') }}
             </x-responsive-nav-link>
+            @if(config('features.classifieds'))
             <x-responsive-nav-link :href="route('classifieds.index')" :active="request()->routeIs('classifieds.*')">
                 {{ __('Classifieds') }}
             </x-responsive-nav-link>
+            @endif
             <x-responsive-nav-link :href="route('sellers.index')" :active="request()->routeIs('sellers.*')">
                 {{ __('Sellers') }}
             </x-responsive-nav-link>

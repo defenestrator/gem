@@ -9,8 +9,8 @@
         $user              = auth()->user()->load('seller');
         $totalAnimals      = $user->animals()->count();
         $publishedAnimals  = $user->animals()->where('status', 'published')->count();
-        $totalClassifieds  = $user->classifieds()->count();
-        $pubClassifieds    = $user->classifieds()->where('status', 'published')->count();
+        $totalClassifieds  = config('features.classifieds') ? $user->classifieds()->count() : 0;
+        $pubClassifieds    = config('features.classifieds') ? $user->classifieds()->where('status', 'published')->count() : 0;
     @endphp
 
     <div class="py-12">
@@ -50,16 +50,15 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
                 <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 mb-4">Quick Actions</h3>
                 <div class="flex flex-wrap gap-3">
-                    @if($user->is_admin)
-                        <a href="{{ route('dashboard.animals.index') }}"
-                            class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 text-sm font-semibold">
-                            My Animals
-                        </a>
-                        <a href="{{ route('dashboard.animals.create') }}"
-                            class="border border-orange-500 text-orange-600 dark:text-orange-400 py-2 px-4 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700 text-sm font-semibold">
-                            + Add Animal
-                        </a>
-                    @endif
+                    <a href="{{ route('dashboard.animals.index') }}"
+                        class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 text-sm font-semibold">
+                        My Animals
+                    </a>
+                    <a href="{{ route('dashboard.animals.create') }}"
+                        class="border border-orange-500 text-orange-600 dark:text-orange-400 py-2 px-4 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700 text-sm font-semibold">
+                        + Add Animal
+                    </a>
+                    @if(config('features.classifieds'))
                     <a href="{{ route('dashboard.classifieds.index') }}"
                         class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 text-sm font-semibold">
                         My Classifieds
@@ -68,6 +67,7 @@
                         class="border border-orange-500 text-orange-600 dark:text-orange-400 py-2 px-4 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700 text-sm font-semibold">
                         + Add Classified
                     </a>
+                    @endif
                     <a href="{{ route('profile.edit') }}"
                         class="border border-orange-300 dark:border-orange-600 text-gray-600 dark:text-white py-2 px-4 rounded-lg bg-orange-200 dark:bg-orange-700 hover:bg-orange-50 dark:hover:bg-orange-800 text-sm font-semibold">
                         Account Settings
@@ -145,6 +145,7 @@
                         <span class="text-xs text-gray-400 dark:text-gray-500">visible to all</span>
                     </div>
                 @endif
+                @if(config('features.classifieds'))
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 flex flex-col gap-1">
                     <span class="text-3xl font-bold text-orange-500">{{ $totalClassifieds }}</span>
                     <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Classifieds</span>
@@ -155,6 +156,7 @@
                     <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Active Listings</span>
                     <span class="text-xs text-gray-400 dark:text-gray-500">published classifieds</span>
                 </div>
+                @endif
             </div>
 
 

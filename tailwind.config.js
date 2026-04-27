@@ -42,7 +42,7 @@ export default {
                 serif: ['"Fauna One"', ...defaultTheme.fontFamily.serif]
             },
         },
+    },
 
     plugins: [forms, typography],
-    }
 }
