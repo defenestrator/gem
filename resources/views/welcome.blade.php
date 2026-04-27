@@ -43,7 +43,7 @@
             <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
                 @foreach($animals as $animal)
                     @if($animal['State'] === 'For Sale' && $animal['Enabled'] === 'Active')
-                        <div class="bg-gray-700 rounded-lg shadow-md overflow-hidden">
+                        <div class="bg-gray-700 rounded-lg shadow-md overflow-hidden flex flex-col">
                             @if($animal['Photo_Urls'])
                                 @php
                                     $photos = explode(' ', $animal['Photo_Urls']);
@@ -51,7 +51,7 @@
                                 @endphp
                                 <img src="{{ $firstPhoto }}" alt="{{ $animal['Title*'] }}" class="w-full aspect-square object-cover">
                             @endif
-                            <div class="p-4">
+                            <div class="p-4 flex flex-col flex-1">
                             <h3 class="text-lg font-semibold text-orange-400 mb-2">{{ $animal['Title*'] }}</h3>
                             <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Category:</span> {{ $animal['Category*'] }}</p>
                             <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Traits:</span> {{ $animal['Traits'] }}</p>
@@ -71,12 +71,12 @@
                             @if($animal['Is_For_Trade'] === 'Will Consider')
                                 <p class="text-sm text-blue-400 mb-1"><span class="font-serif font-bold">Trades:</span> Considered</p>
                             @endif
-                            <p class="text-lg font-bold text-green-400 mb-4">${{ $animal['Price'] }}</p>
-                            <div class="flex gap-2 flex-wrap">
-                                <a href="{{ $animal['Mm_Url**'] }}" target="_blank" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 inline-block text-sm">
-                                    View on MorphMarket
+                            <p class="text-lg font-bold text-green-400 mb-4 mt-auto">${{ $animal['Price'] }}</p>
+                            <div class="flex gap-2">
+                                <a href="{{ $animal['Mm_Url**'] }}" target="_blank" class="flex-1 bg-orange-500 text-white py-2 px-2 rounded-lg hover:bg-orange-700 text-sm text-center font-semibold">
+                                    MorphMarket
                                 </a>
-                                <a href="{{ route('animals.inquiries.create', ['animal' => $animal['Animal_Id*']]) }}" class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-800 inline-block text-sm font-semibold">
+                                <a href="{{ route('animals.inquiries.create', ['animal' => $animal['Animal_Id*']]) }}" class="flex-1 bg-green-600 text-white py-2 px-2 rounded-lg hover:bg-green-800 text-sm font-semibold text-center">
                                     Inquire
                                 </a>
                             </div>

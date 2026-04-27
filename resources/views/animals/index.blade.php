@@ -60,7 +60,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach ($animals as $animal)
                         @php $thumb = $animal->media->first(); @endphp
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition flex flex-col">
                             <a href="{{ route('animals.show', $animal) }}" class="relative block">
                                 @if ($thumb)
                                     <img src="{{ $thumb->url }}" alt="{{ $animal->pet_name }}"
@@ -78,7 +78,7 @@
                                 @endif
                             </a>
 
-                            <div class="p-4">
+                            <div class="p-4 flex flex-col flex-1">
                                 <div class="flex items-center justify-between mb-2">
                                     <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400">
                                         <a href="{{ route('animals.show', $animal) }}" class="hover:underline">
@@ -115,7 +115,7 @@
                                         {{ Str::limit($animal->description, 80) }}
                                     </p>
                                 @endif
-                                <a href="{{ route('animals.show', $animal) }}" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 inline-block text-sm">
+                                <a href="{{ route('animals.show', $animal) }}" class="mt-auto bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 block text-sm font-bold text-center">
                                     View Details
                                 </a>
                             </div>

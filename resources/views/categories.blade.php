@@ -8,7 +8,7 @@
 
     <main class="mx-auto max-w-7xl sm:px-6 lg:px-8 pb-12">
         <div id="main-tile" class="text-left min-h-[70vh] bg-gray-800 text-gray-200 p-6 rounded-xl shadow-l2xl shadow-inner pb-12">
-        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             @if(isset($categories['Corn Snakes']))
             <div class="bg-gray-700 rounded-lg shadow-md overflow-hidden flex flex-col text-white">
                 <a href="{{ route('categories.corn-snakes') }}">
