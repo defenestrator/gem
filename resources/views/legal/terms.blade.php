@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-gray-300 shadow-sm rounded-lg p-8 prose prose-headings:font-serif dark:prose-invert max-w-none">
+            <div class="bg-gray-300 shadow-sm rounded-lg p-8 prose prose-headings:font-serif max-w-none">
 
                 <p class="text-sm text-gray-600">Effective date: January 1, 2024 &mdash; Last updated: {{ date('F j, Y') }}</p>
 
@@ -15,7 +15,7 @@
                 <p>By accessing or using gemreptiles.com (the "Site"), you agree to be bound by these Terms of Service. If you do not agree, do not use the Site.</p>
 
                 <h2>Permitted Use</h2>
-                <p>The Site is provided for lawful personal use. You may browse publicly available listings, submit inquiries about animals and classifieds, and create an account to manage listings if authorized to do so.</p>
+                <p>The Site is provided for lawful personal use. You may browse publicly available listings, submit inquiries about animals, and create an account to purchase and/or keep track your previously purchased animals.</p>
                 <p>Fair use of publicly visible Site content — such as linking to listings, quoting short excerpts for commentary or review, and personal non-commercial reference — is permitted under applicable law.</p>
 
                 <h2>Prohibited Use</h2>
@@ -30,13 +30,9 @@
                 </ul>
 
                 <h2>Intellectual Property</h2>
-                <p>All content published on this Site — including but not limited to photographs, videos, written descriptions, animal names, logos, and graphic design — is the property of Gem Reptiles or its respective content creators and is protected by copyright law.</p>
+                <p>All content published on this Site — including but not limited to photographs, videos, written descriptions, animal names, logos, and graphic design — is the property of Gem Reptiles and is protected by copyright law.</p>
                 <p>No content may be reproduced, distributed, publicly displayed, or used to create derivative works without prior written consent from Gem Reptiles, except as expressly permitted by applicable fair use provisions.</p>
                 <p>The prohibition on AI training data use (above) applies regardless of whether such use would otherwise qualify as fair use under copyright law.</p>
-
-                <h2>Inquiries and Transactions</h2>
-                <p>The Site facilitates contact between buyers and sellers. Gem Reptiles is not a party to any transaction conducted through the Site. We make no warranties regarding the accuracy of listings, the condition of animals, or the conduct of any seller or buyer.</p>
-                <p>All transactions are solely between the parties involved. Gem Reptiles is not responsible for any loss, injury, or harm arising from a transaction facilitated through the Site.</p>
 
                 <h2>Indemnification</h2>
                 <p>You agree to indemnify, defend, and hold harmless Gem Reptiles, its owners, operators, and contributors from and against any claims, damages, losses, costs, or expenses (including reasonable legal fees) arising from:</p>

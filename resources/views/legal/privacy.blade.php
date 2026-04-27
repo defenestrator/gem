@@ -27,17 +27,17 @@
                 <p>Your information is used solely to:</p>
                 <ul>
                     <li>Operate your account and authenticate your identity</li>
-                    <li>Forward inquiry messages to the appropriate seller</li>
+                    <li>Forward inquiry messages</li>
                     <li>Send transactional email related to your account (password reset, email verification)</li>
                 </ul>
 
                 <h2>Storage and Security</h2>
-                <p>Your PII is stored securely in an encrypted database. Passwords are hashed using bcrypt and are never stored in plain text. Access to personal data is restricted to authenticated sessions and system administrators.</p>
+                <p>Your PII is stored securely in an encrypted database. Passwords are encrypted by our services and are never stored or transmitted in plain text. Access to personal data is restricted to authenticated, authorized user sessions and system administrators.</p>
                 <p>We take reasonable technical and organizational measures to protect your data from unauthorized access, disclosure, or loss.</p>
 
                 <h2>Sharing Your Information</h2>
                 <p>We do not sell, rent, or share your personal information with third parties except as required by law.</p>
-                <p>When you submit an inquiry about an animal or classified listing, your name, email, phone number, and message are forwarded to the listing owner for the purpose of facilitating that transaction. No other sharing occurs.</p>
+                <p>When you submit an inquiry about an animal your name, email, phone number, and message may forwarded to the owner/administrators (of which, they are currently the same person, hi!) for the purpose of facilitating that transaction. No other sharing occurs.</p>
                 <p><strong>At this time, there are no opt-in options for additional sharing or marketing communications.</strong> If such options are introduced in the future, this policy will be updated and your consent will be obtained before any new sharing takes place.</p>
 
                 <h2>Your Rights</h2>
