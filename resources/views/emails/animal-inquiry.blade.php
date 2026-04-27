@@ -22,7 +22,12 @@
 
     <div class="message-box">{{ $inquiry->message }}</div>
 
-    <p>Reply directly to this email to respond to the buyer.</p>
+    <p>
+        <a href="{{ route('dashboard.inquiries.show', $inquiry) }}" style="background:#f97316;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;font-weight:bold;">
+            View &amp; Reply in Dashboard
+        </a>
+    </p>
+    <p style="font-size:0.875rem;color:#888;">Or reply directly to this email to respond outside the dashboard.</p>
 
     <div class="footer">
         This inquiry was submitted via {{ config('app.name') }}.

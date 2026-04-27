@@ -11,6 +11,7 @@ use App\Http\Controllers\SellerController;
 use App\Http\Controllers\AnimalImportController;
 use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\ClassifiedInquiryController;
+use App\Http\Controllers\DashboardInquiryController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
@@ -231,6 +232,12 @@ Route::middleware('auth')->group(function () {
         }
         Route::resource('dashboard/animals', DashboardAnimalController::class)->middleware('verified');
         Route::delete('dashboard/media/{media}', [MediaController::class, 'destroy'])->name('media.destroy')->middleware('verified');
+
+        // Inquiries (admin only)
+        Route::get('dashboard/inquiries', [DashboardInquiryController::class, 'index'])->name('inquiries.index');
+        Route::get('dashboard/inquiries/{inquiry}', [DashboardInquiryController::class, 'show'])->name('inquiries.show');
+        Route::post('dashboard/inquiries/{inquiry}/reply', [DashboardInquiryController::class, 'reply'])->name('inquiries.reply');
+        Route::patch('dashboard/inquiries/{inquiry}/close', [DashboardInquiryController::class, 'close'])->name('inquiries.close');
     });
 });
 

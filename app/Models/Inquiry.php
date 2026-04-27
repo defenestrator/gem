@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\InquiryStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Inquiry extends Model
@@ -14,6 +15,11 @@ class Inquiry extends Model
         'email',
         'phone',
         'message',
+        'status',
+    ];
+
+    protected $casts = [
+        'status' => InquiryStatus::class,
     ];
 
     public function animal()
@@ -29,5 +35,10 @@ class Inquiry extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(InquiryReply::class)->oldest();
     }
 }

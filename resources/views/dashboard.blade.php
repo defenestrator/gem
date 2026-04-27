@@ -11,6 +11,8 @@
         $publishedAnimals  = $user->animals()->where('status', 'published')->count();
         $totalClassifieds  = config('features.classifieds') ? $user->classifieds()->count() : 0;
         $pubClassifieds    = config('features.classifieds') ? $user->classifieds()->where('status', 'published')->count() : 0;
+        $totalInquiries    = $user->is_admin ? \App\Models\Inquiry::count() : 0;
+        $newInquiries      = $user->is_admin ? \App\Models\Inquiry::where('status', 'new')->count() : 0;
     @endphp
 
     <div class="py-12">
@@ -66,6 +68,15 @@
                     <a href="{{ route('dashboard.classifieds.create') }}"
                         class="border border-orange-500 text-orange-600 dark:text-orange-400 py-2 px-4 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700 text-sm font-semibold">
                         + Add Classified
+                    </a>
+                    @endif
+                    @if($user->is_admin)
+                    <a href="{{ route('dashboard.inquiries.index') }}"
+                        class="relative bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 text-sm font-semibold inline-flex items-center gap-2">
+                        Inquiries
+                        @if($newInquiries)
+                            <span class="bg-white text-orange-600 text-xs font-bold px-1.5 py-0.5 rounded-full leading-none">{{ $newInquiries }}</span>
+                        @endif
                     </a>
                     @endif
                     <a href="{{ route('profile.edit') }}"
@@ -156,6 +167,15 @@
                     <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Active Listings</span>
                     <span class="text-xs text-gray-400 dark:text-gray-500">published classifieds</span>
                 </div>
+                @endif
+                @if($user->is_admin)
+                <a href="{{ route('dashboard.inquiries.index') }}" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 flex flex-col gap-1 hover:shadow-md transition">
+                    <span class="text-3xl font-bold {{ $newInquiries ? 'text-orange-500' : 'text-blue-500' }}">{{ $totalInquiries }}</span>
+                    <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Inquiries</span>
+                    <span class="text-xs {{ $newInquiries ? 'text-orange-500 font-semibold' : 'text-gray-400 dark:text-gray-500' }}">
+                        {{ $newInquiries ? $newInquiries . ' new' : 'none new' }}
+                    </span>
+                </a>
                 @endif
             </div>
 

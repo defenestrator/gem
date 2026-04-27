@@ -32,6 +32,7 @@ class InquiryController extends Controller
             ...$validated,
             'animal_id' => $animal->id,
             'user_id'   => auth()->id(),
+            'status'    => 'new',
         ]);
 
         if ($animal->user?->email) {

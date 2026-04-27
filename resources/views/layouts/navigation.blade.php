@@ -15,6 +15,17 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if(auth()->user()?->is_admin)
+                    <x-nav-link :href="route('dashboard.inquiries.index')" :active="request()->routeIs('dashboard.inquiries.*')">
+                        <span class="relative inline-flex items-center gap-1">
+                            {{ __('Inquiries') }}
+                            @php $newInquiryCount = \App\Models\Inquiry::where('status','new')->count(); @endphp
+                            @if($newInquiryCount)
+                                <span class="bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full leading-none">{{ $newInquiryCount }}</span>
+                            @endif
+                        </span>
+                    </x-nav-link>
+                    @endif
                     <x-nav-link :href="route('animals.index')" :active="request()->routeIs('animals.*')">
                         {{ __('Animals') }}
                     </x-nav-link>
@@ -87,6 +98,14 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @if(auth()->user()?->is_admin)
+            <x-responsive-nav-link :href="route('dashboard.inquiries.index')" :active="request()->routeIs('dashboard.inquiries.*')">
+                {{ __('Inquiries') }}
+                @if($newInquiryCount ?? \App\Models\Inquiry::where('status','new')->count())
+                    <span class="ml-1 bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{{ \App\Models\Inquiry::where('status','new')->count() }}</span>
+                @endif
+            </x-responsive-nav-link>
+            @endif
             <x-responsive-nav-link :href="route('animals.index')" :active="request()->routeIs('animals.*')">
                 {{ __('Animals') }}
             </x-responsive-nav-link>

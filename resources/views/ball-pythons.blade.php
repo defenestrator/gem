@@ -27,9 +27,14 @@
                                 <p class="text-sm text-gray-300 mb-1"><strong>Maturity:</strong> {{ $animal['Maturity'] }}</p>
                                 <p class="text-sm text-gray-300 mb-1"><strong>Sex:</strong> {{ $animal['Sex'] }}</p>
                                 <p class="text-lg font-bold text-green-400 mb-4">${{ $animal['Price'] }}</p>
-                                <a href="{{ $animal['Mm_Url**'] }}" target="_blank" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 inline-block">
-                                    View on MorphMarket
-                                </a>
+                                <div class="flex gap-2 flex-wrap">
+                                    <a href="{{ $animal['Mm_Url**'] }}" target="_blank" class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 inline-block text-sm">
+                                        View on MorphMarket
+                                    </a>
+                                    <a href="{{ route('animals.inquiries.create', ['animal' => $animal['Animal_Id*']]) }}" class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-800 inline-block text-sm font-semibold">
+                                        Inquire
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     @endforeach
