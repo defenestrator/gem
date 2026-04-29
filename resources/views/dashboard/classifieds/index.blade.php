@@ -43,7 +43,7 @@
                                     {{ ucfirst($classified->status) }}
                                 </span>
                             </div>
-                            <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400 mb-2">
+                            <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400 mr-2 mb-2">
                                 {{ $classified->title }}
                             </h3>
                             <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">

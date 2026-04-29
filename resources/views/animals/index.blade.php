@@ -80,7 +80,7 @@
 
                             <div class="p-4 flex flex-col flex-1">
                                 <div class="flex items-center justify-between mb-2">
-                                    <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400">
+                                    <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400 mr-2">
                                         <a href="{{ route('animals.show', $animal) }}" class="hover:underline">
                                             {{ $animal->pet_name }}
                                         </a>
@@ -109,7 +109,9 @@
                                             Inquire
                                         </a>
                                     </div>
+                                    @if(config('features.easyship'))
                                     <x-shipping-quote :compact="true" />
+                                    @endif
                                 @endif
                                 @if ($animal->description)
                                     <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">

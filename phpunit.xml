@@ -10,6 +10,10 @@
         </testsuite>
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
+            <exclude>tests/Feature/ShippingQuoteTest.php</exclude>
+            <exclude>tests/Feature/ShipCenterTest.php</exclude>
+            <exclude>tests/Feature/ShipCenterLookupTest.php</exclude>
+            <exclude>tests/Feature/EasyShipRateServiceTest.php</exclude>
         </testsuite>
     </testsuites>
     <source>

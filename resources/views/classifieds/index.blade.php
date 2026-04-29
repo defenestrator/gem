@@ -65,7 +65,7 @@
                                 </a>
                             @endif
                             <div class="p-4">
-                            <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400 mb-2">
+                            <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400 mr-2 mb-2">
                                 <a href="{{ route('classifieds.show', $classified) }}" class="hover:underline">
                                     {{ $classified->title }}
                                 </a>

@@ -73,7 +73,9 @@
                             @enderror
                         </div>
 
+                        @if(config('features.easyship'))
                         <x-shipping-quote />
+                        @endif
 
                         <div class="flex gap-4 items-center mt-6">
                             <button type="submit"

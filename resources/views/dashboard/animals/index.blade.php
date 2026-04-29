@@ -53,7 +53,7 @@
                                         {{ $animal->female ? 'Female' : 'Male' }}
                                     </span>
                                 </div>
-                                <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400 mb-2">
+                                <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400 mr-2 mb-2">
                                     {{ $animal->pet_name }}
                                 </h3>
                                 @if ($animal->date_of_birth)

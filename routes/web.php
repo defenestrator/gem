@@ -213,8 +213,10 @@ if (config('features.classifieds')) {
     Route::post('/classifieds/{classified:slug}/inquire', [ClassifiedInquiryController::class, 'store'])->name('classifieds.inquiries.store');
 }
 
-Route::post('/shipping/quote',    ShippingQuoteController::class)->name('shipping.quote');
-Route::post('/shipping/location', ShipCenterController::class)->name('shipping.location');
+if (config('features.easyship')) {
+    Route::post('/shipping/quote',    ShippingQuoteController::class)->name('shipping.quote');
+    Route::post('/shipping/location', ShipCenterController::class)->name('shipping.location');
+}
 
 // Animals Routes
 Route::get('/animals', [AnimalController::class, 'index'])->name('animals.index');

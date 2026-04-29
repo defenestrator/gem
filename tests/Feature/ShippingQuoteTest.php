@@ -25,6 +25,7 @@ $shipCenters = [
 ];
 
 beforeEach(function () use ($shipCenters) {
+    config(['features.easyship' => true]);
     Cache::flush();
     Http::preventStrayRequests();
     file_put_contents(storage_path('app/fedex_ship_centers.json'), json_encode($shipCenters));
