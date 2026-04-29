@@ -109,6 +109,7 @@
                                             Inquire
                                         </a>
                                     </div>
+                                    <x-shipping-quote :compact="true" />
                                 @endif
                                 @if ($animal->description)
                                     <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">

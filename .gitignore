@@ -20,4 +20,4 @@ yarn-error.log
 *.sqlite
 database/*.sqlite
 *.env
-.DS_Store
+*.DS_Store

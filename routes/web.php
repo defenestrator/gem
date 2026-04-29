@@ -12,6 +12,7 @@ use App\Http\Controllers\AnimalImportController;
 use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\ClassifiedInquiryController;
 use App\Http\Controllers\DashboardInquiryController;
+use App\Http\Controllers\ShippingQuoteController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
@@ -210,6 +211,8 @@ if (config('features.classifieds')) {
     Route::get('/classifieds/{classified:slug}/inquire', [ClassifiedInquiryController::class, 'create'])->name('classifieds.inquiries.create');
     Route::post('/classifieds/{classified:slug}/inquire', [ClassifiedInquiryController::class, 'store'])->name('classifieds.inquiries.store');
 }
+
+Route::post('/shipping/quote', ShippingQuoteController::class)->name('shipping.quote');
 
 // Animals Routes
 Route::get('/animals', [AnimalController::class, 'index'])->name('animals.index');

@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Gem Reptiles — multi-vendor Laravel 11 marketplace for buying/selling reptiles and invertebrates. Primary work is front-end views, data population, and feature enhancement on an existing schema/backend. Use standards-compliant modern PHP, vanilla JS, and Blade. No new composer packages without approval.
+Gem Reptiles —  a single-vendor Laravel 11 marketplace for buying/selling reptiles and invertebrates. Primary work is front-end views, data population, and feature enhancement on an existing schema/backend. Use standards-compliant modern PHP, AlpineJS, and Blade templates. We want to build the application with eventual multi-vendor features in mind, but we are not releasing that part of the application until further down the roadmap, 2028.
+
+We are focused on synchronizing and managing our Store data on MorphMarket - "https://morphamrket/stores/gem" (first by consuming exported data from MorphMarket.com, eventually by exporting data to be uploaded to MorphMarket.com) while concurrently creating a viable e-commerce platform for vending live captive-bred reptiles.
 
 ## Commands
 
@@ -55,15 +57,18 @@ Public visitors submit inquiries via `/animals/{slug}/inquire` or `/classifieds/
 
 ### Frontend Stack
 
-Tailwind CSS 3 + Alpine.js for reactive UI and component state. No TypeScript.
+Tailwind CSS 3 + Alpine.js for reactive UI and component state.
 
 ## Core Rules
 
 - `Model::query()` not `DB::table()`
 - No new composer packages without approval
+- No new npm packages without approval
 - Do not remove existing validation or business logic without approval
 - Do not expose user PII without opt-in
+- Write unit and integration tests for new features
 - Run `php artisan optimize` after each set of significant changes
-- Always use caveman mode
+- Always run `php artisan test` after completing a changeset
+- Always use the caveman skill caveman mode
 - `AnimalAvailability` enum must be used for animal state — do not store raw strings
 - Captive-bred status required in listing validation
