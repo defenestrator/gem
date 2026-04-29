@@ -3,55 +3,73 @@
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
-beforeEach(function () {
+$shipCenters = [
+    [
+        'name'   => 'FedEx Ship Center',
+        'street' => '2700 W Fred Smith St',
+        'city'   => 'Meridian',
+        'state'  => 'ID',
+        'zip'    => '83642',
+        'lat'    => 43.6150,
+        'lng'    => -116.3915,
+    ],
+    [
+        'name'   => 'FedEx Ship Center',
+        'street' => '500 NE Multnomah St',
+        'city'   => 'Portland',
+        'state'  => 'OR',
+        'zip'    => '97209',
+        'lat'    => 45.5271,
+        'lng'    => -122.6594,
+    ],
+];
+
+beforeEach(function () use ($shipCenters) {
     Cache::flush();
     Http::preventStrayRequests();
+    file_put_contents(storage_path('app/fedex_ship_centers.json'), json_encode($shipCenters));
+});
+
+afterEach(function () {
+    $path = storage_path('app/fedex_ship_centers.json');
+    if (file_exists($path)) {
+        unlink($path);
+    }
 });
 
 // ── Successful responses ────────────────────────────────────────────────────
 
-test('valid ZIP returns 200 with three rate options', function () {
-    Http::fake([
-        '*/oauth/token'          => Http::response(fedexTokenResponse(), 200),
-        '*/rate/v1/rates/quotes' => Http::response(fedexRateResponse(), 200),
-    ]);
+test('valid ZIP with city and state returns 200 with two rate options', function () {
+    Http::fake(['*/rates' => Http::response(easyshipQuoteResponse(), 200)]);
 
-    $this->postJson('/shipping/quote', ['zip_code' => '90210'])
+    $this->postJson('/shipping/quote', ['zip_code' => '90210', 'city' => 'Beverly Hills', 'state' => 'CA'])
         ->assertOk()
-        ->assertJsonCount(3, 'rates')
+        ->assertJsonCount(2, 'rates')
         ->assertJsonStructure(['rates' => [['service', 'label', 'price']]]);
 });
 
 test('rates are sorted cheapest first', function () {
-    Http::fake([
-        '*/oauth/token'          => Http::response(fedexTokenResponse(), 200),
-        '*/rate/v1/rates/quotes' => Http::response(fedexRateResponse(), 200),
-    ]);
+    Http::fake(['*/rates' => Http::response(easyshipQuoteResponse(), 200)]);
 
-    $rates = $this->postJson('/shipping/quote', ['zip_code' => '90210'])
+    $rates = $this->postJson('/shipping/quote', ['zip_code' => '90210', 'city' => 'Beverly Hills', 'state' => 'CA'])
         ->assertOk()
         ->json('rates');
 
-    expect($rates[0]['price'])->toBe('34.10')
-        ->and($rates[1]['price'])->toBe('61.25')
-        ->and($rates[2]['price'])->toBe('89.50');
+    expect($rates[0]['price'])->toBe('61.25')
+        ->and($rates[1]['price'])->toBe('89.50');
 });
 
 test('rate labels match configured service names', function () {
-    Http::fake([
-        '*/oauth/token'          => Http::response(fedexTokenResponse(), 200),
-        '*/rate/v1/rates/quotes' => Http::response(fedexRateResponse(), 200),
-    ]);
+    Http::fake(['*/rates' => Http::response(easyshipQuoteResponse(), 200)]);
 
-    $labels = $this->postJson('/shipping/quote', ['zip_code' => '90210'])
+    $labels = $this->postJson('/shipping/quote', ['zip_code' => '90210', 'city' => 'Beverly Hills', 'state' => 'CA'])
         ->assertOk()
         ->collect('rates')
         ->pluck('label')
         ->all();
 
-    expect($labels)->toContain('Priority Overnight')
-        ->and($labels)->toContain('Standard Overnight')
-        ->and($labels)->toContain('2Day');
+    expect($labels)->toContain('FedEx Priority Overnight')
+        ->and($labels)->toContain('FedEx Standard Overnight');
 });
 
 // ── Validation ──────────────────────────────────────────────────────────────
@@ -78,68 +96,58 @@ test('zip with dash returns 422', function () {
 
 // ── API error handling ──────────────────────────────────────────────────────
 
-test('FedEx auth failure returns 503 with message', function () {
-    Http::fake([
-        '*/oauth/token' => Http::response(['error' => 'unauthorized'], 401),
-    ]);
+test('EasyShip API 500 returns 503', function () {
+    Http::fake(['*/rates' => Http::response([], 500)]);
 
-    $this->postJson('/shipping/quote', ['zip_code' => '90210'])
+    $this->postJson('/shipping/quote', ['zip_code' => '90210', 'city' => 'Beverly Hills', 'state' => 'CA'])
         ->assertStatus(503)
         ->assertJson(['error' => 'Shipping quote unavailable. Please try again.']);
 });
 
-test('FedEx rate API 500 returns 503', function () {
+test('response with no matching services returns 422', function () {
     Http::fake([
-        '*/oauth/token'          => Http::response(fedexTokenResponse(), 200),
-        '*/rate/v1/rates/quotes' => Http::response([], 500),
-    ]);
-
-    $this->postJson('/shipping/quote', ['zip_code' => '90210'])
-        ->assertStatus(503);
-});
-
-test('response with no matching service types returns 422', function () {
-    Http::fake([
-        '*/oauth/token'          => Http::response(fedexTokenResponse(), 200),
-        '*/rate/v1/rates/quotes' => Http::response([
-            'output' => [
-                'rateReplyDetails' => [[
-                    'serviceType'          => 'GROUND_HOME_DELIVERY',
-                    'ratedShipmentDetails' => [['rateType' => 'LIST', 'totalNetCharge' => 12.00]],
-                ]],
+        '*/rates' => Http::response([
+            'rates' => [
+                ['courier_id' => 'ups-ground', 'courier_name' => 'UPS Ground', 'total_charge' => 12.00],
             ],
         ], 200),
     ]);
 
-    $this->postJson('/shipping/quote', ['zip_code' => '90210'])
+    $this->postJson('/shipping/quote', ['zip_code' => '90210', 'city' => 'Beverly Hills', 'state' => 'CA'])
         ->assertStatus(422)
         ->assertJson(['error' => 'No rates available for this ZIP code.']);
 });
 
+test('missing city and state with unknown ZIP returns 503', function () {
+    $path = storage_path('app/fedex_ship_centers.json');
+    $existed = file_exists($path);
+    if ($existed) rename($path, $path . '.bak');
+
+    $this->postJson('/shipping/quote', ['zip_code' => '99999'])
+        ->assertStatus(503);
+
+    if ($existed) rename($path . '.bak', $path);
+});
+
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
-function fedexTokenResponse(): array
-{
-    return ['access_token' => 'test_bearer_token', 'token_type' => 'Bearer', 'expires_in' => 3600];
-}
-
-function fedexRateResponse(): array
+function easyshipQuoteResponse(): array
 {
     return [
-        'output' => [
-            'rateReplyDetails' => [
-                [
-                    'serviceType'          => 'PRIORITY_OVERNIGHT',
-                    'ratedShipmentDetails' => [['rateType' => 'LIST', 'totalNetCharge' => 89.50]],
-                ],
-                [
-                    'serviceType'          => 'STANDARD_OVERNIGHT',
-                    'ratedShipmentDetails' => [['rateType' => 'LIST', 'totalNetCharge' => 61.25]],
-                ],
-                [
-                    'serviceType'          => 'FEDEX_2_DAY',
-                    'ratedShipmentDetails' => [['rateType' => 'LIST', 'totalNetCharge' => 34.10]],
-                ],
+        'rates' => [
+            [
+                'courier_service' => ['courier_id' => 'fedex-priority-overnight', 'name' => 'FedEx Priority Overnight'],
+                'courier_id'      => 'fedex-priority-overnight',
+                'courier_name'    => 'FedEx Priority Overnight',
+                'total_charge'    => 89.50,
+                'currency'        => 'USD',
+            ],
+            [
+                'courier_service' => ['courier_id' => 'fedex-standard-overnight', 'name' => 'FedEx Standard Overnight'],
+                'courier_id'      => 'fedex-standard-overnight',
+                'courier_name'    => 'FedEx Standard Overnight',
+                'total_charge'    => 61.25,
+                'currency'        => 'USD',
             ],
         ],
     ];

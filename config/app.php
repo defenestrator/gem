@@ -21,8 +21,6 @@ return [
     // Set to false to disable public user registration
     'registration_enabled' => env('REGISTRATION_ENABLED', true),
 
-    'admin_password' => env('ADMIN_PASSWORD'),
-
     /*
     |--------------------------------------------------------------------------
     | Application Environment
