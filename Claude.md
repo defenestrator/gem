@@ -15,7 +15,7 @@ php artisan migrate          # run migrations
 php artisan test             # full test suite (Pest)
 php artisan test --filter=FooTest  # single test
 php artisan pint             # lint/format PHP
-php artisan optimize         # run after significant changes
+php artisan optimize         # cache config/routes/views after significant changes
 npm run dev                  # Vite dev server
 npm run build                # production assets
 ```
@@ -67,7 +67,7 @@ Tailwind CSS 3 + Alpine.js for reactive UI and component state.
 - Do not remove existing validation or business logic without approval
 - Do not expose user PII without opt-in
 - Write unit and integration tests for new features
-- Run `php artisan optimize` after each set of significant changes
+- Always run `php artisan optimize` 
 - Always run `php artisan test` after completing a changeset
 - Always use the caveman skill caveman mode
 - `AnimalAvailability` enum must be used for animal state — do not store raw strings

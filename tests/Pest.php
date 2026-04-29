@@ -16,6 +16,10 @@ use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class)->in('Feature');
 
+uses()->beforeEach(function () {
+    $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+})->in('Feature');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations

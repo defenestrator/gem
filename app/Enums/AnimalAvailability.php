@@ -6,6 +6,7 @@ enum AnimalAvailability: string
 {
     case ForSale    = 'for_sale';
     case OnHold     = 'on_hold';
+    case Holdback   = 'holdback';
     case Breeder    = 'breeder';
     case Sold       = 'sold';
     case NotForSale = 'not_for_sale';
@@ -15,6 +16,7 @@ enum AnimalAvailability: string
         return match ($this) {
             self::ForSale    => 'For Sale',
             self::OnHold     => 'On Hold',
+            self::Holdback   => 'Holdback',
             self::Breeder    => 'Breeder',
             self::Sold       => 'Sold',
             self::NotForSale => 'Not For Sale',
@@ -26,6 +28,7 @@ enum AnimalAvailability: string
         return match ($this) {
             self::ForSale    => 'bg-green-600 text-white dark:bg-green-700',
             self::OnHold     => 'bg-yellow-500 text-white dark:bg-yellow-600',
+            self::Holdback   => 'bg-blue-600 text-white dark:bg-blue-700',
             self::Breeder    => 'bg-black text-white',
             self::Sold       => 'bg-red-600 text-white dark:bg-red-700',
             self::NotForSale => 'bg-gray-500 text-white dark:bg-gray-600',
@@ -37,6 +40,7 @@ enum AnimalAvailability: string
         return match ($state) {
             'For Sale'     => self::ForSale,
             'On Hold'      => self::OnHold,
+            'Holdback'     => self::Holdback,
             'Breeder'      => self::Breeder,
             'Sold'         => self::Sold,
             'Not For Sale' => self::NotForSale,

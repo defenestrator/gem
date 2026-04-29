@@ -4,19 +4,18 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
-    $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
     Cache::flush();
     Http::preventStrayRequests();
-
-    Http::fake([
-        '*/oauth/token'           => Http::response(fedexTokenResponse(), 200),
-        '*/rate/v1/rates/quotes'  => Http::response(fedexRateResponse(), 200),
-    ]);
 });
 
 // ── Successful responses ────────────────────────────────────────────────────
 
 test('valid ZIP returns 200 with three rate options', function () {
+    Http::fake([
+        '*/oauth/token'          => Http::response(fedexTokenResponse(), 200),
+        '*/rate/v1/rates/quotes' => Http::response(fedexRateResponse(), 200),
+    ]);
+
     $this->postJson('/shipping/quote', ['zip_code' => '90210'])
         ->assertOk()
         ->assertJsonCount(3, 'rates')
@@ -24,6 +23,11 @@ test('valid ZIP returns 200 with three rate options', function () {
 });
 
 test('rates are sorted cheapest first', function () {
+    Http::fake([
+        '*/oauth/token'          => Http::response(fedexTokenResponse(), 200),
+        '*/rate/v1/rates/quotes' => Http::response(fedexRateResponse(), 200),
+    ]);
+
     $rates = $this->postJson('/shipping/quote', ['zip_code' => '90210'])
         ->assertOk()
         ->json('rates');
@@ -34,6 +38,11 @@ test('rates are sorted cheapest first', function () {
 });
 
 test('rate labels match configured service names', function () {
+    Http::fake([
+        '*/oauth/token'          => Http::response(fedexTokenResponse(), 200),
+        '*/rate/v1/rates/quotes' => Http::response(fedexRateResponse(), 200),
+    ]);
+
     $labels = $this->postJson('/shipping/quote', ['zip_code' => '90210'])
         ->assertOk()
         ->collect('rates')
