@@ -28,9 +28,8 @@
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Animal</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">From</th>
-                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden md:table-cell">Message</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden lg:table-cell">Date</th>
-                                <th class="px-4 py-3"></th>
+                                <th class="px-4 py-3 w-px"></th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -44,7 +43,7 @@
                                             <span class="ml-1 text-xs text-gray-400">{{ $inquiry->replies->count() }} repl{{ $inquiry->replies->count() === 1 ? 'y' : 'ies' }}</span>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-3 whitespace-nowrap">
+                                    <td class="px-4 py-3 whitespace-wrap">
                                         @if ($inquiry->animal)
                                             <a href="{{ route('animals.show', $inquiry->animal) }}" class="text-orange-600 dark:text-orange-400 hover:underline text-sm">
                                                 {{ $inquiry->animal->pet_name }}
@@ -54,15 +53,12 @@
                                             <span class="text-gray-400 text-sm italic">deleted</span>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-3">
-                                        <p class="text-sm text-gray-800 dark:text-gray-200">{{ $inquiry->name }}</p>
-                                        <a href="mailto:{{ $inquiry->email }}" class="text-xs text-blue-500 hover:underline">{{ $inquiry->email }}</a>
+                                    <td class="px-4 py-3 max-w-[140px]">
+                                        <p class="text-sm text-gray-800 dark:text-gray-200 truncate">{{ $inquiry->name }}</p>
+                                        <a href="mailto:{{ $inquiry->email }}" class="text-xs text-blue-500 hover:underline truncate block">{{ $inquiry->email }}</a>
                                         @if ($inquiry->phone)
                                             <p class="text-xs text-gray-400">{{ $inquiry->phone }}</p>
                                         @endif
-                                    </td>
-                                    <td class="px-4 py-3 hidden md:table-cell max-w-xs">
-                                        <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ Str::limit($inquiry->message, 80) }}</p>
                                     </td>
                                     <td class="px-4 py-3 hidden lg:table-cell whitespace-nowrap">
                                         <p class="text-xs text-gray-400">{{ $inquiry->created_at->format('M j, Y') }}</p>
