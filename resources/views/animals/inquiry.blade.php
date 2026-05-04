@@ -77,6 +77,8 @@
                         <x-shipping-quote />
                         @endif
 
+                        <x-turnstile />
+
                         <div class="flex gap-4 items-center mt-6">
                             <button type="submit"
                                 class="bg-orange-500 text-white py-2 px-6 rounded-lg hover:bg-orange-700 font-semibold">

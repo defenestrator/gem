@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Concerns\ValidatesTurnstile;
 use App\Mail\ClassifiedInquiryMail;
 use App\Models\Classified;
 use App\Models\Inquiry;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 
 class ClassifiedInquiryController extends Controller
 {
+    use ValidatesTurnstile;
     public function create(Classified $classified)
     {
         abort_unless($classified->status === 'published', 404);
@@ -20,6 +22,8 @@ class ClassifiedInquiryController extends Controller
     public function store(Request $request, Classified $classified)
     {
         abort_unless($classified->status === 'published', 404);
+
+        $this->verifyTurnstile($request);
 
         $validated = $request->validate([
             'name'    => 'required|string|max:255',

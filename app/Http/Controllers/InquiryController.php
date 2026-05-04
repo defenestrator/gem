@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Concerns\ValidatesTurnstile;
 use App\Mail\AnimalInquiryMail;
 use App\Models\Animal;
 use App\Models\Inquiry;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 
 class InquiryController extends Controller
 {
+    use ValidatesTurnstile;
     public function create(Animal $animal)
     {
         abort_unless($animal->status === 'published', 404);
@@ -20,6 +22,8 @@ class InquiryController extends Controller
     public function store(Request $request, Animal $animal)
     {
         abort_unless($animal->status === 'published', 404);
+
+        $this->verifyTurnstile($request);
 
         $validated = $request->validate([
             'name'    => 'required|string|max:255',
