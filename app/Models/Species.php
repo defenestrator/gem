@@ -46,6 +46,11 @@ class Species extends Model
         return 'species';
     }
 
+    public function animals()
+    {
+        return $this->hasMany(Animal::class);
+    }
+
     public function approvedMedia()
     {
         return $this->morphMany(Media::class, 'mediable')->where('moderation_status', 'approved');

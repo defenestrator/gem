@@ -8,6 +8,19 @@ Gem Reptiles —  a single-vendor Laravel 11 marketplace for buying/selling rept
 
 We are focused on synchronizing and managing our Store data on MorphMarket - "https://morphamrket/stores/gem" (first by consuming exported data from MorphMarket.com, eventually by exporting data to be uploaded to MorphMarket.com) while concurrently creating a viable e-commerce platform for vending live captive-bred reptiles.
 
+## Local Reference Docs
+
+Laravel 11 documentation is embedded at `storage/docs/laravel/` (Markdown, ~100 files). Use as primary reference before fetching from the web. Key files:
+
+- `storage/docs/laravel/eloquent.md` — ORM, relationships, scopes
+- `storage/docs/laravel/migrations.md` — schema builder
+- `storage/docs/laravel/blade.md` — templating
+- `storage/docs/laravel/requests.md` — HTTP requests, validation
+- `storage/docs/laravel/scout.md` — full-text search (MeiliSearch)
+- `storage/docs/laravel/queues.md` — jobs and queues
+- `storage/docs/laravel/testing.md` — PHPUnit / Pest test helpers
+- `storage/docs/laravel/authorization.md` — policies and gates
+
 ## Commands
 
 ```bash

@@ -16,6 +16,7 @@ class Animal extends Model
         'slug',
         'mm_url',
         'category',
+        'species_id',
         'pet_name',
         'description',
         'date_of_birth',
@@ -77,5 +78,10 @@ class Animal extends Model
     public function classifieds()
     {
         return $this->hasMany(Classified::class);
+    }
+
+    public function species()
+    {
+        return $this->belongsTo(Species::class);
     }
 }

@@ -21,3 +21,4 @@ yarn-error.log
 database/*.sqlite
 *.env
 *.DS_Store
+/storage
