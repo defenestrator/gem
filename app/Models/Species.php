@@ -60,4 +60,11 @@ class Species extends Model
     {
         return $this->morphMany(Media::class, 'mediable')->where('moderation_status', 'approved');
     }
+
+    public function latestApprovedMedia()
+    {
+        return $this->morphOne(Media::class, 'mediable')
+            ->where('moderation_status', 'approved')
+            ->latest();
+    }
 }

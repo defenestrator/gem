@@ -62,12 +62,10 @@ class SpeciesController extends Controller
 
         $results = Cache::remember($cacheKey, 300, function () use ($query) {
             try {
-                return Species::search($query)
-                    ->take(60)
-                    ->get()
-                    ->map(fn (Species $s) => $this->format($s))
-                    ->values()
-                    ->all();
+                $rows = Species::search($query)->take(60)->get();
+                $rows->loadMissing('latestApprovedMedia');
+
+                return $rows->map(fn (Species $s) => $this->format($s))->values()->all();
             } catch (\Throwable $e) {
                 Log::warning('Species MeiliSearch unavailable, falling back to DB search.', [
                     'error' => $e->getMessage(),
@@ -78,7 +76,7 @@ class SpeciesController extends Controller
                 $start = $term . '%';
                 $any   = '%' . $term . '%';
 
-                return Species::query()
+                $rows = Species::query()
                     ->where(fn ($q) => $q
                         ->where('common_name', 'like', $any)
                         ->orWhere('species', 'like', $any)
@@ -96,10 +94,11 @@ class SpeciesController extends Controller
                         END
                     ", [$exact, $exact, $start, $start, $any, $any])
                     ->limit(60)
-                    ->get()
-                    ->map(fn (Species $s) => $this->format($s))
-                    ->values()
-                    ->all();
+                    ->get();
+
+                $rows->loadMissing('latestApprovedMedia');
+
+                return $rows->map(fn (Species $s) => $this->format($s))->values()->all();
             }
         });
 
@@ -109,13 +108,12 @@ class SpeciesController extends Controller
     private function format(Species $s): array
     {
         return [
-            'id'             => $s->id,
-            'species'        => $s->species,
-            'common_name'    => $s->common_name,
-            'higher_taxa'    => $s->higher_taxa,
-            'author'         => $s->author,
-            'species_number' => $s->species_number,
-            'type_species'   => $s->getRawOriginal('type_species'),
+            'id'          => $s->id,
+            'species'     => $s->species,
+            'common_name' => $s->common_name,
+            'higher_taxa' => $s->higher_taxa,
+            'author'      => $s->author,
+            'thumbnail'   => $s->latestApprovedMedia?->url,
         ];
     }
 }

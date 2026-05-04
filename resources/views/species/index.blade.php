@@ -59,7 +59,7 @@
                                     <th class="px-4 py-3 text-left font-semibold">Common Name</th>
                                     <th class="px-4 py-3 text-left font-semibold hidden md:table-cell">Family / Taxon</th>
                                     <th class="px-4 py-3 text-left font-semibold hidden lg:table-cell">Author</th>
-                                    <th class="px-4 py-3 text-center font-semibold hidden lg:table-cell">Type</th>
+                                    <th class="px-4 py-3 text-center font-semibold hidden lg:table-cell w-16">Photo</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -76,20 +76,15 @@
                                             x-text="row.higher_taxa || '—'"></td>
                                         <td class="px-4 py-3 text-gray-500 dark:text-gray-400 hidden lg:table-cell text-xs"
                                             x-text="row.author || '—'"></td>
-                                        <td class="px-4 py-3 text-center hidden lg:table-cell">
-                                            <template x-if="row.type_species">
-                                                <span class="inline-flex gap-1">
-                                                    <template x-for="token in row.type_species.split(' ')" :key="token">
-                                                        <abbr
-                                                            :title="typeLabel(token)"
-                                                            class="cursor-help inline-block px-1.5 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 uppercase no-underline"
-                                                            x-text="token">
-                                                        </abbr>
-                                                    </template>
-                                                </span>
+                                        <td class="px-4 py-2 text-center hidden lg:table-cell">
+                                            <template x-if="row.thumbnail">
+                                                <a :href="`${showBase}/${row.id}`">
+                                                    <img :src="row.thumbnail" :alt="row.species"
+                                                         class="h-10 w-10 object-cover rounded-md mx-auto ring-1 ring-gray-200 dark:ring-gray-600">
+                                                </a>
                                             </template>
-                                            <template x-if="!row.type_species">
-                                                <span class="text-gray-300 dark:text-gray-600">—</span>
+                                            <template x-if="!row.thumbnail">
+                                                <span class="inline-block h-10 w-10 rounded-md bg-gray-100 dark:bg-gray-700 mx-auto"></span>
                                             </template>
                                         </td>
                                     </tr>
@@ -133,19 +128,6 @@
                 const saved = sessionStorage.getItem('species_search_query');
                 this.query = (saved !== null && saved !== '') ? saved : randomSeed;
                 this.doSearch();
-            },
-
-            typeLabels: {
-                x: 'Syntype',
-                h: 'Holotype',
-                o: 'Lost/None',
-                p: 'Paratype',
-                l: 'Lectotype',
-                n: 'Neotype',
-            },
-
-            typeLabel(token) {
-                return this.typeLabels[token.toLowerCase()] ?? token;
             },
 
             async doSearch() {
