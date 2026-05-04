@@ -83,5 +83,6 @@ Tailwind CSS 3 + Alpine.js for reactive UI and component state.
 - Always run `php artisan optimize` 
 - Always run `php artisan test` after completing a changeset
 - Always use the caveman skill caveman mode
+- Always update `README.md` changelog after completing a feature changeset
 - `AnimalAvailability` enum must be used for animal state — do not store raw strings
 - Captive-bred status required in listing validation

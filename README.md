@@ -78,6 +78,15 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 ### Changelog
 
 #### 2026-05-04 (continued)
+- Added `logs:upload` Artisan command — streams `storage/logs/*.log` to `private_s3` disk; scheduled monthly on the 15th at midnight
+- Added `private_s3` filesystem disk (`PRIVATE_S3_KEY`, `PRIVATE_S3_SECRET`, `PRIVATE_S3_BUCKET`, `PRIVATE_S3_REGION`, `PRIVATE_S3_ENDPOINT`) — separate credentials from public media S3; visibility private
+- Added `FetchTaxonImageJob` queued job — dispatches one job per species/subspecies record on the `species-images` queue; `species:fetch-images --model=all --queue` enqueues all unprocessed taxa
+- Scheduled `species:fetch-images --model=all --queue` weekly, Sundays at 03:00 `America/Boise`
+- `species:fetch-images` now accepts `--queue` flag to dispatch `FetchTaxonImageJob` per record instead of processing inline; `--max` option controls images per taxon (default 1); `buildQuery` orders 0-image records first so re-runs always make forward progress; default `--limit` bumped to 1,000
+- Image license filter relaxed: null/unspecified licenses accepted; only "all rights reserved" explicitly rejected
+- Photo column moved to leftmost position in species search results table
+
+#### 2026-05-04 (continued)
 - Production database migrated from MySQL 8 to PostgreSQL
 - Added `species:fetch-images` Artisan command — fetches free CC-licensed images for species and subspecies from a four-source chain: Wikipedia REST API → Wikimedia Commons direct file search → iNaturalist taxa API → GBIF species media API; resumable batched runs (`--limit`, `--model`, `--id`), `--dry-run` and `--force` options, 500ms rate-limiting delay between requests
 - Added `media:export-species` — exports approved species/subspecies media (with attribution) to a portable JSON file for production import

@@ -44,6 +44,19 @@ return [
             'throw' => false,
         ],
 
+        'private_s3' => [
+            'driver'                  => 's3',
+            'key'                     => env('PRIVATE_S3_KEY'),
+            'secret'                  => env('PRIVATE_S3_SECRET'),
+            'region'                  => env('PRIVATE_S3_REGION', 'sfo3'),
+            'bucket'                  => env('PRIVATE_S3_BUCKET', 'privates'),
+            'url'                     => env('PRIVATE_S3_URL'),
+            'endpoint'                => env('PRIVATE_S3_ENDPOINT', 'https://sfo3.digitaloceanspaces.com'),
+            'use_path_style_endpoint' => false,
+            'visibility'              => 'private',
+            'throw'                   => true,
+        ],
+
         's3' => [
             'driver'                  => 's3',
             'key'                     => env('AWS_ACCESS_KEY_ID'),

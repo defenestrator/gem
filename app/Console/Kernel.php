@@ -15,6 +15,17 @@ class Kernel extends ConsoleKernel
         $schedule->command('app:heartbeat')->everyMinute()->thenPing('http://beats.envoyer.io/heartbeat/uXCYSo1Y3nJTELd');
 
         $schedule->command('animals:sync')->hourly()->withoutOverlapping()->runInBackground();
+
+        $schedule->command('species:fetch-images --model=all --queue')
+            ->weekly()->sundays()->at('03:00')
+            ->timezone('America/Boise')
+            ->withoutOverlapping()
+            ->runInBackground();
+
+        $schedule->command('logs:upload')
+            ->monthlyOn(15, '00:00')
+            ->withoutOverlapping()
+            ->runInBackground();
     }
 
     /**
