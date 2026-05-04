@@ -22,6 +22,7 @@ return [
     'allowed_origins' => [
         'gem.test:5173',
         'gemx.digitaloceanspaces.com',
+        'privates.digitaloceanspaces.com',
         'http://localhost',
         'http://localhost:3000',
         'http://localhost:5173',

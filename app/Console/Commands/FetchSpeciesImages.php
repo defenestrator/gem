@@ -40,7 +40,7 @@ class FetchSpeciesImages extends Command
         {--queue         : Dispatch a queued job per record instead of processing inline}
         {--dry-run       : Preview without saving anything}
         {--force         : Process records regardless of existing image count}
-        {--max=1         : Maximum images to collect per taxon (1–8)}
+        {--max=8         : Maximum images to collect per taxon (1–8)}
         {--delay=500     : Milliseconds to wait between species requests (inline only)}';
 
     protected $description = 'Fetch 1–8 free CC-licensed images per species/subspecies from multiple sources';
