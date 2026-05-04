@@ -75,6 +75,18 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-04
+- Added `species:import` Artisan command — imports Reptile Database CSV into `species` table, supports `--dry-run` and `--csv=` options, deduplicates on `species_number`
+- Imported 11,440 species records from `reptile_checklist_2020_12.csv`
+- Added `SpeciesType` enum (Syntype, Holotype, Lost, Paratype, Lectotype, Neotype)
+- Added `SpeciesTypeCast` — parses space-delimited type tokens to `SpeciesType[]`; empty → `"null"`
+- Updated `species` table: `type_species` bool → varchar(10), unique index on `species_number`
+- Social auth buttons hidden on login and register views (pending re-enable)
+
+#### 2026-04-30
+- Added social auth (Google, Facebook, Twitch) via Laravel Socialite
+- Added `SocialAccount` model and `social_accounts` migration
+
 #### 2026-04-27
 - Added `FEATURE_CLASSIFIEDS` feature flag (disabled on production by default)
 - Removed HTMX and Hyperscript; Alpine.js only
