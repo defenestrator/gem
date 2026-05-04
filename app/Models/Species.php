@@ -51,6 +51,11 @@ class Species extends Model
         return $this->hasMany(Animal::class);
     }
 
+    public function subspecies()
+    {
+        return $this->hasMany(Subspecies::class);
+    }
+
     public function approvedMedia()
     {
         return $this->morphMany(Media::class, 'mediable')->where('moderation_status', 'approved');
