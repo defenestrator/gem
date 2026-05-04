@@ -46,6 +46,7 @@
                 </x-primary-button>
             </div>
         </form>
+        {{-- <x-social-auth-buttons /> --}}
     </div>
 </main>
 </x-guest-layout>

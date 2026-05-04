@@ -53,6 +53,8 @@
                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                 </div>
 
+                {{-- <x-social-auth-buttons /> --}}
+
                 <!-- Turnstile -->
                 <div class="mt-4">
                     <div class="cf-turnstile" data-sitekey="{{ $turnstileSiteKey }}"></div>
