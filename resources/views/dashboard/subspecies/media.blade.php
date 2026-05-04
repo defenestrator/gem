@@ -40,10 +40,10 @@
                                        class="text-sm font-semibold italic text-orange-600 dark:text-orange-400 hover:underline leading-tight">
                                         {{ $sub->full_name }}
                                     </a>
-                                    @if ($sub->species)
-                                        <a href="{{ route('species.show', $sub->species) }}"
+                                    @if ($sub->parentSpecies)
+                                        <a href="{{ route('species.show', $sub->parentSpecies) }}"
                                            class="text-xs text-gray-400 dark:text-gray-500 hover:underline">
-                                            {{ $sub->species->species }}
+                                            {{ $sub->parentSpecies->species }}
                                         </a>
                                     @endif
                                 @endif

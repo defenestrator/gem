@@ -19,9 +19,9 @@ class Subspecies extends Model
         'author',
     ];
 
-    public function species()
+    public function parentSpecies()
     {
-        return $this->belongsTo(Species::class);
+        return $this->belongsTo(Species::class, 'species_id');
     }
 
     public function approvedMedia()

@@ -3,9 +3,9 @@
         <div class="flex items-center gap-3 flex-wrap">
             <a href="{{ route('species.index') }}" class="text-gray-400 hover:text-orange-500 transition text-sm">← Species</a>
             <span class="text-gray-300 dark:text-gray-600">/</span>
-            <a href="{{ route('species.show', $subspecies->species) }}"
+            <a href="{{ route('species.show', $subspecies->parentSpecies) }}"
                class="text-gray-400 hover:text-orange-500 transition text-sm italic">
-                {{ $subspecies->species->species }}
+                {{ $subspecies->parentSpecies->species }}
             </a>
             <span class="text-gray-300 dark:text-gray-600">/</span>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight italic">
@@ -45,11 +45,11 @@
                     <div class="sm:col-span-2">
                         <dt class="font-semibold text-gray-500 dark:text-gray-400">Parent Species</dt>
                         <dd>
-                            <a href="{{ route('species.show', $subspecies->species) }}"
+                            <a href="{{ route('species.show', $subspecies->parentSpecies) }}"
                                class="text-orange-600 dark:text-orange-400 hover:underline italic text-sm">
-                                {{ $subspecies->species->species }}
-                                @if ($subspecies->species->common_name)
-                                    <span class="not-italic text-gray-500 dark:text-gray-400">({{ $subspecies->species->common_name }})</span>
+                                {{ $subspecies->parentSpecies->species }}
+                                @if ($subspecies->parentSpecies->common_name)
+                                    <span class="not-italic text-gray-500 dark:text-gray-400">({{ $subspecies->parentSpecies->common_name }})</span>
                                 @endif
                             </a>
                         </dd>

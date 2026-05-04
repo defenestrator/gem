@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('subspecies')) {
+            return;
+        }
+
         Schema::create('subspecies', function (Blueprint $table) {
             $table->id();
             $table->foreignId('species_id')->constrained('species')->nullOnDelete();

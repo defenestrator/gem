@@ -16,7 +16,7 @@ class DashboardSubspeciesMediaController extends Controller
         $pending = Media::query()
             ->where('mediable_type', Subspecies::class)
             ->where('moderation_status', 'pending')
-            ->with('mediable.species')
+            ->with('mediable.parentSpecies')
             ->latest()
             ->paginate(24);
 

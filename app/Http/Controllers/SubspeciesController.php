@@ -18,7 +18,7 @@ class SubspeciesController extends Controller
             ? $subspecies->media()->orderBy('moderation_status')->latest()->get()
             : $subspecies->approvedMedia()->latest()->get();
 
-        $subspecies->load('species');
+        $subspecies->load('parentSpecies');
 
         return view('subspecies.show', compact('subspecies', 'media', 'isAdmin'));
     }
