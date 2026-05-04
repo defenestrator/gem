@@ -52,7 +52,15 @@
                                 <img src="{{ $firstPhoto }}" alt="{{ $animal['Title*'] }}" class="w-full aspect-square object-cover">
                             @endif
                             <div class="p-4 flex flex-col flex-1">
-                            <h3 class="text-lg font-semibold font-serif text-orange-400 mb-2">{{ $animal['Title*'] }}</h3>
+                            <h3 class="text-lg font-semibold font-serif text-orange-400 mb-1">{{ $animal['Title*'] }}</h3>
+                            @php $species = $speciesMap[$animal['Animal_Id*']] ?? null; @endphp
+                            @if ($species)
+                                <p class="text-xs italic text-gray-400 mb-2">
+                                    <a href="{{ route('species.show', $species) }}" class="hover:text-orange-400 hover:underline transition">
+                                        {{ $species->species }}
+                                    </a>
+                                </p>
+                            @endif
                             <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Category:</span> {{ $animal['Category*'] }}</p>
                             <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Traits:</span> {{ $animal['Traits'] }}</p>
                             <p class="text-sm text-gray-300 mb-1"><span class="font-serif font-bold">Maturity:</span> {{ $animal['Maturity'] }}</p>

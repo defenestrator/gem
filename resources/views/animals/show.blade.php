@@ -52,9 +52,16 @@
                         @endif
                     </div>
 
-                    <h1 class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">
+                    <h1 class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-1">
                         {{ $animal->pet_name }}
                     </h1>
+                    @if ($animal->species)
+                        <p class="text-sm italic text-gray-400 dark:text-gray-500 mb-2">
+                            <a href="{{ route('species.show', $animal->species) }}" class="hover:text-orange-500 hover:underline transition">
+                                {{ $animal->species->species }}
+                            </a>
+                        </p>
+                    @endif
 
                     @if ($animal->availability === \App\Enums\AnimalAvailability::ForSale)
                         <div class="flex items-center gap-6 mb-6">

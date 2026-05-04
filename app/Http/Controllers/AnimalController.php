@@ -16,7 +16,7 @@ class AnimalController extends Controller
 
         $query = Animal::query()
             ->where('status', 'published')
-            ->with('media');
+            ->with('media', 'species');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -49,6 +49,6 @@ class AnimalController extends Controller
     {
         $this->authorize('view', $animal);
 
-        return view('animals.show', ['animal' => $animal->load('user', 'media')]);
+        return view('animals.show', ['animal' => $animal->load('user', 'media', 'species')]);
     }
 }

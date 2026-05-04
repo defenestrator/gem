@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"
             x-data="speciesSearch"
-            x-init="endpoint = '{{ route('species.search') }}'; showBase = '{{ url('/species') }}'; query = '{{ \App\Support\SpeciesSearchTerms::random() }}'; doSearch()">
+            x-init="init('{{ route('species.search') }}', '{{ url('/species') }}', '{{ \App\Support\SpeciesSearchTerms::random() }}')">
 
             {{-- Search input --}}
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
@@ -127,6 +127,14 @@
             searched:  false,
             cache:     {},
 
+            init(endpoint, showBase, randomSeed) {
+                this.endpoint = endpoint;
+                this.showBase = showBase;
+                const saved = sessionStorage.getItem('species_search_query');
+                this.query = (saved !== null && saved !== '') ? saved : randomSeed;
+                this.doSearch();
+            },
+
             typeLabels: {
                 x: 'Syntype',
                 h: 'Holotype',
@@ -146,8 +154,11 @@
                 if (q.length < 2) {
                     this.results  = [];
                     this.searched = false;
+                    sessionStorage.removeItem('species_search_query');
                     return;
                 }
+
+                sessionStorage.setItem('species_search_query', q);
 
                 const key = q.toLowerCase();
                 if (this.cache[key] !== undefined) {

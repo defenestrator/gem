@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnimalController;
+use App\Models\Animal;
 use App\Http\Controllers\DashboardMediaModerationController;
 use App\Http\Controllers\SpeciesController;
 use App\Http\Controllers\SubspeciesController;
@@ -68,7 +69,7 @@ Route::get('/', function (Request $request) use ($getAnimals) {
     $responseKey = 'welcome_' . $sort . '_' . $mtime;
     $response = Cache::remember($responseKey, 30*60, function() use ($getAnimals, $sort) {
         $animals = $getAnimals();
-        
+
         // Apply sorting based on filter
         if ($sort === 'price-low') {
             usort($animals, function($a, $b) {
@@ -94,8 +95,16 @@ Route::get('/', function (Request $request) use ($getAnimals) {
             });
         }
         // 'recent' is the default, already sorted by Last_Update** from $getAnimals()
-        
-        return view('welcome', ['animals' => $animals, 'currentSort' => $sort])->render();
+
+        $slugs = array_column($animals, 'Animal_Id*');
+        $speciesMap = Animal::whereIn('slug', $slugs)
+            ->whereNotNull('species_id')
+            ->with('species')
+            ->get()
+            ->keyBy('slug')
+            ->map(fn ($a) => $a->species);
+
+        return view('welcome', ['animals' => $animals, 'currentSort' => $sort, 'speciesMap' => $speciesMap])->render();
     });
     return response($response);
 })->name('welcome');

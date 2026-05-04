@@ -79,7 +79,7 @@
                             </a>
 
                             <div class="p-4 flex flex-col flex-1">
-                                <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center justify-between mb-1">
                                     <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-400 mr-2">
                                         <a href="{{ route('animals.show', $animal) }}" class="hover:underline">
                                             {{ $animal->pet_name }}
@@ -89,6 +89,13 @@
                                         {{ $animal->female ? 'Female' : 'Male' }}
                                     </span>
                                 </div>
+                                @if ($animal->species)
+                                    <p class="text-xs italic text-gray-400 dark:text-gray-500 mb-2">
+                                        <a href="{{ route('species.show', $animal->species) }}" class="hover:text-orange-500 hover:underline transition">
+                                            {{ $animal->species->species }}
+                                        </a>
+                                    </p>
+                                @endif
                                 @if ($animal->category)
                                     <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
                                         <span class="font-semibold">Category:</span> {{ $animal->category }}
