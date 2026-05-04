@@ -76,7 +76,20 @@ The source is open. Our content, logos, and UI designs are &copy; All Rights Res
 Everything except secrets belongs in git. Blobs go in S3 or similar — not in the database, not in git.
 
 ### Changelog
+
 #### 2026-05-04 (continued)
+- Production database migrated from MySQL 8 to PostgreSQL
+- Added `species:fetch-images` Artisan command — fetches free CC-licensed images for species and subspecies from a four-source chain: Wikipedia REST API → Wikimedia Commons direct file search → iNaturalist taxa API → GBIF species media API; resumable batched runs (`--limit`, `--model`, `--id`), `--dry-run` and `--force` options, 500ms rate-limiting delay between requests
+- Added `media:export-species` — exports approved species/subspecies media (with attribution) to a portable JSON file for production import
+- Added `media:import-species` — idempotent JSON import for production; matches records by scientific name (not ID) for cross-environment safety
+- Added `source_url` and `license_url` columns to `media` table; existing `license`, `author`, `copyright` columns reused for full attribution storage
+- Scientific names now displayed (italic, linked to species record) on animal index cards, animal detail pages, and the homepage welcome cards
+- Species search results now show a thumbnail of the most recent approved photo instead of the type-specimen badge column
+- Species search query now persists in `sessionStorage`; random seed only fires on first visit or after the field is cleared
+- Added `latestApprovedMedia()` morphOne relationship to `Species` model; used by the search API to return thumbnails in a single eager-loaded query
+
+#### 2026-05-04 (continued)
+- Applied patches to production server for kmod vulnerability
 - Applied patches to production server for kmod vulnerability
 
 #### 2026-05-04 (continued)
