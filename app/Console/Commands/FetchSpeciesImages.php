@@ -7,6 +7,7 @@ use App\Models\Subspecies;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -85,6 +86,13 @@ class FetchSpeciesImages extends Command
             ['Images saved', 'Records skipped (full)', 'No image found', 'Upload errors'],
             [[$this->fetched, $this->skipped, $this->notFound, $this->failed]]
         );
+
+        Log::info('fetch-images: run complete', [
+            'saved'    => $this->fetched,
+            'skipped'  => $this->skipped,
+            'notFound' => $this->notFound,
+            'failed'   => $this->failed,
+        ]);
 
         return self::SUCCESS;
     }
@@ -204,11 +212,13 @@ class FetchSpeciesImages extends Command
         $existingSourceUrls = $existing->pluck('source_url')->filter()->all();
 
         $this->line("  → <info>{$name}</info> (have {$existing->count()}, need up to {$needed} more)");
+        Log::info("fetch-images: processing {$name}", ['have' => $existing->count(), 'need' => $needed, 'type' => $type]);
 
         $images = $this->findImages($name, $needed, $existingSourceUrls);
 
         if (empty($images)) {
             $this->line("    <comment>No CC-licensed images found in any source.</comment>");
+            Log::info("fetch-images: no images found for {$name}");
             $this->notFound++;
             return;
         }
@@ -228,6 +238,7 @@ class FetchSpeciesImages extends Command
             $bytes = $this->download($imageData['download_url']);
             if ($bytes === null) {
                 $this->warn("    Download failed: {$imageData['download_url']}");
+                Log::warning("fetch-images: download failed for {$name}", ['url' => $imageData['download_url']]);
                 $this->failed++;
                 continue;
             }
@@ -239,6 +250,7 @@ class FetchSpeciesImages extends Command
                 Storage::disk('s3')->put($path, $bytes, 'public');
             } catch (\Throwable $e) {
                 $this->warn("    S3 upload failed: {$e->getMessage()}");
+                Log::error("fetch-images: S3 upload failed for {$name}", ['path' => $path, 'error' => $e->getMessage()]);
                 $this->failed++;
                 continue;
             }
@@ -259,6 +271,7 @@ class FetchSpeciesImages extends Command
             ]);
 
             $this->line("    <info>[{$imageData['source']}]</info> saved → {$path}");
+            Log::info("fetch-images: saved image for {$name}", ['source' => $imageData['source'], 'path' => $path]);
             $this->fetched++;
             $index++;
         }
@@ -301,6 +314,7 @@ class FetchSpeciesImages extends Command
                 }
             } catch (\Throwable $e) {
                 $this->line("    [{$sourceName}] {$e->getMessage()}");
+                Log::warning("fetch-images: source error [{$sourceName}] for {$name}", ['error' => $e->getMessage()]);
             }
         }
 
