@@ -352,7 +352,7 @@ class FetchSpeciesImages extends Command
 
             $meta    = $info['extmetadata'] ?? [];
             $license = $meta['LicenseShortName']['value'] ?? null;
-            if (! $license || ! $this->isCcLicense($license)) {
+            if (! $this->isAcceptableImage($license ?? null)) {
                 continue;
             }
 
@@ -407,7 +407,7 @@ class FetchSpeciesImages extends Command
             $photo       = $tp['photo'] ?? null;
             $licenseCode = $photo['license_code'] ?? null;
 
-            if (! $photo || ! $licenseCode || $licenseCode === 'all-rights-reserved') {
+            if (! $photo || $licenseCode === 'all-rights-reserved') {
                 continue;
             }
 
@@ -419,8 +419,8 @@ class FetchSpeciesImages extends Command
             $images[] = [
                 'download_url' => $url,
                 'source_url'   => "https://www.inaturalist.org/taxa/{$taxon['id']}",
-                'license'      => $this->normalizeLicenseCode($licenseCode),
-                'license_url'  => $this->licenseUrlFromCode($licenseCode),
+                'license'      => $licenseCode ? $this->normalizeLicenseCode($licenseCode) : 'Unspecified',
+                'license_url'  => $licenseCode ? $this->licenseUrlFromCode($licenseCode) : null,
                 'author'       => strip_tags($photo['attribution'] ?? 'iNaturalist contributor'),
                 'title'        => $taxon['name'],
             ];
@@ -473,7 +473,7 @@ class FetchSpeciesImages extends Command
             }
 
             $license = $item['license'] ?? '';
-            if (! str_contains($license, 'creativecommons.org')) {
+            if (! $this->isAcceptableImage($license ?: null)) {
                 continue;
             }
 
@@ -575,10 +575,20 @@ class FetchSpeciesImages extends Command
     // License helpers
     // -----------------------------------------------------------------------
 
-    private function isCcLicense(string $license): bool
+    /**
+     * Accept any image that doesn't carry an explicit "all rights reserved" notice.
+     * Null/empty license (unknown) is treated as potentially free — included.
+     * Explicitly reserved images are excluded.
+     */
+    private function isAcceptableImage(?string $license): bool
     {
+        if ($license === null || $license === '') {
+            return true;
+        }
         $l = strtolower($license);
-        return str_starts_with($l, 'cc') || str_starts_with($l, 'public domain');
+        return ! str_contains($l, 'all rights reserved')
+            && ! str_contains($l, 'no reuse')
+            && ! str_contains($l, 'rights reserved');
     }
 
     private function normalizeLicenseCode(string $code): string

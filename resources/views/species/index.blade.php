@@ -55,16 +55,27 @@
                         <table class="w-full text-sm">
                             <thead class="bg-gray-50 dark:bg-gray-700 text-xs uppercase text-gray-500 dark:text-gray-400">
                                 <tr>
+                                    <th class="px-2 py-3 text-center font-semibold hidden lg:table-cell w-14">Photo</th>
                                     <th class="px-4 py-3 text-left font-semibold">Scientific Name</th>
                                     <th class="px-4 py-3 text-left font-semibold">Common Name</th>
                                     <th class="px-4 py-3 text-left font-semibold hidden md:table-cell">Family / Taxon</th>
                                     <th class="px-4 py-3 text-left font-semibold hidden lg:table-cell">Author</th>
-                                    <th class="px-4 py-3 text-center font-semibold hidden lg:table-cell w-16">Photo</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                                 <template x-for="row in results" :key="row.id">
                                     <tr class="hover:bg-orange-50 dark:hover:bg-gray-700 transition">
+                                        <td class="px-2 py-2 text-center hidden lg:table-cell">
+                                            <template x-if="row.thumbnail">
+                                                <a :href="`${showBase}/${row.id}`">
+                                                    <img :src="row.thumbnail" :alt="row.species"
+                                                         class="h-10 w-10 object-cover rounded-md mx-auto ring-1 ring-gray-200 dark:ring-gray-600">
+                                                </a>
+                                            </template>
+                                            <template x-if="!row.thumbnail">
+                                                <span class="inline-block h-10 w-10 rounded-md bg-gray-100 dark:bg-gray-700 mx-auto"></span>
+                                            </template>
+                                        </td>
                                         <td class="px-4 py-3">
                                             <a :href="`${showBase}/${row.id}`"
                                                class="italic font-medium text-orange-600 dark:text-orange-400 hover:underline"
@@ -76,17 +87,6 @@
                                             x-text="row.higher_taxa || '—'"></td>
                                         <td class="px-4 py-3 text-gray-500 dark:text-gray-400 hidden lg:table-cell text-xs"
                                             x-text="row.author || '—'"></td>
-                                        <td class="px-4 py-2 text-center hidden lg:table-cell">
-                                            <template x-if="row.thumbnail">
-                                                <a :href="`${showBase}/${row.id}`">
-                                                    <img :src="row.thumbnail" :alt="row.species"
-                                                         class="h-10 w-10 object-cover rounded-md mx-auto ring-1 ring-gray-200 dark:ring-gray-600">
-                                                </a>
-                                            </template>
-                                            <template x-if="!row.thumbnail">
-                                                <span class="inline-block h-10 w-10 rounded-md bg-gray-100 dark:bg-gray-700 mx-auto"></span>
-                                            </template>
-                                        </td>
                                     </tr>
                                 </template>
                             </tbody>
