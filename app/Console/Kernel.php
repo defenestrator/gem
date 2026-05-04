@@ -12,7 +12,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('app:heartbeat')->everyMinute()->thenPing('http://beats.envoyer.io/heartbeat/uXCYSo1Y3nJTELd');
+        $schedule->command('app:heartbeat')
+            ->everyMinute()
+            ->thenPing('https://heartbeats.laravel.com/01kqtm6dwrfgb3f9kmgd8chkzt/ping');
 
         $schedule->command('animals:sync')->hourly()->withoutOverlapping()->runInBackground();
 
