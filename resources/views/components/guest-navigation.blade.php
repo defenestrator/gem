@@ -20,6 +20,9 @@
                     <x-nav-link :href="route('categories')" :active="request()->routeIs('categories') || request()->routeIs('categories.*')">
                         {{ __('Categories') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('species.index')" :active="request()->routeIs('species.*')">
+                        {{ __('Species') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -73,6 +76,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('categories')" :active="request()->routeIs('categories') || request()->routeIs('categories.*')">
                 {{ __('Categories') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('species.index')" :active="request()->routeIs('species.*')">
+                {{ __('Species') }}
             </x-responsive-nav-link>
             @auth
                 <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">

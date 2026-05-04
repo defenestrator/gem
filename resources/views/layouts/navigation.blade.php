@@ -25,6 +25,15 @@
                             @endif
                         </span>
                     </x-nav-link>
+                    <x-nav-link :href="route('dashboard.species.media.index')" :active="request()->routeIs('dashboard.species.*')">
+                        <span class="relative inline-flex items-center gap-1">
+                            {{ __('Photos') }}
+                            @php $pendingPhotoCount = \App\Models\Media::where('mediable_type', \App\Models\Species::class)->where('moderation_status', 'pending')->count(); @endphp
+                            @if($pendingPhotoCount)
+                                <span class="bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full leading-none">{{ $pendingPhotoCount }}</span>
+                            @endif
+                        </span>
+                    </x-nav-link>
                     @endif
                     <x-nav-link :href="route('animals.index')" :active="request()->routeIs('animals.*')">
                         {{ __('Animals') }}
@@ -36,6 +45,9 @@
                     @endif
                     <x-nav-link :href="route('sellers.index')" :active="request()->routeIs('sellers.*')">
                         {{ __('Sellers') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('species.index')" :active="request()->routeIs('species.*')">
+                        {{ __('Species') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -116,6 +128,9 @@
             @endif
             <x-responsive-nav-link :href="route('sellers.index')" :active="request()->routeIs('sellers.*')">
                 {{ __('Sellers') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('species.index')" :active="request()->routeIs('species.*')">
+                {{ __('Species') }}
             </x-responsive-nav-link>
         </div>
 

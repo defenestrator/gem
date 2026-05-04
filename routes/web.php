@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\DashboardSpeciesMediaController;
+use App\Http\Controllers\SpeciesController;
 use App\Http\Controllers\DashboardAnimalController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\ProfileController;
@@ -218,6 +220,12 @@ if (config('features.easyship')) {
     Route::post('/shipping/location', ShipCenterController::class)->name('shipping.location');
 }
 
+// Species Routes
+Route::get('/species', [SpeciesController::class, 'index'])->name('species.index');
+Route::get('/species/search', [SpeciesController::class, 'search'])->name('species.search');
+Route::get('/species/{species}', [SpeciesController::class, 'show'])->name('species.show');
+Route::post('/species/{species}/media', [SpeciesController::class, 'storeMedia'])->name('species.media.store')->middleware('auth');
+
 // Animals Routes
 Route::get('/animals', [AnimalController::class, 'index'])->name('animals.index');
 Route::get('/animals/{animal:slug}', [AnimalController::class, 'show'])->name('animals.show');
@@ -245,6 +253,11 @@ Route::middleware('auth')->group(function () {
         Route::get('dashboard/inquiries/{inquiry}', [DashboardInquiryController::class, 'show'])->name('inquiries.show');
         Route::post('dashboard/inquiries/{inquiry}/reply', [DashboardInquiryController::class, 'reply'])->name('inquiries.reply');
         Route::patch('dashboard/inquiries/{inquiry}/close', [DashboardInquiryController::class, 'close'])->name('inquiries.close');
+
+        // Species media moderation (admin only)
+        Route::get('dashboard/species/media', [DashboardSpeciesMediaController::class, 'index'])->name('species.media.index');
+        Route::patch('dashboard/species/media/{media}/approve', [DashboardSpeciesMediaController::class, 'approve'])->name('species.media.approve');
+        Route::patch('dashboard/species/media/{media}/reject', [DashboardSpeciesMediaController::class, 'reject'])->name('species.media.reject');
     });
 });
 

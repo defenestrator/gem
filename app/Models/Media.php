@@ -15,7 +15,7 @@ class Media extends Model
     use HasFactory;
 
     protected $fillable = [
-        'url', 'user_id', 'license', 'copyright', 'author', 'title'
+        'url', 'user_id', 'license', 'copyright', 'author', 'title', 'moderation_status',
     ];
 
     public function mediable()
@@ -23,60 +23,41 @@ class Media extends Model
         return $this->morphTo();
     }
 
-    /**
-     * Scope by Mediable Type
-     *
-     * $value can be a namespaced class string, or a POPO class
-     *
-     * @param Builder $query
-     * @param string $value
-     * @return Builder $query
-     */
-    public function scopeType(Builder $query, $value)
+    public function scopeApproved(Builder $query): Builder
+    {
+        return $query->where('moderation_status', 'approved');
+    }
+
+    public function scopePending(Builder $query): Builder
+    {
+        return $query->where('moderation_status', 'pending');
+    }
+
+    public function scopeRejected(Builder $query): Builder
+    {
+        return $query->where('moderation_status', 'rejected');
+    }
+
+    public function scopeType(Builder $query, $value): Builder
     {
         return $query->where('mediable_type', $value);
     }
 
-    /**
-     * Scope by Animal
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeAnimals($query)
+    public function scopeAnimals(Builder $query): Builder
     {
         return $this->scopeType($query, "App\Animal");
     }
 
-    /**
-     * Scope by Species
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeSpecies($query)
+    public function scopeSpecies(Builder $query): Builder
     {
         return $this->scopeType($query, "App\Species");
     }
 
-    /**
-     * Scope by FieldObservation
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeFieldObservations($query)
+    public function scopeFieldObservations(Builder $query): Builder
     {
         return $this->scopeType($query, "App\FieldObservation");
     }
 
-    /**
-     * Upload Media
-     *
-     * @param  mixed $file
-     *
-     * @return string $newImage
-     */
     protected function uploadImage(UploadedFile $file, $size = 2000)
     {
         $exif = exif_read_data($file, 0, true);
@@ -84,10 +65,6 @@ class Media extends Model
         $title = $file->getClientOriginalName();
 
         $location = $this->yeetImageLocation($exif);
-
-        $copyright = '';
-
-        $license = '';
 
         $lat = $long = null;
 
@@ -98,12 +75,11 @@ class Media extends Model
             $long = $location['longitude'];
         }
 
-
         $this->forceFill([
             'url'       => $newImage,
             'title'     => $title,
-            'license'   => $license,
-            'copyright' => $copyright,
+            'license'   => '',
+            'copyright' => '',
         ])->save();
 
         return $newImage;
@@ -113,28 +89,18 @@ class Media extends Model
     {
         $parts = explode('/', $coordPart);
 
-        if(count($parts) <= 0)
-            return 0;
-        if(count($parts) == 1)
-            return $parts[0];
+        if (count($parts) <= 0) return 0;
+        if (count($parts) == 1) return $parts[0];
 
         return floatval($parts[0]) / floatval($parts[1]);
     }
 
-    /**
-     * processMedia
-     *
-     * @param  mixed $media
-     * @param  mixed $size
-     *
-     * @return array $filePath
-     */
     protected function processMedia($media, $size)
     {
         $options = [
-            'visibility'    =>  'public',
-            'Cache-Control' =>  'max-age=315400000',
-            'Expires'       =>  now()->addRealDecade()->format('D, d M Y H:i:s T')
+            'visibility'    => 'public',
+            'Cache-Control' => 'max-age=315400000',
+            'Expires'       => now()->addRealDecade()->format('D, d M Y H:i:s T'),
         ];
 
         $i = Image::make($media)
@@ -147,24 +113,18 @@ class Media extends Model
 
         $hash = Str::random();
         $fileName = $hash . '.webp';
+
         if (config('app.env') == 'production') {
-            Storage::disk('s3')->getDriver()->put('/images/'. $fileName, $i->__toString(), $options);
+            Storage::disk('s3')->getDriver()->put('/images/' . $fileName, $i->__toString(), $options);
             $filePath = config('filesystems.disks.s3.url', 'https://gemx.sfo3.cdn.digitaloceanspaces.com') . '/images/' . $fileName;
         } else {
-            Storage::disk('local')->put('/images/'. $fileName, $i->__toString());
+            Storage::disk('local')->put('/images/' . $fileName, $i->__toString());
             $filePath = Storage::disk('public')->url('/images/' . $fileName);
         }
 
         return $filePath;
     }
 
-    /**
-     * yeetImageLocation
-     * Returns an array of latitude and longitude 
-     * from the Media file by looking for various possible data
-     * @param $exif
-     * @return multitype:array|boolean
-     */
     protected function yeetImageLocation($exif = '')
     {
         if (isset($exif['GPS'])) {
@@ -184,13 +144,12 @@ class Media extends Model
             $lat_direction = ($GPSLatitudeRef == 'W' or $GPSLatitudeRef == 'S') ? -1 : 1;
             $lon_direction = ($GPSLongitudeRef == 'W' or $GPSLongitudeRef == 'S') ? -1 : 1;
 
-            $latitude = $lat_direction * ($lat_degrees + ($lat_minutes / 60) + ($lat_seconds / (60*60)));
-            $longitude = $lon_direction * ($lon_degrees + ($lon_minutes / 60) + ($lon_seconds / (60*60)));
+            $latitude  = $lat_direction * ($lat_degrees + ($lat_minutes / 60) + ($lat_seconds / (60 * 60)));
+            $longitude = $lon_direction * ($lon_degrees + ($lon_minutes / 60) + ($lon_seconds / (60 * 60)));
 
-            return ['latitude'=>$latitude, 'longitude'=>$longitude];
-        } else {
-            return false;
+            return ['latitude' => $latitude, 'longitude' => $longitude];
         }
-    }
 
+        return false;
+    }
 }
