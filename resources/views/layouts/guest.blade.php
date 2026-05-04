@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Gem Reptiles')  }} captive-bred specimens and pets for every occcasion</title>
+        <title>{{ config('app.name', 'Gem Reptiles')  }} scaly critters for every occcasion</title>
 
         <!-- Favicons -->
         <link rel="icon" type="image/x-icon" href="{{ '/storage/favicon.ico' }}">

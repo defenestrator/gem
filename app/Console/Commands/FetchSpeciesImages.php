@@ -11,18 +11,17 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
- * Fetches free CC-licensed images for species/subspecies records.
+ * Fetches 1–8 free CC-licensed images per species/subspecies record.
  *
- * Source chain (tried in order, stops at first hit):
- *   1. Wikipedia REST summary API
- *   2. Wikimedia Commons direct file search  (catches species with no WP article)
+ * Source chain (all sources queried per species until 8 images are collected):
+ *   1. Wikipedia REST summary API          (1 image max per article)
+ *   2. Wikimedia Commons direct file search (catches species without WP article)
  *   3. iNaturalist taxa API
  *   4. GBIF species media API
  *
- * reptile-database.org: no public API, contributor images have unclear/mixed
- * licensing — excluded intentionally.
+ * Resumable — skips records that already have 8 sourced images; fills up to 8
+ * for records with fewer. Use --force to process all records regardless.
  *
- * Run in batches (idempotent — already-fetched species are skipped automatically):
  *   php artisan species:fetch-images --model=species --limit=100
  *   php artisan species:fetch-images --model=subspecies --limit=100
  *   php artisan species:fetch-images --id=42 [--model=subspecies]
@@ -30,17 +29,18 @@ use Illuminate\Support\Str;
  */
 class FetchSpeciesImages extends Command
 {
-    private const USER_AGENT = 'GemReptiles/1.0 (contact: jeremyblc@gmail.com)';
+    private const USER_AGENT  = 'GemReptiles/1.0 (contact: jeremyblc@gmail.com)';
+    private const MAX_IMAGES  = 8;
 
     protected $signature = 'species:fetch-images
         {--model=species : species | subspecies | all}
-        {--limit=50      : Records to process per run}
+        {--limit=1000    : Records to process per run}
         {--id=           : Process a single record by ID}
         {--dry-run       : Preview without saving anything}
-        {--force         : Re-fetch even if image already exists}
+        {--force         : Process records regardless of existing image count}
         {--delay=500     : Milliseconds to wait between species requests}';
 
-    protected $description = 'Fetch free CC-licensed images for species and subspecies from multiple sources';
+    protected $description = 'Fetch 1–8 free CC-licensed images per species/subspecies from multiple sources';
 
     private int $adminUserId;
     private int $fetched   = 0;
@@ -70,14 +70,14 @@ class FetchSpeciesImages extends Command
         }
 
         if ($id !== null) {
-            $this->processById($model, (int) $id, $dry, $force);
+            $this->processById($model, (int) $id, $dry);
         } else {
             $this->processBatch($model, $limit, $dry, $force);
         }
 
         $this->newLine();
         $this->table(
-            ['Fetched', 'Skipped', 'Not found in any source', 'Upload failed'],
+            ['Images saved', 'Records skipped (full)', 'No image found', 'Upload errors'],
             [[$this->fetched, $this->skipped, $this->notFound, $this->failed]]
         );
 
@@ -92,7 +92,7 @@ class FetchSpeciesImages extends Command
     {
         if (in_array($model, ['species', 'all'])) {
             $rows = $this->buildQuery(Species::class, $force)->take($limit)->get();
-            $this->info("Species: {$rows->count()} records to process (limit {$limit})");
+            $this->info("Species: {$rows->count()} records queued (limit {$limit})");
             foreach ($rows as $row) {
                 $this->processRecord($row, 'species', $dry);
                 usleep((int) $this->option('delay') * 1000);
@@ -101,7 +101,7 @@ class FetchSpeciesImages extends Command
 
         if (in_array($model, ['subspecies', 'all'])) {
             $rows = $this->buildQuery(Subspecies::class, $force)->take($limit)->get();
-            $this->info("Subspecies: {$rows->count()} records to process (limit {$limit})");
+            $this->info("Subspecies: {$rows->count()} records queued (limit {$limit})");
             foreach ($rows as $row) {
                 $this->processRecord($row, 'subspecies', $dry);
                 usleep((int) $this->option('delay') * 1000);
@@ -109,31 +109,39 @@ class FetchSpeciesImages extends Command
         }
     }
 
-    private function processById(string $model, int $id, bool $dry, bool $force): void
+    private function processById(string $model, int $id, bool $dry): void
     {
         $record = match ($model) {
             'subspecies' => Subspecies::findOrFail($id),
             default      => Species::findOrFail($id),
         };
-
-        if (! $force && $record->media()->where('moderation_status', 'approved')->whereNotNull('source_url')->exists()) {
-            $this->line('  Already has a sourced image. Use --force to re-fetch.');
-            $this->skipped++;
-            return;
-        }
-
         $type = $model === 'subspecies' ? 'subspecies' : 'species';
         $this->processRecord($record, $type, $dry);
     }
 
+    /**
+     * Returns records ordered by sourced-image count ascending (0-image species first).
+     * Records already at MAX_IMAGES are excluded so runs always make forward progress
+     * through unprocessed species before circling back to top up partially-filled ones.
+     */
     private function buildQuery(string $modelClass, bool $force)
     {
-        $q = $modelClass::query();
+        $table = (new $modelClass)->getTable();
+        $q     = $modelClass::query();
+
+        $countSql = "(SELECT COUNT(*) FROM media
+                      WHERE media.mediable_type = ?
+                        AND media.mediable_id   = {$table}.id
+                        AND media.moderation_status = 'approved'
+                        AND media.source_url IS NOT NULL)";
+
         if (! $force) {
-            $q->whereDoesntHave('media', fn ($m) =>
-                $m->approved()->whereNotNull('source_url')
-            );
+            $q->whereRaw("{$countSql} < ?", [$modelClass, self::MAX_IMAGES]);
         }
+
+        // 0-image records always come first; partially-filled records follow
+        $q->orderByRaw("{$countSql} ASC", [$modelClass]);
+
         return $q;
     }
 
@@ -144,146 +152,183 @@ class FetchSpeciesImages extends Command
     private function processRecord(mixed $record, string $type, bool $dry): void
     {
         $name = $type === 'subspecies' ? $record->full_name : $record->species;
-        $this->line("  → <info>{$name}</info>");
 
-        $imageData = $this->findImage($name);
+        // How many more images does this record need?
+        $existing = $record->media()
+            ->where('moderation_status', 'approved')
+            ->whereNotNull('source_url')
+            ->get(['id', 'source_url']);
 
-        if ($imageData === null) {
-            $this->line("    <comment>No CC-licensed image found in any source.</comment>");
+        $needed = max(0, self::MAX_IMAGES - $existing->count());
+
+        if ($needed === 0) {
+            $this->skipped++;
+            return;
+        }
+
+        $existingSourceUrls = $existing->pluck('source_url')->filter()->all();
+
+        $this->line("  → <info>{$name}</info> (have {$existing->count()}, need up to {$needed} more)");
+
+        $images = $this->findImages($name, $needed, $existingSourceUrls);
+
+        if (empty($images)) {
+            $this->line("    <comment>No CC-licensed images found in any source.</comment>");
             $this->notFound++;
             return;
         }
 
-        $this->line("    [{$imageData['source']}] {$imageData['license']}  |  " . Str::limit($imageData['author'], 60));
+        $this->line("    Found " . count($images) . " new image(s)");
 
-        if ($dry) {
-            $this->line("    [dry-run] {$imageData['download_url']}");
+        $index = $existing->count() + 1;
+
+        foreach ($images as $imageData) {
+            if ($dry) {
+                $this->line("    [dry-run] [{$imageData['source']}] {$imageData['download_url']}");
+                $this->fetched++;
+                $index++;
+                continue;
+            }
+
+            $bytes = $this->download($imageData['download_url']);
+            if ($bytes === null) {
+                $this->warn("    Download failed: {$imageData['download_url']}");
+                $this->failed++;
+                continue;
+            }
+
+            $ext  = strtolower(pathinfo(parse_url($imageData['download_url'], PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg');
+            $path = "{$type}/{$record->id}/" . Str::slug($name) . "-{$index}.{$ext}";
+
+            try {
+                Storage::disk('s3')->put($path, $bytes, 'public');
+            } catch (\Throwable $e) {
+                $this->warn("    S3 upload failed: {$e->getMessage()}");
+                $this->failed++;
+                continue;
+            }
+
+            /** @var \Illuminate\Filesystem\FilesystemAdapter $s3 */
+            $s3 = Storage::disk('s3');
+
+            $record->media()->create([
+                'url'               => $s3->url($path),
+                'user_id'           => $this->adminUserId,
+                'moderation_status' => 'approved',
+                'source_url'        => $imageData['download_url'],  // image origin URL for dedup
+                'license'           => $imageData['license'],
+                'license_url'       => $imageData['license_url'],
+                'author'            => $imageData['author'],
+                'copyright'         => $imageData['author'],
+                'title'             => $imageData['title'],
+            ]);
+
+            $this->line("    <info>[{$imageData['source']}]</info> saved → {$path}");
             $this->fetched++;
-            return;
+            $index++;
         }
-
-        $bytes = $this->download($imageData['download_url']);
-        if ($bytes === null) {
-            $this->warn("    Download failed.");
-            $this->failed++;
-            return;
-        }
-
-        $ext      = strtolower(pathinfo(parse_url($imageData['download_url'], PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg');
-        $path     = "{$type}/{$record->id}/" . Str::slug($name) . ".{$ext}";
-
-        try {
-            Storage::disk('s3')->put($path, $bytes, 'public');
-        } catch (\Throwable $e) {
-            $this->warn("    S3 upload failed: {$e->getMessage()}");
-            $this->failed++;
-            return;
-        }
-
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $s3 */
-        $s3 = Storage::disk('s3');
-
-        $record->media()->create([
-            'url'               => $s3->url($path),
-            'user_id'           => $this->adminUserId,
-            'moderation_status' => 'approved',
-            'source_url'        => $imageData['source_url'],
-            'license'           => $imageData['license'],
-            'license_url'       => $imageData['license_url'],
-            'author'            => $imageData['author'],
-            'copyright'         => $imageData['author'],
-            'title'             => $imageData['title'],
-        ]);
-
-        $this->line("    <info>Saved:</info> {$path}");
-        $this->fetched++;
     }
 
     // -----------------------------------------------------------------------
-    // Source chain
+    // Source chain — collects up to $needed images from all sources
     // -----------------------------------------------------------------------
 
-    private function findImage(string $scientificName): ?array
+    private function findImages(string $name, int $needed, array $existingSourceUrls): array
     {
         $sources = [
-            'Wikipedia'         => fn () => $this->fromWikipedia($scientificName),
-            'Wikimedia Commons' => fn () => $this->fromWikimediaCommons($scientificName),
-            'iNaturalist'       => fn () => $this->fromINaturalist($scientificName),
-            'GBIF'              => fn () => $this->fromGbif($scientificName),
+            'Wikipedia'         => fn (int $n) => $this->fromWikipedia($name),
+            'Wikimedia Commons' => fn (int $n) => $this->fromWikimediaCommons($name, $n),
+            'iNaturalist'       => fn (int $n) => $this->fromINaturalist($name, $n),
+            'GBIF'              => fn (int $n) => $this->fromGbif($name, $n),
         ];
 
+        $collected = [];
+        $seen      = array_flip($existingSourceUrls); // download_url → true
+
         foreach ($sources as $sourceName => $fetch) {
+            $remaining = $needed - count($collected);
+            if ($remaining <= 0) {
+                break;
+            }
+
             try {
-                $result = $fetch();
-                if ($result !== null) {
-                    return array_merge($result, ['source' => $sourceName]);
+                $results = $fetch($remaining);
+                foreach ($results as $img) {
+                    if (count($collected) >= $needed) {
+                        break;
+                    }
+                    $key = $img['download_url'];
+                    if (isset($seen[$key])) {
+                        continue; // already saved or seen this run
+                    }
+                    $seen[$key]  = true;
+                    $collected[] = array_merge($img, ['source' => $sourceName]);
                 }
             } catch (\Throwable $e) {
                 $this->line("    [{$sourceName}] {$e->getMessage()}");
             }
         }
 
-        return null;
+        return $collected;
     }
 
     // -----------------------------------------------------------------------
-    // Source 1 — Wikipedia REST summary
+    // Source 1 — Wikipedia REST summary (1 image per article)
     // -----------------------------------------------------------------------
 
-    private function fromWikipedia(string $name): ?array
+    private function fromWikipedia(string $name): array
     {
         $title = str_replace(' ', '_', $name);
-
-        $res = $this->get("https://en.wikipedia.org/api/rest_v1/page/summary/{$title}");
-        if ($res === null || ($res['status'] ?? 200) === 404) {
-            return null;
+        $res   = $this->get("https://en.wikipedia.org/api/rest_v1/page/summary/{$title}");
+        if (! $res) {
+            return [];
         }
 
-        $downloadUrl = $res['thumbnail']['source']
-            ?? $res['originalimage']['source']
-            ?? null;
-
+        $downloadUrl = $res['thumbnail']['source'] ?? $res['originalimage']['source'] ?? null;
         if (! $downloadUrl) {
-            return null;
+            return [];
         }
 
-        $sourceUrl = $res['content_urls']['desktop']['page']
-            ?? "https://en.wikipedia.org/wiki/{$title}";
+        $sourceUrl = $res['content_urls']['desktop']['page'] ?? "https://en.wikipedia.org/wiki/{$title}";
+        $attr      = $this->wikimediaCommonsAttribution($downloadUrl);
 
-        $attr = $this->wikimediaCommonsAttribution($downloadUrl);
-
-        return [
+        return [[
             'download_url' => $downloadUrl,
             'source_url'   => $sourceUrl,
             'license'      => $attr['license']     ?? 'Unknown',
             'license_url'  => $attr['license_url'] ?? null,
             'author'       => $attr['artist']      ?? 'Wikipedia contributor',
             'title'        => $attr['title']       ?? basename(parse_url($downloadUrl, PHP_URL_PATH)),
-        ];
+        ]];
     }
 
     // -----------------------------------------------------------------------
     // Source 2 — Wikimedia Commons direct file search
-    // Catches species that have Commons images but no English Wikipedia article.
     // -----------------------------------------------------------------------
 
-    private function fromWikimediaCommons(string $name): ?array
+    private function fromWikimediaCommons(string $name, int $limit): array
     {
         $res = $this->get('https://commons.wikimedia.org/w/api.php', [
             'action'      => 'query',
             'list'        => 'search',
             'srsearch'    => "\"{$name}\" filetype:bitmap",
             'srnamespace' => 6,
-            'srlimit'     => 5,
+            'srlimit'     => $limit,
             'format'      => 'json',
         ]);
 
         if (! $res) {
-            return null;
+            return [];
         }
 
+        $images = [];
+
         foreach ($res['query']['search'] ?? [] as $result) {
-            $fileTitle = $result['title']; // "File:Python regius.jpg"
+            if (count($images) >= $limit) {
+                break;
+            }
+
+            $fileTitle = $result['title'];
 
             $infoRes = $this->get('https://commons.wikimedia.org/w/api.php', [
                 'action'     => 'query',
@@ -307,7 +352,6 @@ class FetchSpeciesImages extends Command
 
             $meta    = $info['extmetadata'] ?? [];
             $license = $meta['LicenseShortName']['value'] ?? null;
-
             if (! $license || ! $this->isCcLicense($license)) {
                 continue;
             }
@@ -317,7 +361,7 @@ class FetchSpeciesImages extends Command
                 continue;
             }
 
-            return [
+            $images[] = [
                 'download_url' => $url,
                 'source_url'   => $info['descriptionurl'] ?? "https://commons.wikimedia.org/wiki/{$fileTitle}",
                 'license'      => $license,
@@ -327,55 +371,52 @@ class FetchSpeciesImages extends Command
             ];
         }
 
-        return null;
+        return $images;
     }
 
     // -----------------------------------------------------------------------
     // Source 3 — iNaturalist taxa API
     // -----------------------------------------------------------------------
 
-    private function fromINaturalist(string $name): ?array
+    private function fromINaturalist(string $name, int $limit): array
     {
         $res = $this->get('https://api.inaturalist.org/v1/taxa', [
-            'q'          => $name,
-            'rank'       => 'species,subspecies',
-            'per_page'   => 1,
-            'order_by'   => 'observations_count',
-            'order'      => 'desc',
+            'q'        => $name,
+            'rank'     => 'species,subspecies',
+            'per_page' => 1,
+            'order_by' => 'observations_count',
+            'order'    => 'desc',
         ]);
 
         if (! $res) {
-            return null;
+            return [];
         }
 
         $taxon = $res['results'][0] ?? null;
-        if (! $taxon) {
-            return null;
+        if (! $taxon || strtolower($taxon['name']) !== strtolower($name)) {
+            return [];
         }
 
-        // Require exact name match — API may return close relatives
-        if (strtolower($taxon['name']) !== strtolower($name)) {
-            return null;
-        }
+        $images = [];
 
         foreach ($taxon['taxon_photos'] ?? [] as $tp) {
-            $photo = $tp['photo'] ?? null;
-            if (! $photo) {
-                continue;
+            if (count($images) >= $limit) {
+                break;
             }
 
+            $photo       = $tp['photo'] ?? null;
             $licenseCode = $photo['license_code'] ?? null;
-            if (! $licenseCode || $licenseCode === 'all-rights-reserved') {
+
+            if (! $photo || ! $licenseCode || $licenseCode === 'all-rights-reserved') {
                 continue;
             }
 
-            // Square → medium (roughly 440×440 → reasonable quality)
             $url = str_replace('/square.', '/medium.', $photo['url'] ?? '');
             if (! $url) {
                 continue;
             }
 
-            return [
+            $images[] = [
                 'download_url' => $url,
                 'source_url'   => "https://www.inaturalist.org/taxa/{$taxon['id']}",
                 'license'      => $this->normalizeLicenseCode($licenseCode),
@@ -385,48 +426,52 @@ class FetchSpeciesImages extends Command
             ];
         }
 
-        return null;
+        return $images;
     }
 
     // -----------------------------------------------------------------------
     // Source 4 — GBIF species media
     // -----------------------------------------------------------------------
 
-    private function fromGbif(string $name): ?array
+    private function fromGbif(string $name, int $limit): array
     {
-        // Species match endpoint returns a direct key with confidence score
         $matchRes = $this->get('https://api.gbif.org/v1/species/match', [
             'name'   => $name,
             'strict' => 'false',
         ]);
 
         if (! $matchRes || ($matchRes['matchType'] ?? '') === 'NONE') {
-            return null;
+            return [];
         }
 
-        // Require high confidence and name overlap
         $confidence    = (int) ($matchRes['confidence'] ?? 0);
         $canonicalName = $matchRes['canonicalName'] ?? '';
 
         if ($confidence < 90 || stripos($canonicalName, explode(' ', $name)[0]) === false) {
-            return null;
+            return [];
         }
 
         $key = $matchRes['usageKey'] ?? null;
         if (! $key) {
-            return null;
+            return [];
         }
 
         $mediaRes = $this->get("https://api.gbif.org/v1/species/{$key}/media", [
             'type'  => 'StillImage',
-            'limit' => 10,
+            'limit' => $limit,
         ]);
 
         if (! $mediaRes) {
-            return null;
+            return [];
         }
 
+        $images = [];
+
         foreach ($mediaRes['results'] ?? [] as $item) {
+            if (count($images) >= $limit) {
+                break;
+            }
+
             $license = $item['license'] ?? '';
             if (! str_contains($license, 'creativecommons.org')) {
                 continue;
@@ -437,7 +482,7 @@ class FetchSpeciesImages extends Command
                 continue;
             }
 
-            return [
+            $images[] = [
                 'download_url' => $url,
                 'source_url'   => $item['references'] ?? "https://www.gbif.org/species/{$key}",
                 'license'      => $this->parseLicenseUrl($license),
@@ -447,7 +492,7 @@ class FetchSpeciesImages extends Command
             ];
         }
 
-        return null;
+        return $images;
     }
 
     // -----------------------------------------------------------------------
@@ -509,7 +554,7 @@ class FetchSpeciesImages extends Command
         }
 
         if (! $res->successful()) {
-            $this->line("    HTTP {$res->status()} from {$url}");
+            $this->line("    HTTP {$res->status()} ← {$url}");
             return null;
         }
 
@@ -553,14 +598,14 @@ class FetchSpeciesImages extends Command
     private function licenseUrlFromCode(string $code): ?string
     {
         return match (strtolower($code)) {
-            'cc0'         => 'https://creativecommons.org/publicdomain/zero/1.0/',
-            'cc-by'       => 'https://creativecommons.org/licenses/by/4.0/',
-            'cc-by-sa'    => 'https://creativecommons.org/licenses/by-sa/4.0/',
-            'cc-by-nd'    => 'https://creativecommons.org/licenses/by-nd/4.0/',
-            'cc-by-nc'    => 'https://creativecommons.org/licenses/by-nc/4.0/',
-            'cc-by-nc-sa' => 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
-            'cc-by-nc-nd' => 'https://creativecommons.org/licenses/by-nc-nd/4.0/',
-            default       => null,
+            'cc0'          => 'https://creativecommons.org/publicdomain/zero/1.0/',
+            'cc-by'        => 'https://creativecommons.org/licenses/by/4.0/',
+            'cc-by-sa'     => 'https://creativecommons.org/licenses/by-sa/4.0/',
+            'cc-by-nd'     => 'https://creativecommons.org/licenses/by-nd/4.0/',
+            'cc-by-nc'     => 'https://creativecommons.org/licenses/by-nc/4.0/',
+            'cc-by-nc-sa'  => 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
+            'cc-by-nc-nd'  => 'https://creativecommons.org/licenses/by-nc-nd/4.0/',
+            default        => null,
         };
     }
 
