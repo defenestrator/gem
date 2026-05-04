@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * Exports approved species/subspecies media records to a portable JSON file
- * for import into the production MySQL database.
+ * for import into the production PostgreSQL database.
  *
  * The export resolves mediable_id → scientific name so the import can locate
  * the correct record by name rather than ID (IDs may differ between environments).

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * Imports species/subspecies media from a JSON export file into the current database.
- * Designed to run on production MySQL after generating the export on the local Postgres instance.
+ * Designed to run on production PostgreSQL after generating the export locally.
  *
  * Matching strategy: looks up Species/Subspecies by scientific name, not by ID,
  * so environment-specific auto-increment IDs do not matter.
