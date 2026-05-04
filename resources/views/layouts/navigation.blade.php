@@ -25,10 +25,10 @@
                             @endif
                         </span>
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard.species.media.index')" :active="request()->routeIs('dashboard.species.*')">
+                    <x-nav-link :href="route('dashboard.media.index')" :active="request()->routeIs('dashboard.media.*')">
                         <span class="relative inline-flex items-center gap-1">
                             {{ __('Photos') }}
-                            @php $pendingPhotoCount = \App\Models\Media::where('mediable_type', \App\Models\Species::class)->where('moderation_status', 'pending')->count(); @endphp
+                            @php $pendingPhotoCount = \App\Models\Media::where('moderation_status', 'pending')->count(); @endphp
                             @if($pendingPhotoCount)
                                 <span class="bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full leading-none">{{ $pendingPhotoCount }}</span>
                             @endif
@@ -117,9 +117,9 @@
                     <span class="ml-1 bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{{ \App\Models\Inquiry::where('status','new')->count() }}</span>
                 @endif
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('dashboard.species.media.index')" :active="request()->routeIs('dashboard.species.*')">
+            <x-responsive-nav-link :href="route('dashboard.media.index')" :active="request()->routeIs('dashboard.media.*')">
                 {{ __('Photos') }}
-                @php $pendingPhotoCount ??= \App\Models\Media::where('mediable_type', \App\Models\Species::class)->where('moderation_status', 'pending')->count(); @endphp
+                @php $pendingPhotoCount ??= \App\Models\Media::where('moderation_status', 'pending')->count(); @endphp
                 @if($pendingPhotoCount)
                     <span class="ml-1 bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{{ $pendingPhotoCount }}</span>
                 @endif

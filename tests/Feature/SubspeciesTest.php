@@ -87,7 +87,7 @@ it('non-admin cannot access subspecies media dashboard', function () {
     $user = User::factory()->create(['is_admin' => false]);
 
     $this->actingAs($user)
-        ->get(route('dashboard.subspecies.media.index'))
+        ->get(route('dashboard.media.index'))
         ->assertForbidden();
 });
 
@@ -95,7 +95,7 @@ it('admin can access subspecies media dashboard', function () {
     $admin = User::factory()->create(['is_admin' => true]);
 
     $this->actingAs($admin)
-        ->get(route('dashboard.subspecies.media.index'))
+        ->get(route('dashboard.media.index'))
         ->assertOk();
 });
 
@@ -109,7 +109,7 @@ it('admin can approve pending subspecies media', function () {
     ]);
 
     $this->actingAs($admin)
-        ->patch(route('dashboard.subspecies.media.approve', $media))
+        ->patch(route('dashboard.media.approve', $media))
         ->assertRedirect();
 
     expect($media->fresh()->moderation_status)->toBe('approved');
@@ -125,13 +125,13 @@ it('admin can reject pending subspecies media', function () {
     ]);
 
     $this->actingAs($admin)
-        ->patch(route('dashboard.subspecies.media.reject', $media))
+        ->patch(route('dashboard.media.reject', $media))
         ->assertRedirect();
 
     expect($media->fresh()->moderation_status)->toBe('rejected');
 });
 
-it('approve returns 422 when media is not a subspecies', function () {
+it('admin can approve species media via unified queue', function () {
     $admin   = User::factory()->create(['is_admin' => true]);
     $species = Species::factory()->create();
     $media   = Media::factory()->create([
@@ -141,8 +141,10 @@ it('approve returns 422 when media is not a subspecies', function () {
     ]);
 
     $this->actingAs($admin)
-        ->patch(route('dashboard.subspecies.media.approve', $media))
-        ->assertStatus(422);
+        ->patch(route('dashboard.media.approve', $media))
+        ->assertRedirect();
+
+    expect($media->fresh()->moderation_status)->toBe('approved');
 });
 
 it('non-admin cannot approve subspecies media', function () {
@@ -155,6 +157,6 @@ it('non-admin cannot approve subspecies media', function () {
     ]);
 
     $this->actingAs($user)
-        ->patch(route('dashboard.subspecies.media.approve', $media))
+        ->patch(route('dashboard.media.approve', $media))
         ->assertForbidden();
 });

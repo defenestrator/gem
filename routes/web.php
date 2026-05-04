@@ -1,8 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnimalController;
-use App\Http\Controllers\DashboardSpeciesMediaController;
-use App\Http\Controllers\DashboardSubspeciesMediaController;
+use App\Http\Controllers\DashboardMediaModerationController;
 use App\Http\Controllers\SpeciesController;
 use App\Http\Controllers\SubspeciesController;
 use App\Http\Controllers\DashboardAnimalController;
@@ -260,15 +259,11 @@ Route::middleware('auth')->group(function () {
         Route::post('dashboard/inquiries/{inquiry}/reply', [DashboardInquiryController::class, 'reply'])->name('inquiries.reply');
         Route::patch('dashboard/inquiries/{inquiry}/close', [DashboardInquiryController::class, 'close'])->name('inquiries.close');
 
-        // Species media moderation (admin only)
-        Route::get('dashboard/species/media', [DashboardSpeciesMediaController::class, 'index'])->name('species.media.index');
-        Route::patch('dashboard/species/media/{media}/approve', [DashboardSpeciesMediaController::class, 'approve'])->name('species.media.approve');
-        Route::patch('dashboard/species/media/{media}/reject', [DashboardSpeciesMediaController::class, 'reject'])->name('species.media.reject');
+        // Unified media moderation queue (admin only)
+        Route::get('dashboard/media', [DashboardMediaModerationController::class, 'index'])->name('media.index');
+        Route::patch('dashboard/media/{media}/approve', [DashboardMediaModerationController::class, 'approve'])->name('media.approve');
+        Route::patch('dashboard/media/{media}/reject', [DashboardMediaModerationController::class, 'reject'])->name('media.reject');
 
-        // Subspecies media moderation (admin only)
-        Route::get('dashboard/subspecies/media', [DashboardSubspeciesMediaController::class, 'index'])->name('subspecies.media.index');
-        Route::patch('dashboard/subspecies/media/{media}/approve', [DashboardSubspeciesMediaController::class, 'approve'])->name('subspecies.media.approve');
-        Route::patch('dashboard/subspecies/media/{media}/reject', [DashboardSubspeciesMediaController::class, 'reject'])->name('subspecies.media.reject');
     });
 });
 
