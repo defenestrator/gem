@@ -20,6 +20,8 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
+        'gem.test:5173',
+        'gemx.digitaloceanspaces.com',
         'http://localhost',
         'http://localhost:3000',
         'http://localhost:5173',

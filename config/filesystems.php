@@ -53,6 +53,7 @@ return [
             'url'                     => env('AWS_URL'),
             'endpoint'                => env('AWS_ENDPOINT', 'https://sfo3.digitaloceanspaces.com'),
             'use_path_style_endpoint' => false,
+            'visibility'              => 'public',
             'throw'                   => false,
             'cache' => [
                 'store'  => 'redis',

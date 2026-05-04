@@ -95,6 +95,8 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 - Added `Animal→Species` `belongsTo` relationship and `Species→Animal` `hasMany`
 - Embedded Laravel 11 docs in `storage/docs/laravel/` for local Claude inference reference
 - Added Cloudflare Turnstile bot protection to animal and classified inquiry forms; server-side verification via `ValidatesTurnstile` trait; disabled automatically when `TURNSTILE_SITE_KEY` not set
+- Species photo uploads use Digital Ocean Spaces (S3-compatible, `sfo3`); admin uploads bypass moderation and publish immediately
+- Configured `league/flysystem-aws-s3-v3` S3 adapter; `visibility: public` default on `s3` disk
 
 #### 2026-04-30
 - Added social auth (Google, Facebook, Twitch) via Laravel Socialite
