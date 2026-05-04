@@ -30,15 +30,17 @@ use Illuminate\Support\Str;
 class FetchSpeciesImages extends Command
 {
     private const USER_AGENT  = 'GemReptiles/1.0 (contact: jeremyblc@gmail.com)';
-    private const MAX_IMAGES  = 8;
+
 
     protected $signature = 'species:fetch-images
         {--model=species : species | subspecies | all}
-        {--limit=1000    : Records to process per run}
+        {--limit=1000    : Records to process per run (ignored when --queue is set)}
         {--id=           : Process a single record by ID}
+        {--queue         : Dispatch a queued job per record instead of processing inline}
         {--dry-run       : Preview without saving anything}
         {--force         : Process records regardless of existing image count}
-        {--delay=500     : Milliseconds to wait between species requests}';
+        {--max=1         : Maximum images to collect per taxon (1–8)}
+        {--delay=500     : Milliseconds to wait between species requests (inline only)}';
 
     protected $description = 'Fetch 1–8 free CC-licensed images per species/subspecies from multiple sources';
 
@@ -71,6 +73,9 @@ class FetchSpeciesImages extends Command
 
         if ($id !== null) {
             $this->processById($model, (int) $id, $dry);
+        } elseif ($this->option('queue')) {
+            $this->dispatchAll($model, $force, $dry);
+            return self::SUCCESS;
         } else {
             $this->processBatch($model, $limit, $dry, $force);
         }
@@ -109,6 +114,31 @@ class FetchSpeciesImages extends Command
         }
     }
 
+    private function dispatchAll(string $model, bool $force, bool $dry): void
+    {
+        $max       = $this->maxImages();
+        $total     = 0;
+
+        $dispatch = function (string $modelClass) use ($force, $dry, $max, &$total) {
+            $this->buildQuery($modelClass, $force)
+                ->select('id')
+                ->chunkById(500, function ($rows) use ($modelClass, $dry, $max, &$total) {
+                    foreach ($rows as $row) {
+                        if (! $dry) {
+                            \App\Jobs\FetchTaxonImageJob::dispatch($modelClass, $row->id, $max);
+                        }
+                        $total++;
+                    }
+                });
+        };
+
+        if (in_array($model, ['species', 'all']))    $dispatch(Species::class);
+        if (in_array($model, ['subspecies', 'all'])) $dispatch(Subspecies::class);
+
+        $label = $dry ? '[dry-run] Would dispatch' : 'Dispatched';
+        $this->info("{$label} {$total} jobs → queue: species-images");
+    }
+
     private function processById(string $model, int $id, bool $dry): void
     {
         $record = match ($model) {
@@ -119,9 +149,14 @@ class FetchSpeciesImages extends Command
         $this->processRecord($record, $type, $dry);
     }
 
+    private function maxImages(): int
+    {
+        return max(1, min(8, (int) $this->option('max')));
+    }
+
     /**
      * Returns records ordered by sourced-image count ascending (0-image species first).
-     * Records already at MAX_IMAGES are excluded so runs always make forward progress
+     * Records already at --max are excluded so runs always make forward progress
      * through unprocessed species before circling back to top up partially-filled ones.
      */
     private function buildQuery(string $modelClass, bool $force)
@@ -136,7 +171,7 @@ class FetchSpeciesImages extends Command
                         AND media.source_url IS NOT NULL)";
 
         if (! $force) {
-            $q->whereRaw("{$countSql} < ?", [$modelClass, self::MAX_IMAGES]);
+            $q->whereRaw("{$countSql} < ?", [$modelClass, $this->maxImages()]);
         }
 
         // 0-image records always come first; partially-filled records follow
@@ -159,7 +194,7 @@ class FetchSpeciesImages extends Command
             ->whereNotNull('source_url')
             ->get(['id', 'source_url']);
 
-        $needed = max(0, self::MAX_IMAGES - $existing->count());
+        $needed = max(0, $this->maxImages() - $existing->count());
 
         if ($needed === 0) {
             $this->skipped++;
