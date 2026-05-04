@@ -83,6 +83,12 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 - Added `SpeciesType` enum (Syntype, Holotype, Lost, Paratype, Lectotype, Neotype)
 - Added `SpeciesTypeCast` — parses space-delimited type tokens to `SpeciesType[]`; empty → `"null"`
 - Updated `species` table: `type_species` bool → varchar(10), unique index on `species_number`
+- Added MeiliSearch full-text species search (`laravel/scout`, `meilisearch/meilisearch-php`)
+- Species search view with real-time Alpine.js UI, debounced input, dual-layer cache (client session + server 5-min TTL)
+- Species detail view (`/species/{id}`) — taxonomy info card, approved photo gallery, user photo upload form
+- Photo moderation pipeline: user uploads set `moderation_status = pending`; admin dashboard reviews/approves/rejects
+- Added `moderation_status` column to `media` table (default `approved` — existing media unaffected)
+- Admin nav "Photos" badge shows count of pending species photos
 - Social auth buttons hidden on login and register views (pending re-enable)
 
 #### 2026-04-30
