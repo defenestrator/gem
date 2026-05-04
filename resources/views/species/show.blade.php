@@ -116,7 +116,7 @@
                 </div>
             @endif
 
-            {{-- Upload form (auth only) --}}
+            {{-- Upload form (auth only; admin uploads skip moderation) --}}
             @auth
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                     <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200 mb-1">Submit a photo</h3>

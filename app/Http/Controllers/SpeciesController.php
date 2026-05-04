@@ -42,7 +42,7 @@ class SpeciesController extends Controller
             $species->media()->create([
                 'url'               => Storage::disk('public')->url($path),
                 'user_id'           => auth()->id(),
-                'moderation_status' => 'pending',
+                'moderation_status' => auth()->user()->is_admin ? 'approved' : 'pending',
             ]);
         }
 
