@@ -15,6 +15,15 @@ class BackfillAnimalSpecies extends Command
 
     protected $description = 'Backfill species_id on animals by matching the category field to species common names';
 
+    /**
+     * Explicit category → species.id overrides for ambiguous or mismatched auto-matches.
+     * Keyed by exact Animal.category value.
+     */
+    protected array $overrides = [
+        'Western Hognose'        => 5514,  // Heterodon nasicus
+        'Coastal Carpet Pythons' => 7469,  // Morelia spilota
+    ];
+
     public function handle(): int
     {
         $isDryRun    = (bool) $this->option('dry-run');
@@ -41,27 +50,39 @@ class BackfillAnimalSpecies extends Command
         $rows       = [];
 
         foreach ($categories as $category) {
-            $singular = Str::singular($category);
-            $term     = strtolower($singular);
+            // Explicit override takes priority over auto-match
+            if (isset($this->overrides[$category])) {
+                $species = Species::find($this->overrides[$category]);
+            } else {
+                $singular = Str::singular($category);
+                $term     = strtolower($singular);
 
-            $hits = Species::query()
-                ->whereRaw('LOWER(common_name) LIKE ?', ["%{$term}%"])
-                ->get(['id', 'species', 'common_name']);
+                $hits = Species::query()
+                    ->whereRaw('LOWER(common_name) LIKE ?', ["%{$term}%"])
+                    ->get(['id', 'species', 'common_name']);
 
-            if ($hits->isEmpty()) {
+                if ($hits->isEmpty()) {
+                    $rows[]    = ['category' => $category, 'status' => 'UNMATCHED', 'species' => '—', 'count' => 0];
+                    $unmatched++;
+                    continue;
+                }
+
+                if ($hits->count() > 1 && ! $forceFirst) {
+                    $names  = $hits->map(fn ($s) => "{$s->species} ({$s->id})")->join(', ');
+                    $rows[] = ['category' => $category, 'status' => 'AMBIGUOUS', 'species' => $hits->count() . ' matches: ' . $names, 'count' => 0];
+                    $ambiguous++;
+                    continue;
+                }
+
+                $species = $hits->first();
+            }
+
+            $species ??= null;
+            if (! $species) {
                 $rows[]    = ['category' => $category, 'status' => 'UNMATCHED', 'species' => '—', 'count' => 0];
                 $unmatched++;
                 continue;
             }
-
-            if ($hits->count() > 1 && ! $forceFirst) {
-                $names  = $hits->map(fn ($s) => "{$s->species} ({$s->id})")->join(', ');
-                $rows[] = ['category' => $category, 'status' => 'AMBIGUOUS', 'species' => $hits->count() . ' matches: ' . $names, 'count' => 0];
-                $ambiguous++;
-                continue;
-            }
-
-            $species   = $hits->first();
             $animalCount = Animal::query()
                 ->where('category', $category)
                 ->whereNull('species_id')
