@@ -9,24 +9,37 @@ class MediaController extends Controller
 {
     public function destroy(Media $media)
     {
+        $isAdmin  = auth()->user()->is_admin;
         $mediable = $media->mediable;
 
-        if (!$mediable || $mediable->user_id !== auth()->id()) {
+        if (! $isAdmin && (! $mediable || $mediable->user_id !== auth()->id())) {
             abort(403);
         }
 
-        // Derive storage-relative path from the stored public URL
-        $relativePath = ltrim(
-            str_replace(Storage::disk('public')->url(''), '', $media->url),
-            '/'
-        );
-
-        if ($relativePath && Storage::disk('public')->exists($relativePath)) {
-            Storage::disk('public')->delete($relativePath);
-        }
+        $this->deleteFile($media->url);
 
         $media->delete();
 
         return back()->with('success', 'Image deleted.');
+    }
+
+    private function deleteFile(string $url): void
+    {
+        // Try S3 first (species/subspecies uploads)
+        $s3Base = Storage::disk('s3')->url('');
+        if ($s3Base && str_starts_with($url, $s3Base)) {
+            $path = ltrim(str_replace($s3Base, '', $url), '/');
+            if ($path) {
+                Storage::disk('s3')->delete($path);
+            }
+            return;
+        }
+
+        // Fall back to public disk
+        $publicBase = Storage::disk('public')->url('');
+        $path       = ltrim(str_replace($publicBase, '', $url), '/');
+        if ($path && Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
     }
 }
