@@ -27,7 +27,9 @@ class SpeciesController extends Controller
             ? $species->media()->orderBy('moderation_status')->latest()->get()
             : $species->approvedMedia()->latest()->get();
 
-        return view('species.show', compact('species', 'media', 'isAdmin'));
+        $subspecies = $species->subspecies()->orderBy('subspecies')->get();
+
+        return view('species.show', compact('species', 'media', 'isAdmin', 'subspecies'));
     }
 
     public function storeMedia(Request $request, Species $species): RedirectResponse

@@ -76,6 +76,8 @@ The source is open. Our content, logos, and UI designs are &copy; All Rights Res
 Everything except secrets belongs in git. Blobs go in S3 or similar — not in the database, not in git.
 
 ### Changelog
+#### 2026-05-04 (continued)
+- Applied patches to production server for kmod vulnerability
 
 #### 2026-05-04 (continued)
 - Added `species:import` Artisan command — imports Reptile Database CSV into `species` table, supports `--dry-run` and `--csv=` options, deduplicates on `species_number`

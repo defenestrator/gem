@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\DashboardSpeciesMediaController;
+use App\Http\Controllers\DashboardSubspeciesMediaController;
 use App\Http\Controllers\SpeciesController;
+use App\Http\Controllers\SubspeciesController;
 use App\Http\Controllers\DashboardAnimalController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\ProfileController;
@@ -226,6 +228,10 @@ Route::get('/species/search', [SpeciesController::class, 'search'])->name('speci
 Route::get('/species/{species}', [SpeciesController::class, 'show'])->name('species.show');
 Route::post('/species/{species}/media', [SpeciesController::class, 'storeMedia'])->name('species.media.store')->middleware('auth');
 
+// Subspecies Routes
+Route::get('/subspecies/{subspecies}', [SubspeciesController::class, 'show'])->name('subspecies.show');
+Route::post('/subspecies/{subspecies}/media', [SubspeciesController::class, 'storeMedia'])->name('subspecies.media.store')->middleware('auth');
+
 // Animals Routes
 Route::get('/animals', [AnimalController::class, 'index'])->name('animals.index');
 Route::get('/animals/{animal:slug}', [AnimalController::class, 'show'])->name('animals.show');
@@ -258,6 +264,11 @@ Route::middleware('auth')->group(function () {
         Route::get('dashboard/species/media', [DashboardSpeciesMediaController::class, 'index'])->name('species.media.index');
         Route::patch('dashboard/species/media/{media}/approve', [DashboardSpeciesMediaController::class, 'approve'])->name('species.media.approve');
         Route::patch('dashboard/species/media/{media}/reject', [DashboardSpeciesMediaController::class, 'reject'])->name('species.media.reject');
+
+        // Subspecies media moderation (admin only)
+        Route::get('dashboard/subspecies/media', [DashboardSubspeciesMediaController::class, 'index'])->name('subspecies.media.index');
+        Route::patch('dashboard/subspecies/media/{media}/approve', [DashboardSubspeciesMediaController::class, 'approve'])->name('subspecies.media.approve');
+        Route::patch('dashboard/subspecies/media/{media}/reject', [DashboardSubspeciesMediaController::class, 'reject'])->name('subspecies.media.reject');
     });
 });
 
