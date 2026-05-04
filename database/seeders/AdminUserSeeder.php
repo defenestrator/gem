@@ -14,7 +14,7 @@ class AdminUserSeeder extends Seeder
             [
                 'name'               => 'Jeremy',
                 'email'              => 'jeremyblc@gmail.com',   
-                'password'           => env('app.admin_password'),
+                'password'           => config('app.admin_password'),
                 'is_admin'           => true,
                 'email_verified_at'  => now(),
             ]
