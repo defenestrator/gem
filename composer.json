@@ -16,6 +16,7 @@
         "laravel/scout": "^11.1",
         "laravel/socialite": "^5.27",
         "laravel/tinker": "^2.8",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "meilisearch/meilisearch-php": "^1.16",
         "predis/predis": "^2.2",
         "sendgrid/sendgrid": "^8.0",

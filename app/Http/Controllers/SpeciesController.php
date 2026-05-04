@@ -38,9 +38,9 @@ class SpeciesController extends Controller
         ]);
 
         foreach ($request->file('images', []) as $file) {
-            $path = $file->store('images', 'public');
+            $path = $file->store('species', 's3');
             $species->media()->create([
-                'url'               => Storage::disk('public')->url($path),
+                'url'               => Storage::disk('s3')->url($path),
                 'user_id'           => auth()->id(),
                 'moderation_status' => auth()->user()->is_admin ? 'approved' : 'pending',
             ]);
