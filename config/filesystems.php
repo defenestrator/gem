@@ -57,6 +57,7 @@ return [
             'throw'                   => false,
             'cache' => [
                 'store'  => 'redis',
+                'password' => env('REDIS_PASSWORD'),
                 'expire' => 3.154e+7,
                 'prefix' => 'gemx_media_cache',
             ],
