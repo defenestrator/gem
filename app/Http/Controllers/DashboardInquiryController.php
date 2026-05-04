@@ -64,4 +64,14 @@ class DashboardInquiryController extends Controller
 
         return back()->with('inquiry_closed', true);
     }
+
+    public function destroy(Inquiry $inquiry)
+    {
+        abort_unless(auth()->user()->is_admin, 403);
+        abort_unless($inquiry->status === InquiryStatus::Closed, 422);
+
+        $inquiry->delete();
+
+        return back()->with('success', 'Inquiry deleted.');
+    }
 }

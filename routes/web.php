@@ -258,6 +258,7 @@ Route::middleware('auth')->group(function () {
         Route::get('dashboard/inquiries/{inquiry}', [DashboardInquiryController::class, 'show'])->name('inquiries.show');
         Route::post('dashboard/inquiries/{inquiry}/reply', [DashboardInquiryController::class, 'reply'])->name('inquiries.reply');
         Route::patch('dashboard/inquiries/{inquiry}/close', [DashboardInquiryController::class, 'close'])->name('inquiries.close');
+        Route::delete('dashboard/inquiries/{inquiry}', [DashboardInquiryController::class, 'destroy'])->name('inquiries.destroy');
 
         // Unified media moderation queue (admin only)
         Route::get('dashboard/media', [DashboardMediaModerationController::class, 'index'])->name('media.index');

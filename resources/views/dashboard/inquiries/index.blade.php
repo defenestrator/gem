@@ -65,10 +65,26 @@
                                         <p class="text-xs text-gray-400">{{ $inquiry->created_at->diffForHumans() }}</p>
                                     </td>
                                     <td class="px-4 py-3 whitespace-nowrap text-right">
-                                        <a href="{{ route('dashboard.inquiries.show', $inquiry) }}"
-                                            class="text-sm bg-orange-500 text-white px-3 py-1 rounded-lg hover:bg-orange-700 font-semibold">
-                                            View
-                                        </a>
+                                        <div class="flex items-center justify-end gap-2">
+                                            <a href="{{ route('dashboard.inquiries.show', $inquiry) }}"
+                                                class="text-sm bg-orange-500 text-white px-3 py-1 rounded-lg hover:bg-orange-700 font-semibold">
+                                                View
+                                            </a>
+                                            @if ($inquiry->status === \App\Enums\InquiryStatus::Closed)
+                                                <form method="POST" action="{{ route('dashboard.inquiries.destroy', $inquiry) }}"
+                                                      onsubmit="return confirm('Delete this inquiry permanently?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="text-red-400 hover:text-red-600 dark:hover:text-red-400 transition"
+                                                        title="Delete inquiry">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
