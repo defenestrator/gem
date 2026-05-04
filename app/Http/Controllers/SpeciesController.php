@@ -73,10 +73,28 @@ class SpeciesController extends Controller
                     'error' => $e->getMessage(),
                 ]);
 
+                $term  = strtolower($query);
+                $exact = $term;
+                $start = $term . '%';
+                $any   = '%' . $term . '%';
+
                 return Species::query()
-                    ->where('species', 'like', "%{$query}%")
-                    ->orWhere('common_name', 'like', "%{$query}%")
-                    ->orWhere('higher_taxa', 'like', "%{$query}%")
+                    ->where(fn ($q) => $q
+                        ->where('common_name', 'like', $any)
+                        ->orWhere('species', 'like', $any)
+                        ->orWhere('higher_taxa', 'like', $any)
+                    )
+                    ->orderByRaw("
+                        CASE
+                            WHEN LOWER(common_name) = ?        THEN 1
+                            WHEN LOWER(species)     = ?        THEN 2
+                            WHEN LOWER(common_name) LIKE ?     THEN 3
+                            WHEN LOWER(species)     LIKE ?     THEN 4
+                            WHEN LOWER(common_name) LIKE ?     THEN 5
+                            WHEN LOWER(species)     LIKE ?     THEN 6
+                            ELSE 7
+                        END
+                    ", [$exact, $exact, $start, $start, $any, $any])
                     ->limit(60)
                     ->get()
                     ->map(fn (Species $s) => $this->format($s))

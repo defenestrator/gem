@@ -34,15 +34,6 @@
                             @endif
                         </span>
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard.subspecies.media.index')" :active="request()->routeIs('dashboard.subspecies.*')">
-                        <span class="relative inline-flex items-center gap-1">
-                            {{ __('Sub Photos') }}
-                            @php $pendingSubPhotoCount = \App\Models\Media::where('mediable_type', \App\Models\Subspecies::class)->where('moderation_status', 'pending')->count(); @endphp
-                            @if($pendingSubPhotoCount)
-                                <span class="bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full leading-none">{{ $pendingSubPhotoCount }}</span>
-                            @endif
-                        </span>
-                    </x-nav-link>
                     @endif
                     <x-nav-link :href="route('animals.index')" :active="request()->routeIs('animals.*')">
                         {{ __('Animals') }}
@@ -131,13 +122,6 @@
                 @php $pendingPhotoCount ??= \App\Models\Media::where('mediable_type', \App\Models\Species::class)->where('moderation_status', 'pending')->count(); @endphp
                 @if($pendingPhotoCount)
                     <span class="ml-1 bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{{ $pendingPhotoCount }}</span>
-                @endif
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('dashboard.subspecies.media.index')" :active="request()->routeIs('dashboard.subspecies.*')">
-                {{ __('Sub Photos') }}
-                @php $pendingSubPhotoCount ??= \App\Models\Media::where('mediable_type', \App\Models\Subspecies::class)->where('moderation_status', 'pending')->count(); @endphp
-                @if($pendingSubPhotoCount)
-                    <span class="ml-1 bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{{ $pendingSubPhotoCount }}</span>
                 @endif
             </x-responsive-nav-link>
             @endif

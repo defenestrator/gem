@@ -26,9 +26,8 @@
                     @if ($species->getRawOriginal('type_species'))
                         <div class="flex gap-1 flex-wrap">
                             @foreach (explode(' ', $species->getRawOriginal('type_species')) as $token)
-                                <span title="{{ \App\Enums\SpeciesType::tryFrom($token)?->label() ?? $token }}"
-                                      class="px-2 py-1 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 uppercase">
-                                    {{ $token }}
+                                <span class="px-2 py-1 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300">
+                                    {{ \App\Enums\SpeciesType::tryFrom($token)?->label() ?? $token }}
                                 </span>
                             @endforeach
                         </div>
@@ -61,15 +60,12 @@
                         </div>
                     @endif
                     @if ($subspecies->isNotEmpty())
-                        <div class="sm:col-span-2" x-data="{ open: false }">
+                        <div class="sm:col-span-2">
                             <dt class="font-semibold text-gray-500 dark:text-gray-400 flex items-center gap-2">
                                 Subspecies
                                 <span class="text-xs font-normal text-gray-400">({{ $subspecies->count() }})</span>
-                                <button type="button" @click="open = !open"
-                                    class="text-xs text-orange-500 hover:underline ml-auto"
-                                    x-text="open ? 'Hide' : 'Show'">Show</button>
                             </dt>
-                            <dd x-show="open" x-transition class="mt-2">
+                            <dd class="mt-2">
                                 <ul class="divide-y divide-gray-100 dark:divide-gray-700">
                                     @foreach ($subspecies as $sub)
                                         <li class="py-1.5 flex items-baseline justify-between gap-4">

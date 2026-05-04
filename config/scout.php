@@ -141,20 +141,22 @@ return [
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
             'species' => [
+                // Fields listed first score higher under the 'attribute' ranking rule
                 'searchableAttributes' => [
-                    'species',
                     'common_name',
-                    'subspecies',
+                    'species',
                     'higher_taxa',
                     'author',
+                    'subspecies',
                 ],
+                // exactness promoted to #2 so full/exact matches beat prefix and typo matches
                 'rankingRules' => [
                     'words',
+                    'exactness',
+                    'attribute',
                     'typo',
                     'proximity',
-                    'attribute',
                     'sort',
-                    'exactness',
                 ],
                 'typoTolerance' => [
                     'enabled' => true,

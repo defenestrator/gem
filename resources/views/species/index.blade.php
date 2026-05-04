@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"
             x-data="speciesSearch"
-            x-init="endpoint = '{{ route('species.search') }}'; showBase = '{{ url('/species') }}'">
+            x-init="endpoint = '{{ route('species.search') }}'; showBase = '{{ url('/species') }}'; query = '{{ \App\Support\SpeciesSearchTerms::random() }}'; doSearch()">
 
             {{-- Search input --}}
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
