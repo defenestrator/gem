@@ -77,7 +77,7 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
-#### 2026-05-04
+#### 2026-05-04 (continued)
 - Added `species:import` Artisan command — imports Reptile Database CSV into `species` table, supports `--dry-run` and `--csv=` options, deduplicates on `species_number`
 - Imported 11,440 species records from `reptile_checklist_2020_12.csv`
 - Added `SpeciesType` enum (Syntype, Holotype, Lost, Paratype, Lectotype, Neotype)
@@ -90,6 +90,11 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 - Added `moderation_status` column to `media` table (default `approved` — existing media unaffected)
 - Admin nav "Photos" badge shows count of pending species photos
 - Social auth buttons hidden on login and register views (pending re-enable)
+- Added `animals:backfill-species` Artisan command — matches `Animal.category` to species via `common_name` LIKE, supports `--dry-run` and `--force-first`; hardcoded overrides for Western Hognose (Heterodon nasicus) and Coastal Carpet Pythons (Morelia spilota)
+- Added `species_id` FK column to `animals` table (nullable, `nullOnDelete`)
+- Added `Animal→Species` `belongsTo` relationship and `Species→Animal` `hasMany`
+- Embedded Laravel 11 docs in `storage/docs/laravel/` for local Claude inference reference
+- Added Cloudflare Turnstile bot protection to animal and classified inquiry forms; server-side verification via `ValidatesTurnstile` trait; disabled automatically when `TURNSTILE_SITE_KEY` not set
 
 #### 2026-04-30
 - Added social auth (Google, Facebook, Twitch) via Laravel Socialite
