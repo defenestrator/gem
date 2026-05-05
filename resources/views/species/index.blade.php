@@ -15,25 +15,37 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Search species
                 </label>
-                <div class="relative">
-                    <input
-                        type="text"
-                        x-model="query"
-                        @input.debounce.300ms="doSearch()"
-                        placeholder="Scientific name, common name, or family…"
-                        class="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
-                        autocomplete="off"
-                        spellcheck="false"
-                    >
-                    {{-- spinner --}}
-                    <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none"
-                         x-show="loading" x-transition>
-                        <svg class="animate-spin h-4 w-4 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                        </svg>
+                <div class="relative mb-3 flex gap-2">
+                    <div class="relative flex-1">
+                        <input
+                            type="text"
+                            x-model="query"
+                            @input.debounce.300ms="doSearch()"
+                            placeholder="Scientific name, common name, or family…"
+                            class="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+                            autocomplete="off"
+                            spellcheck="false"
+                        >
+                        {{-- spinner --}}
+                        <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none"
+                             x-show="loading" x-transition>
+                            <svg class="animate-spin h-4 w-4 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                            </svg>
+                        </div>
                     </div>
+                    <button type="button" @click="clearSearch()"
+                            x-show="query.length > 0" x-transition
+                            class="px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                        Clear
+                    </button>
                 </div>
+                <label class="inline-flex items-center gap-2 cursor-pointer select-none text-sm text-gray-600 dark:text-gray-400">
+                    <input type="checkbox" x-model="hasMedia" @change="doSearch()"
+                           class="rounded border-gray-300 dark:border-gray-600 text-orange-500 focus:ring-orange-400">
+                    Only show species with photos
+                </label>
             </div>
 
             {{-- Results --}}
@@ -55,7 +67,7 @@
                         <table class="w-full text-sm">
                             <thead class="bg-gray-50 dark:bg-gray-700 text-xs uppercase text-gray-500 dark:text-gray-400">
                                 <tr>
-                                    <th class="px-2 py-3 text-center font-semibold hidden lg:table-cell w-14">Photo</th>
+                                    <th class="px-2 py-3 text-center font-semibold w-14">Photo</th>
                                     <th class="px-4 py-3 text-left font-semibold">Scientific Name</th>
                                     <th class="px-4 py-3 text-left font-semibold">Common Name</th>
                                     <th class="px-4 py-3 text-left font-semibold hidden md:table-cell">Family / Taxon</th>
@@ -65,7 +77,7 @@
                             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                                 <template x-for="row in results" :key="row.id">
                                     <tr class="hover:bg-orange-50 dark:hover:bg-gray-700 transition">
-                                        <td class="px-2 py-2 text-center hidden lg:table-cell">
+                                        <td class="px-2 py-2 text-center">
                                             <template x-if="row.thumbnail">
                                                 <a :href="`${showBase}/${row.id}`">
                                                     <img :src="row.thumbnail" :alt="row.species"
@@ -81,7 +93,7 @@
                                                class="italic font-medium text-orange-600 dark:text-orange-400 hover:underline"
                                                x-text="row.species"></a>
                                         </td>
-                                        <td class="px-4 py-3 text-gray-600 dark:text-gray-300"
+                                        <td class="px-4 py-3 text-gray-600 dark:text-gray-300 whitespace-normal break-words"
                                             x-text="row.common_name || '—'"></td>
                                         <td class="px-4 py-3 text-gray-500 dark:text-gray-400 hidden md:table-cell text-xs"
                                             x-text="row.higher_taxa || '—'"></td>
@@ -120,18 +132,29 @@
             results:   [],
             loading:   false,
             searched:  false,
+            hasMedia:  false,
             cache:     {},
 
             init(endpoint, showBase, randomSeed) {
                 this.endpoint = endpoint;
                 this.showBase = showBase;
+                this.hasMedia = sessionStorage.getItem('species_has_media') === '1';
                 const saved = sessionStorage.getItem('species_search_query');
                 this.query = (saved !== null && saved !== '') ? saved : randomSeed;
                 this.doSearch();
             },
 
+            clearSearch() {
+                this.query = '';
+                this.results = [];
+                this.searched = false;
+                sessionStorage.removeItem('species_search_query');
+            },
+
             async doSearch() {
                 const q = this.query.trim();
+
+                sessionStorage.setItem('species_has_media', this.hasMedia ? '1' : '0');
 
                 if (q.length < 2) {
                     this.results  = [];
@@ -142,7 +165,7 @@
 
                 sessionStorage.setItem('species_search_query', q);
 
-                const key = q.toLowerCase();
+                const key = q.toLowerCase() + (this.hasMedia ? ':media' : '');
                 if (this.cache[key] !== undefined) {
                     this.results   = this.cache[key];
                     this.lastQuery = q;
@@ -153,7 +176,8 @@
                 this.loading = true;
 
                 try {
-                    const res = await fetch(`${this.endpoint}?q=${encodeURIComponent(q)}`, {
+                    const url = `${this.endpoint}?q=${encodeURIComponent(q)}${this.hasMedia ? '&has_media=1' : ''}`;
+                    const res = await fetch(url, {
                         headers: {
                             'Accept': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest',

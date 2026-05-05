@@ -52,17 +52,24 @@ class SpeciesController extends Controller
 
     public function search(Request $request): JsonResponse
     {
-        $query = trim($request->string('q'));
+        $query    = trim($request->string('q'));
+        $hasMedia = $request->boolean('has_media');
 
         if ($query === '') {
             return response()->json(['results' => [], 'query' => '']);
         }
 
-        $cacheKey = 'species.search.' . md5(mb_strtolower($query));
+        $cacheKey = 'species.search.' . md5(mb_strtolower($query) . ($hasMedia ? ':media' : ''));
 
-        $results = Cache::remember($cacheKey, 300, function () use ($query) {
+        $results = Cache::remember($cacheKey, 300, function () use ($query, $hasMedia) {
             try {
-                $rows = Species::search($query)->take(60)->get();
+                $scout = Species::search($query);
+
+                if ($hasMedia) {
+                    $scout->query(fn ($q) => $q->whereHas('media', fn ($m) => $m->where('moderation_status', 'approved')));
+                }
+
+                $rows = $scout->take(60)->get();
                 $rows->loadMissing('latestApprovedMedia');
 
                 return $rows->map(fn (Species $s) => $this->format($s))->values()->all();
@@ -82,6 +89,7 @@ class SpeciesController extends Controller
                         ->orWhere('species', 'like', $any)
                         ->orWhere('higher_taxa', 'like', $any)
                     )
+                    ->when($hasMedia, fn ($q) => $q->whereHas('media', fn ($m) => $m->where('moderation_status', 'approved')))
                     ->orderByRaw("
                         CASE
                             WHEN LOWER(common_name) = ?        THEN 1
