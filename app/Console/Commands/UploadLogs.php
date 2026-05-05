@@ -48,6 +48,10 @@ class UploadLogs extends Command
                 }
                 $this->line("  Uploaded: {$remotePath}");
                 $uploaded++;
+
+                // Truncate after successful upload so the next run starts clean
+                file_put_contents($localPath, '');
+                $this->line("  Truncated: {$filename}");
             } catch (\Throwable $e) {
                 $this->warn("  Failed {$filename}: {$e->getMessage()}");
                 $failed++;
