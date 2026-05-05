@@ -19,7 +19,7 @@ $FORGE_PHP artisan migrate --force
 # Restart queue workers
 $FORGE_PHP artisan queue:restart
 
-# Warm caches (hits app over localhost to avoid SSL issues)
-$FORGE_PHP artisan app:warm --base-url=http://127.0.0.1
+# Warm app + CDN image thumbnail cache (hits app over localhost to avoid SSL)
+$FORGE_PHP artisan app:warm --base-url=http://127.0.0.1 --images=thumbs --concurrency=25
 
 echo "Deploy complete."
