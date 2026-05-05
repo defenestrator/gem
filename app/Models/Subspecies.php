@@ -17,6 +17,7 @@ class Subspecies extends Model
         'species',
         'subspecies',
         'author',
+        'description',
     ];
 
     public function parentSpecies()
