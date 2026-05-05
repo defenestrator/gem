@@ -22,7 +22,7 @@
                             x-model="query"
                             @input.debounce.300ms="doSearch(true)"
                             placeholder="Scientific name, common name, or family…"
-                            class="w-full px-3 py-2 pr-10 border border-gray-200 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-300 focus:border-orange-300 dark:focus:border-orange-400"
+                            class="w-full px-3 py-2 pr-10 border border-gray-200 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                             autocomplete="off"
                             spellcheck="false"
                         >
