@@ -78,6 +78,15 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 ### Changelog
 
 #### 2026-05-04 (continued)
+- `species:fetch-images` source chain expanded to 7 sources: added Reptile Database (HTML scrape, genus/species/subspecies URL params), ARMI USGS gallery (public domain government images), BioLib.cz (3-step HTML scrape, 2 s rate-limit between requests)
+- `logs:upload` now truncates each log file after successful S3 upload so subsequent runs start clean
+- Species search: default alphabetical browse (100/page, paginated); text search returns flat results (no limit, cached 5 min); browse/taxa results cached 1 hour; Redis cache key prefix `species_search:`; sessionStorage LRU result cache (`species_rc_` prefix, 20-entry max)
+- Species search filter: "Has photos" checkbox + 6 mutually exclusive taxon pill buttons (Lizards, Snakes, Geckos, Turtles & Tortoises, Amphisbaenia, Crocodilians); taxon state persisted in `sessionStorage`
+- Species detail view: reactive attribution bar below gallery updates on thumbnail click (title, author, license, source link, "Full attribution" link)
+- Added media attribution page at `/media/{id}/attribution`; linked from species/subspecies detail views
+- Clear search button always visible; resets query, taxon filter, and sessionStorage state
+
+#### 2026-05-04 (continued)
 - Added `logs:upload` Artisan command — streams `storage/logs/*.log` to `private_s3` disk; scheduled monthly on the 15th at midnight
 - Added `private_s3` filesystem disk (`PRIVATE_S3_KEY`, `PRIVATE_S3_SECRET`, `PRIVATE_S3_BUCKET`, `PRIVATE_S3_REGION`, `PRIVATE_S3_ENDPOINT`) — separate credentials from public media S3; visibility private
 - Added `FetchTaxonImageJob` queued job — dispatches one job per species/subspecies record on the `species-images` queue; `species:fetch-images --model=all --queue` enqueues all unprocessed taxa

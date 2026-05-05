@@ -15,10 +15,13 @@ use Illuminate\Support\Str;
  * Fetches 1–8 free CC-licensed images per species/subspecies record.
  *
  * Source chain (all sources queried per species until 8 images are collected):
- *   1. Wikipedia REST summary API          (1 image max per article)
- *   2. Wikimedia Commons direct file search (catches species without WP article)
+ *   1. Wikipedia REST summary API
+ *   2. Wikimedia Commons direct file search
  *   3. iNaturalist taxa API
  *   4. GBIF species media API
+ *   5. Reptile Database (HTML scrape)
+ *   6. ARMI USGS gallery (public domain)
+ *   7. BioLib.cz (rate-limited: 2 s between requests)
  *
  * Resumable — skips records that already have 8 sourced images; fills up to 8
  * for records with fewer. Use --force to process all records regardless.
@@ -284,10 +287,13 @@ class FetchSpeciesImages extends Command
     private function findImages(string $name, int $needed, array $existingSourceUrls): array
     {
         $sources = [
-            'Wikipedia'         => fn (int $n) => $this->fromWikipedia($name),
-            'Wikimedia Commons' => fn (int $n) => $this->fromWikimediaCommons($name, $n),
-            'iNaturalist'       => fn (int $n) => $this->fromINaturalist($name, $n),
-            'GBIF'              => fn (int $n) => $this->fromGbif($name, $n),
+            'Wikipedia'          => fn (int $n) => $this->fromWikipedia($name),
+            'Wikimedia Commons'  => fn (int $n) => $this->fromWikimediaCommons($name, $n),
+            'iNaturalist'        => fn (int $n) => $this->fromINaturalist($name, $n),
+            'GBIF'               => fn (int $n) => $this->fromGbif($name, $n),
+            'Reptile Database'   => fn (int $n) => $this->fromReptileDatabase($name, $n),
+            'ARMI USGS'          => fn (int $n) => $this->fromArmi($name, $n),
+            'BioLib'             => fn (int $n) => $this->fromBioLib($name, $n),
         ];
 
         $collected = [];
@@ -590,6 +596,211 @@ class FetchSpeciesImages extends Command
     }
 
     // -----------------------------------------------------------------------
+    // Source 5 — Reptile Database (HTML scrape)
+    // -----------------------------------------------------------------------
+
+    private function fromReptileDatabase(string $name, int $limit): array
+    {
+        $parts = explode(' ', trim($name));
+        if (count($parts) < 2) {
+            return [];
+        }
+
+        $params = ['genus' => $parts[0], 'species' => $parts[1]];
+        if (isset($parts[2])) {
+            $params['subspecies'] = $parts[2];
+        }
+
+        $html = $this->getHtml('https://reptile-database.reptarium.cz/species', $params);
+        if (! $html) {
+            return [];
+        }
+
+        // Images hosted on the site under /content/photo_id/ or similar paths
+        preg_match_all(
+            '/<img\b[^>]+\bsrc=["\']([^"\']*reptile-database[^"\']+\.(?:jpg|jpeg|png|webp))["\'][^>]*>/i',
+            $html,
+            $imgMatches
+        );
+
+        // Photo credits appear as "© Firstname Lastname" or "Photo: Name"
+        preg_match_all('/(?:©|Photo\s*:)\s*([A-Z][A-Za-z\s\.\-]{2,50}?)(?:<|,|\n|&)/u', $html, $creditMatches);
+
+        $sourceUrl = 'https://reptile-database.reptarium.cz/species?' . http_build_query($params);
+        $images    = [];
+
+        foreach ($imgMatches[1] as $i => $src) {
+            if (count($images) >= $limit) {
+                break;
+            }
+
+            if (! filter_var($src, FILTER_VALIDATE_URL)) {
+                $src = 'https://reptile-database.reptarium.cz' . $src;
+            }
+
+            $author = trim($creditMatches[1][$i] ?? 'Reptile Database contributor');
+
+            $images[] = [
+                'download_url' => $src,
+                'source_url'   => $sourceUrl,
+                'license'      => null,
+                'license_url'  => null,
+                'author'       => $author,
+                'title'        => $name,
+            ];
+        }
+
+        return $images;
+    }
+
+    // -----------------------------------------------------------------------
+    // Source 6 — ARMI USGS gallery (public domain government images)
+    // -----------------------------------------------------------------------
+
+    private function fromArmi(string $name, int $limit): array
+    {
+        $html = $this->getHtml('https://armi.usgs.gov/gallery/index.php', ['search' => $name]);
+        if (! $html) {
+            return [];
+        }
+
+        // Gallery image links — full-size images are linked from thumbnails
+        preg_match_all(
+            '/<a[^>]+href=["\']([^"\']+\.(?:jpg|jpeg|png))["\'][^>]*>\s*<img\b/i',
+            $html,
+            $linkMatches
+        );
+
+        // Fall back to direct img src if no linked full-size images found
+        if (empty($linkMatches[1])) {
+            preg_match_all(
+                '/<img\b[^>]+\bsrc=["\']([^"\']+\.(?:jpg|jpeg|png))["\'][^>]*>/i',
+                $html,
+                $imgMatches
+            );
+            $srcs = $imgMatches[1] ?? [];
+        } else {
+            $srcs = $linkMatches[1];
+        }
+
+        $images = [];
+
+        foreach ($srcs as $src) {
+            if (count($images) >= $limit) {
+                break;
+            }
+
+            // Skip obvious thumbnails and UI images
+            if (preg_match('/thumb|icon|logo|button|header/i', $src)) {
+                continue;
+            }
+
+            if (! filter_var($src, FILTER_VALIDATE_URL)) {
+                $src = 'https://armi.usgs.gov' . $src;
+            }
+
+            $images[] = [
+                'download_url' => $src,
+                'source_url'   => 'https://armi.usgs.gov/gallery/index.php?search=' . urlencode($name),
+                'license'      => 'Public Domain',
+                'license_url'  => 'https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits',
+                'author'       => 'USGS ARMI',
+                'title'        => $name,
+            ];
+        }
+
+        return $images;
+    }
+
+    // -----------------------------------------------------------------------
+    // Source 7 — BioLib.cz (rate-limited: 2s between each request)
+    // -----------------------------------------------------------------------
+
+    private function fromBioLib(string $name, int $limit): array
+    {
+        // Step 1 — find taxon ID from search
+        sleep(2);
+        $searchHtml = $this->getHtml('https://www.biolib.cz/en/taxonsearch/', [
+            'action'     => 'show',
+            'string'     => $name,
+            'searchtype' => 'taxonomyform',
+        ]);
+
+        if (! $searchHtml) {
+            return [];
+        }
+
+        // Taxon links appear as /en/taxon/id12345/
+        preg_match('/href="\/en\/taxon\/id(\d+)\/"/i', $searchHtml, $idMatch);
+        if (! $idMatch) {
+            return [];
+        }
+
+        $taxonId = $idMatch[1];
+
+        // Step 2 — fetch image listing for taxon
+        sleep(2);
+        $listHtml = $this->getHtml("https://www.biolib.cz/en/image/list/taxon{$taxonId}/");
+        if (! $listHtml) {
+            return [];
+        }
+
+        preg_match_all('/href="\/en\/image\/id(\d+)\/"/i', $listHtml, $imgIds);
+        if (empty($imgIds[1])) {
+            return [];
+        }
+
+        $images = [];
+
+        foreach (array_slice($imgIds[1], 0, $limit) as $imgId) {
+            // Step 3 — fetch each image detail page
+            sleep(2);
+            $imgHtml = $this->getHtml("https://www.biolib.cz/en/image/id{$imgId}/");
+            if (! $imgHtml) {
+                continue;
+            }
+
+            // Main image src
+            preg_match('/<img\b[^>]+id=["\']bigimage["\'][^>]+src=["\']([^"\']+)["\']/i', $imgHtml, $srcMatch);
+            if (! $srcMatch) {
+                // Try generic large image pattern
+                preg_match('/<img\b[^>]+src=["\']([^"\']+\/images\/[^"\']+\.(?:jpg|jpeg|png))["\']/i', $imgHtml, $srcMatch);
+            }
+            if (! $srcMatch) {
+                continue;
+            }
+
+            $src = $srcMatch[1];
+            if (! filter_var($src, FILTER_VALIDATE_URL)) {
+                $src = 'https://www.biolib.cz' . $src;
+            }
+
+            // Author
+            preg_match('/(?:Author|Photographer)\s*:?\s*<[^>]*>([^<]+)</i', $imgHtml, $authorMatch);
+            $author = trim(strip_tags($authorMatch[1] ?? 'BioLib contributor'));
+
+            // License / rights
+            preg_match('/(?:Rights|Licence|License)\s*:?\s*<[^>]*>([^<]+)</i', $imgHtml, $licenseMatch);
+            $license = trim(strip_tags($licenseMatch[1] ?? ''));
+
+            if (! $this->isAcceptableImage($license ?: null)) {
+                continue;
+            }
+
+            $images[] = [
+                'download_url' => $src,
+                'source_url'   => "https://www.biolib.cz/en/image/id{$imgId}/",
+                'license'      => $license ?: null,
+                'license_url'  => null,
+                'author'       => $author,
+                'title'        => $name,
+            ];
+        }
+
+        return $images;
+    }
+
+    // -----------------------------------------------------------------------
     // HTTP helper
     // -----------------------------------------------------------------------
 
@@ -608,6 +819,23 @@ class FetchSpeciesImages extends Command
         }
 
         return $res->json();
+    }
+
+    private function getHtml(string $url, array $params = []): ?string
+    {
+        $req = Http::withUserAgent(self::USER_AGENT)->timeout(20);
+        $res = $params ? $req->get($url, $params) : $req->get($url);
+
+        if ($res->status() === 404) {
+            return null;
+        }
+
+        if (! $res->successful()) {
+            $this->line("    HTTP {$res->status()} ← {$url}");
+            return null;
+        }
+
+        return $res->body();
     }
 
     private function download(string $url): ?string

@@ -84,5 +84,6 @@ Tailwind CSS 3 + Alpine.js for reactive UI and component state.
 - Always run `php artisan test` after completing a changeset
 - Always use the caveman skill caveman mode
 - Always update `README.md` changelog after completing a feature changeset
+- At the end of every functional changeset, after tests pass and README is updated, run: `git add . && git commit -m "{commit message}" && git push` — replace `{commit message}` with a concise, contextually correct message describing the changeset
 - `AnimalAvailability` enum must be used for animal state — do not store raw strings
 - Captive-bred status required in listing validation
