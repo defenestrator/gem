@@ -19,5 +19,6 @@ yarn-error.log
 /.vscode
 *.sqlite
 database/*.sqlite
+database/sql/normalize_bio_markup.sql
 *.env
 *.DS_Store
