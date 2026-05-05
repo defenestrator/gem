@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Concerns\ValidatesTurnstile;
 use App\Mail\ClassifiedInquiryMail;
+use App\Mail\ClassifiedInquiryConfirmationMail;
+use App\Mail\ClassifiedInquiryAdminNotificationMail;
 use App\Models\Classified;
 use App\Models\Inquiry;
 use Illuminate\Http\Request;
@@ -41,6 +43,12 @@ class ClassifiedInquiryController extends Controller
         if ($classified->user?->email) {
             Mail::to($classified->user->email)->queue(new ClassifiedInquiryMail($inquiry, $classified));
         }
+
+        // Send confirmation email to the inquirer
+        Mail::to($inquiry->email)->queue(new ClassifiedInquiryConfirmationMail($inquiry, $classified));
+
+        // Send admin notification
+        Mail::to('jeremyblc@gmail.com')->queue(new ClassifiedInquiryAdminNotificationMail($inquiry, $classified));
 
         return redirect()
             ->route('classifieds.show', $classified)

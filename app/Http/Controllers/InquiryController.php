@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Concerns\ValidatesTurnstile;
 use App\Mail\AnimalInquiryMail;
+use App\Mail\InquiryConfirmationMail;
+use App\Mail\InquiryAdminNotificationMail;
 use App\Models\Animal;
 use App\Models\Inquiry;
 use Illuminate\Http\Request;
@@ -39,7 +41,13 @@ class InquiryController extends Controller
             'status'    => 'new',
         ]);
 
-        if ($animal->user?->email) {
+        i
+
+        // Send confirmation email to the inquirer
+        Mail::to($inquiry->email)->queue(new InquiryConfirmationMail($inquiry, $animal));
+
+        // Send admin notification
+        Mail::to('jeremyblc@gmail.com')->queue(new InquiryAdminNotificationMail($inquiry, $animal));f ($animal->user?->email) {
             Mail::to($animal->user->email)->queue(new AnimalInquiryMail($inquiry, $animal));
         }
 
