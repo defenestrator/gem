@@ -29,11 +29,6 @@ class GenerateSpeciesBiographies extends Command
 
     public function handle(): int
     {
-        if (! config('services.anthropic.key')) {
-            $this->error('ANTHROPIC_API_KEY is not set. Aborting.');
-            return self::FAILURE;
-        }
-
         $model  = $this->option('model');
         $limit  = (int) $this->option('limit');
         $id     = $this->option('id');
