@@ -77,7 +77,10 @@ class SpeciesController extends Controller
             . ':p' . $page
         );
 
-        $payload = Cache::remember($cacheKey, 300, function () use ($query, $hasMedia, $taxonKey, $page, $perPage) {
+        // Browse/taxa queries are stable — cache 1 hour. Text searches expire in 5 min.
+        $ttl = ($query === '') ? 3600 : 300;
+
+        $payload = Cache::remember($cacheKey, $ttl, function () use ($query, $hasMedia, $taxonKey, $page, $perPage) {
             $taxonConstraint = function ($q) use ($taxonKey) {
                 if ($taxonKey === '') {
                     return;

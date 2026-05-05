@@ -59,20 +59,40 @@
 
             {{-- Photo gallery --}}
             @if ($media->isNotEmpty())
+                @php
+                $mediaData = $media->map(fn($m) => [
+                    'id'          => $m->id,
+                    'url'         => $m->url,
+                    'author'      => $m->author,
+                    'license'     => $m->license,
+                    'license_url' => $m->license_url,
+                    'source_url'  => $m->source_url,
+                    'title'       => $m->title,
+                    'attr_url'    => ($m->source_url || $m->author || $m->license) ? route('media.attribution', $m) : null,
+                    'status'      => $m->moderation_status,
+                ])->values()->all();
+                @endphp
+
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden"
-                     x-data="{ active: '{{ $media->where('moderation_status', 'approved')->first()?->url ?? $media->first()->url }}' }">
+                     x-data="{
+                         photos: {{ Js::from($mediaData) }},
+                         activeMedia: null,
+                         init() {
+                             this.activeMedia = this.photos.find(p => p.status === 'approved') ?? this.photos[0];
+                         }
+                     }">
 
                     <div class="w-full aspect-video bg-black overflow-hidden">
-                        <img :src="active" alt="{{ $subspecies->full_name }}"
+                        <img :src="activeMedia?.url" alt="{{ $subspecies->full_name }}"
                              class="w-full h-full object-contain">
                     </div>
 
                     <div class="flex gap-2 p-3 overflow-x-auto bg-gray-50 dark:bg-gray-900 flex-wrap">
                         @foreach ($media as $photo)
-                            <div class="relative flex-shrink-0 flex flex-col items-center gap-1">
+                            <div class="relative flex-shrink-0">
                                 <button type="button"
-                                    @click="active = '{{ $photo->url }}'"
-                                    :class="active === '{{ $photo->url }}' ? 'ring-2 ring-orange-500' : 'opacity-70 hover:opacity-100'"
+                                    @click="activeMedia = photos.find(p => p.id === {{ $photo->id }})"
+                                    :class="activeMedia?.id === {{ $photo->id }} ? 'ring-2 ring-orange-500' : 'opacity-70 hover:opacity-100'"
                                     class="rounded overflow-hidden transition block">
                                     <img src="{{ $photo->url }}" alt="{{ $subspecies->full_name }}"
                                          class="h-16 w-16 object-cover">
@@ -83,14 +103,42 @@
                                         {{ strtoupper($photo->moderation_status) }}
                                     </span>
                                 @endif
-                                @if ($photo->source_url || $photo->author || $photo->license)
-                                    <a href="{{ route('media.attribution', $photo) }}"
-                                       class="text-[10px] text-gray-400 hover:text-orange-500 transition leading-none"
-                                       title="View attribution">© attr</a>
-                                @endif
                             </div>
                         @endforeach
                     </div>
+
+                    {{-- Reactive attribution for active image --}}
+                    <template x-if="activeMedia && (activeMedia.author || activeMedia.license || activeMedia.source_url || activeMedia.title)">
+                        <div class="px-4 py-3 border-t border-gray-100 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400 space-y-1">
+                            <template x-if="activeMedia.title">
+                                <p x-text="activeMedia.title" class="italic"></p>
+                            </template>
+                            <div class="flex flex-wrap gap-x-4 gap-y-1">
+                                <template x-if="activeMedia.author">
+                                    <span>© <span x-text="activeMedia.author"></span></span>
+                                </template>
+                                <template x-if="activeMedia.license">
+                                    <span>
+                                        <template x-if="activeMedia.license_url">
+                                            <a :href="activeMedia.license_url" target="_blank" rel="noopener noreferrer"
+                                               x-text="activeMedia.license"
+                                               class="text-orange-500 hover:underline"></a>
+                                        </template>
+                                        <template x-if="!activeMedia.license_url">
+                                            <span x-text="activeMedia.license"></span>
+                                        </template>
+                                    </span>
+                                </template>
+                                <template x-if="activeMedia.source_url">
+                                    <a :href="activeMedia.source_url" target="_blank" rel="noopener noreferrer"
+                                       class="text-orange-500 hover:underline">Source</a>
+                                </template>
+                                <template x-if="activeMedia.attr_url">
+                                    <a :href="activeMedia.attr_url" class="text-orange-500 hover:underline">Full attribution</a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             @else
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 text-center text-gray-400 dark:text-gray-500">
