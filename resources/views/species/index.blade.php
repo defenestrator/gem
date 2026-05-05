@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"
             x-data="speciesSearch"
-            x-init="init('{{ route('species.search') }}', '{{ url('/species') }}', '{{ \App\Support\SpeciesSearchTerms::random() }}')">
+            x-init="init('{{ route('species.search') }}', '{{ url('/species') }}')">
 
             {{-- Search input --}}
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
@@ -71,7 +71,12 @@
             {{-- Results --}}
             <template x-if="searched && results.length === 0 && !loading">
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center text-gray-500 dark:text-gray-400">
-                    No species found for "<span x-text="lastQuery"></span>".
+                    <template x-if="lastQuery">
+                        <span>No species found for "<span x-text="lastQuery"></span>".</span>
+                    </template>
+                    <template x-if="!lastQuery">
+                        <span>No species found.</span>
+                    </template>
                 </div>
             </template>
 
@@ -164,16 +169,6 @@
                 </div>
             </template>
 
-            {{-- Empty state before any search --}}
-            <template x-if="!searched && !loading">
-                <div class="bg-white dark:bg-gray-800 p-10 rounded-lg shadow-md text-center text-gray-400 dark:text-gray-500">
-                    <svg class="mx-auto mb-3 h-10 w-10 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-                    </svg>
-                    <p class="text-sm">Type a name to search 11,000+ reptile species.</p>
-                </div>
-            </template>
 
         </div>
     </div>
@@ -195,25 +190,22 @@
             meta:        null,
             cache:       {},
 
-            init(endpoint, showBase, randomSeed) {
+            init(endpoint, showBase) {
                 this.endpoint = endpoint;
                 this.showBase = showBase;
                 this.hasMedia = sessionStorage.getItem('species_has_media') === '1';
                 this.taxon    = sessionStorage.getItem('species_taxon') || '';
-                const saved = sessionStorage.getItem('species_search_query');
-                this.query = (saved !== null && saved !== '') ? saved : randomSeed;
+                this.query    = sessionStorage.getItem('species_search_query') || '';
                 this.doSearch();
             },
 
             clearSearch() {
                 this.query = '';
-                this.results = [];
-                this.searched = false;
-                this.meta  = null;
-                this.page  = 1;
                 this.taxon = '';
+                this.page  = 1;
                 sessionStorage.removeItem('species_search_query');
                 sessionStorage.removeItem('species_taxon');
+                this.doSearch();
             },
 
             goToPage(p) {
@@ -229,16 +221,6 @@
 
                 sessionStorage.setItem('species_has_media', this.hasMedia ? '1' : '0');
                 sessionStorage.setItem('species_taxon', this.taxon);
-
-                if (q.length < 2 && this.taxon === '') {
-                    this.results  = [];
-                    this.searched = false;
-                    this.meta     = null;
-                    this.page     = 1;
-                    sessionStorage.removeItem('species_search_query');
-                    return;
-                }
-
                 sessionStorage.setItem('species_search_query', q);
 
                 const key = q.toLowerCase() + (this.hasMedia ? ':media' : '') + (this.taxon ? ':' + this.taxon : '') + ':p' + this.page;

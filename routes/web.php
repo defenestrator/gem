@@ -239,6 +239,7 @@ Route::post('/species/{species}/media', [SpeciesController::class, 'storeMedia']
 // Subspecies Routes
 Route::get('/subspecies/{subspecies}', [SubspeciesController::class, 'show'])->name('subspecies.show');
 Route::post('/subspecies/{subspecies}/media', [SubspeciesController::class, 'storeMedia'])->name('subspecies.media.store')->middleware('auth');
+Route::get('/media/{media}/attribution', [MediaController::class, 'attribution'])->name('media.attribution');
 
 // Animals Routes
 Route::get('/animals', [AnimalController::class, 'index'])->name('animals.index');
@@ -261,8 +262,6 @@ Route::middleware('auth')->group(function () {
         }
         Route::resource('dashboard/animals', DashboardAnimalController::class)->middleware('verified');
         Route::delete('dashboard/media/{media}', [MediaController::class, 'destroy'])->name('media.destroy')->middleware('verified');
-
-Route::get('media/{media}/attribution', [MediaController::class, 'attribution'])->name('media.attribution');
 
         // Inquiries (admin only)
         Route::get('dashboard/inquiries', [DashboardInquiryController::class, 'index'])->name('inquiries.index');

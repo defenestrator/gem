@@ -97,7 +97,7 @@
 
                     <div class="flex gap-2 p-3 overflow-x-auto bg-gray-50 dark:bg-gray-900 flex-wrap">
                         @foreach ($media as $photo)
-                            <div class="relative flex-shrink-0">
+                            <div class="relative flex-shrink-0 flex flex-col items-center gap-1">
                                 <button type="button"
                                     @click="active = '{{ $photo->url }}'"
                                     :class="active === '{{ $photo->url }}' ? 'ring-2 ring-orange-500' : 'opacity-70 hover:opacity-100'"
@@ -110,6 +110,11 @@
                                         {{ $photo->moderation_status === 'pending' ? 'bg-yellow-400 text-yellow-900' : 'bg-red-500 text-white' }}">
                                         {{ strtoupper($photo->moderation_status) }}
                                     </span>
+                                @endif
+                                @if ($photo->source_url || $photo->author || $photo->license)
+                                    <a href="{{ route('media.attribution', $photo) }}"
+                                       class="text-[10px] text-gray-400 hover:text-orange-500 transition leading-none"
+                                       title="View attribution">© attr</a>
                                 @endif
                             </div>
                         @endforeach

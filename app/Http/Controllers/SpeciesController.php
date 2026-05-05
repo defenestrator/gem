@@ -67,12 +67,8 @@ class SpeciesController extends Controller
         $taxonKey = $request->input('taxon', '');
         $taxonKey = array_key_exists($taxonKey, self::TAXON_PATTERNS) ? $taxonKey : '';
 
-        if ($query === '' && $taxonKey === '') {
-            return response()->json(['results' => [], 'meta' => null, 'query' => '']);
-        }
-
         $page    = max(1, (int) $request->input('page', 1));
-        $perPage = 25;
+        $perPage = 100;
 
         $cacheKey = 'species.search.' . md5(
             mb_strtolower($query)
