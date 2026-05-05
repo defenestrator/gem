@@ -17,6 +17,15 @@ class WarmCache extends Command
 
     protected $description = 'Warm application and CDN image caches after deploy';
 
+    private const TAXA = [
+        'lizards',
+        'snakes',
+        'geckos',
+        'turtles',
+        'amphisbaenia',
+        'crocodilians',
+    ];
+
     // Direct DO Spaces origin — what is stored in media.url
     private const SPACES_ORIGIN = 'https://gemx.sfo3.digitaloceanspaces.com/';
 
@@ -40,6 +49,10 @@ class WarmCache extends Command
 
         $this->warmRoute($searchUrl, [], 'browse p1 (all)');
         $this->warmRoute($searchUrl, ['has_media' => '1'], 'browse p1 (has media)');
+
+        foreach (self::TAXA as $taxon) {
+            $this->warmRoute($searchUrl, ['taxon' => $taxon], "browse p1 ({$taxon})");
+        }
 
         // ── 3. CDN image cache ───────────────────────────────────────────────
         if ($imageMode === 'none') {
