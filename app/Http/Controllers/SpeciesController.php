@@ -50,29 +50,71 @@ class SpeciesController extends Controller
         return back()->with('success', 'Photo(s) submitted for review. They will appear once approved.');
     }
 
+    private const TAXON_PATTERNS = [
+        'lizards'      => '%Sauria%',
+        'snakes'       => '%Serpentes%',
+        'geckos'       => '%(lizards: geckos)%',
+        'turtles'      => '%Testudines%',
+        'amphisbaenia' => '%Amphisbaenia%',
+        'crocodilians' => '%Crocody%',
+        'tuatara'      => '%Rhyncho%',
+    ];
+
     public function search(Request $request): JsonResponse
     {
         $query    = trim($request->string('q'));
         $hasMedia = $request->boolean('has_media');
+        $taxonKey = $request->input('taxon', '');
+        $taxonKey = array_key_exists($taxonKey, self::TAXON_PATTERNS) ? $taxonKey : '';
 
-        if ($query === '') {
-            return response()->json(['results' => [], 'query' => '']);
+        if ($query === '' && $taxonKey === '') {
+            return response()->json(['results' => [], 'meta' => null, 'query' => '']);
         }
 
-        $cacheKey = 'species.search.' . md5(mb_strtolower($query) . ($hasMedia ? ':media' : ''));
+        $page    = max(1, (int) $request->input('page', 1));
+        $perPage = 25;
 
-        $results = Cache::remember($cacheKey, 300, function () use ($query, $hasMedia) {
-            try {
-                $scout = Species::search($query);
+        $cacheKey = 'species.search.' . md5(
+            mb_strtolower($query)
+            . ($hasMedia ? ':media' : '')
+            . ($taxonKey ? ':' . $taxonKey : '')
+            . ':p' . $page
+        );
 
-                if ($hasMedia) {
-                    $scout->query(fn ($q) => $q->whereHas('media', fn ($m) => $m->where('moderation_status', 'approved')));
+        $payload = Cache::remember($cacheKey, 300, function () use ($query, $hasMedia, $taxonKey, $page, $perPage) {
+            $taxonConstraint = function ($q) use ($taxonKey) {
+                if ($taxonKey === '') {
+                    return;
                 }
+                $q->where('higher_taxa', 'like', self::TAXON_PATTERNS[$taxonKey]);
+            };
 
-                $rows = $scout->take(60)->get();
-                $rows->loadMissing('latestApprovedMedia');
+            // Taxa-only browse (no text query) — skip Scout, go straight to DB
+            if ($query === '') {
+                $paginator = Species::query()
+                    ->tap($taxonConstraint)
+                    ->when($hasMedia, fn ($q) => $q->whereHas('media', fn ($m) => $m->where('moderation_status', 'approved')))
+                    ->orderBy('species')
+                    ->paginate($perPage, ['*'], 'page', $page);
 
-                return $rows->map(fn (Species $s) => $this->format($s))->values()->all();
+                $paginator->getCollection()->loadMissing('latestApprovedMedia');
+
+                return $this->paginatedPayload($paginator);
+            }
+
+            try {
+                $paginator = Species::search($query)
+                    ->query(function ($q) use ($hasMedia, $taxonConstraint) {
+                        if ($hasMedia) {
+                            $q->whereHas('media', fn ($m) => $m->where('moderation_status', 'approved'));
+                        }
+                        $taxonConstraint($q);
+                    })
+                    ->paginate($perPage, 'page', $page);
+
+                $paginator->getCollection()->loadMissing('latestApprovedMedia');
+
+                return $this->paginatedPayload($paginator);
             } catch (\Throwable $e) {
                 Log::warning('Species MeiliSearch unavailable, falling back to DB search.', [
                     'error' => $e->getMessage(),
@@ -83,13 +125,14 @@ class SpeciesController extends Controller
                 $start = $term . '%';
                 $any   = '%' . $term . '%';
 
-                $rows = Species::query()
+                $paginator = Species::query()
                     ->where(fn ($q) => $q
                         ->where('common_name', 'like', $any)
                         ->orWhere('species', 'like', $any)
                         ->orWhere('higher_taxa', 'like', $any)
                     )
                     ->when($hasMedia, fn ($q) => $q->whereHas('media', fn ($m) => $m->where('moderation_status', 'approved')))
+                    ->tap($taxonConstraint)
                     ->orderByRaw("
                         CASE
                             WHEN LOWER(common_name) = ?        THEN 1
@@ -101,16 +144,31 @@ class SpeciesController extends Controller
                             ELSE 7
                         END
                     ", [$exact, $exact, $start, $start, $any, $any])
-                    ->limit(60)
-                    ->get();
+                    ->paginate($perPage, ['*'], 'page', $page);
 
-                $rows->loadMissing('latestApprovedMedia');
+                $paginator->getCollection()->loadMissing('latestApprovedMedia');
 
-                return $rows->map(fn (Species $s) => $this->format($s))->values()->all();
+                return $this->paginatedPayload($paginator);
             }
         });
 
-        return response()->json(['results' => $results, 'query' => $query]);
+        return response()->json(array_merge($payload, ['query' => $query]));
+    }
+
+    private function paginatedPayload(\Illuminate\Contracts\Pagination\LengthAwarePaginator $paginator): array
+    {
+        return [
+            'results' => $paginator->getCollection()
+                ->map(fn (Species $s) => $this->format($s))
+                ->values()
+                ->all(),
+            'meta' => [
+                'total'        => $paginator->total(),
+                'per_page'     => $paginator->perPage(),
+                'current_page' => $paginator->currentPage(),
+                'last_page'    => $paginator->lastPage(),
+            ],
+        ];
     }
 
     private function format(Species $s): array

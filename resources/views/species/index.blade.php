@@ -20,7 +20,7 @@
                         <input
                             type="text"
                             x-model="query"
-                            @input.debounce.300ms="doSearch()"
+                            @input.debounce.300ms="doSearch(true)"
                             placeholder="Scientific name, common name, or family…"
                             class="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
                             autocomplete="off"
@@ -41,11 +41,31 @@
                         Clear
                     </button>
                 </div>
-                <label class="inline-flex items-center gap-2 cursor-pointer select-none text-sm text-gray-600 dark:text-gray-400">
-                    <input type="checkbox" x-model="hasMedia" @change="doSearch()"
-                           class="rounded border-gray-300 dark:border-gray-600 text-orange-500 focus:ring-orange-400">
-                    Only show species with photos
-                </label>
+                <div class="flex flex-wrap gap-x-5 gap-y-2 mt-1">
+                    <label class="inline-flex items-center gap-2 cursor-pointer select-none text-sm text-gray-600 dark:text-gray-400">
+                        <input type="checkbox" x-model="hasMedia" @change="doSearch(true)"
+                               class="rounded border-gray-300 dark:border-gray-600 text-orange-500 focus:ring-orange-400">
+                        Has photos
+                    </label>
+                    <span class="text-gray-300 dark:text-gray-600 hidden sm:inline">|</span>
+                    @foreach ([
+                        'lizards'      => 'Lizards',
+                        'snakes'       => 'Snakes',
+                        'geckos'       => 'Geckos',
+                        'turtles'      => 'Turtles &amp; Tortoises',
+                        'amphisbaenia' => 'Amphisbaenia',
+                        'crocodilians' => 'Crocodilians',
+                    ] as $key => $label)
+                    <button type="button"
+                            @click="taxon = (taxon === '{{ $key }}' ? '' : '{{ $key }}'); doSearch(true)"
+                            :class="taxon === '{{ $key }}'
+                                ? 'bg-orange-500 text-white border-orange-500'
+                                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600 hover:border-orange-400'"
+                            class="px-3 py-1 text-sm rounded-full border transition select-none">
+                        {!! $label !!}
+                    </button>
+                    @endforeach
+                </div>
             </div>
 
             {{-- Results --}}
@@ -59,8 +79,13 @@
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
                     <div class="px-6 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                         <span class="text-sm text-gray-500 dark:text-gray-400">
-                            <span x-text="results.length"></span> result<span x-show="results.length !== 1">s</span>
-                            for "<span class="font-medium text-gray-700 dark:text-gray-300" x-text="lastQuery"></span>"
+                            <template x-if="meta">
+                                <span>
+                                    <span x-text="meta.total.toLocaleString()"></span> result<span x-show="meta.total !== 1">s</span>
+                                    <span x-show="lastQuery"> for "<span class="font-medium text-gray-700 dark:text-gray-300" x-text="lastQuery"></span>"</span>
+                                    &mdash; page <span x-text="meta.current_page"></span> of <span x-text="meta.last_page"></span>
+                                </span>
+                            </template>
                         </span>
                     </div>
                     <div class="overflow-x-auto">
@@ -104,6 +129,38 @@
                             </tbody>
                         </table>
                     </div>
+
+                    {{-- Pagination --}}
+                    <template x-if="meta && meta.last_page > 1">
+                        <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between gap-2 flex-wrap">
+                            <button @click="goToPage(meta.current_page - 1)"
+                                    :disabled="meta.current_page <= 1"
+                                    class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300
+                                           hover:bg-orange-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition">
+                                &larr; Prev
+                            </button>
+
+                            <div class="flex items-center gap-1 flex-wrap justify-center">
+                                <template x-for="p in meta.last_page" :key="p">
+                                    <button @click="goToPage(p)"
+                                            :class="p === meta.current_page
+                                                ? 'bg-orange-500 text-white border-orange-500'
+                                                : 'text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-orange-50 dark:hover:bg-gray-700'"
+                                            x-show="p === 1 || p === meta.last_page || Math.abs(p - meta.current_page) <= 2"
+                                            class="px-3 py-1.5 text-sm rounded-lg border transition"
+                                            x-text="p">
+                                    </button>
+                                </template>
+                            </div>
+
+                            <button @click="goToPage(meta.current_page + 1)"
+                                    :disabled="meta.current_page >= meta.last_page"
+                                    class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300
+                                           hover:bg-orange-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition">
+                                Next &rarr;
+                            </button>
+                        </div>
+                    </template>
                 </div>
             </template>
 
@@ -127,18 +184,22 @@
         Alpine.data('speciesSearch', () => ({
             endpoint:  '',
             showBase:  '',
-            query:     '',
-            lastQuery: '',
-            results:   [],
-            loading:   false,
-            searched:  false,
-            hasMedia:  false,
-            cache:     {},
+            query:       '',
+            lastQuery:   '',
+            results:     [],
+            loading:     false,
+            searched:    false,
+            hasMedia:    false,
+            taxon:       '',
+            page:        1,
+            meta:        null,
+            cache:       {},
 
             init(endpoint, showBase, randomSeed) {
                 this.endpoint = endpoint;
                 this.showBase = showBase;
                 this.hasMedia = sessionStorage.getItem('species_has_media') === '1';
+                this.taxon    = sessionStorage.getItem('species_taxon') || '';
                 const saved = sessionStorage.getItem('species_search_query');
                 this.query = (saved !== null && saved !== '') ? saved : randomSeed;
                 this.doSearch();
@@ -148,26 +209,42 @@
                 this.query = '';
                 this.results = [];
                 this.searched = false;
+                this.meta  = null;
+                this.page  = 1;
+                this.taxon = '';
                 sessionStorage.removeItem('species_search_query');
+                sessionStorage.removeItem('species_taxon');
             },
 
-            async doSearch() {
+            goToPage(p) {
+                this.page = p;
+                this.doSearch();
+                this.$nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
+            },
+
+            async doSearch(resetPage = false) {
                 const q = this.query.trim();
 
-                sessionStorage.setItem('species_has_media', this.hasMedia ? '1' : '0');
+                if (resetPage) this.page = 1;
 
-                if (q.length < 2) {
+                sessionStorage.setItem('species_has_media', this.hasMedia ? '1' : '0');
+                sessionStorage.setItem('species_taxon', this.taxon);
+
+                if (q.length < 2 && this.taxon === '') {
                     this.results  = [];
                     this.searched = false;
+                    this.meta     = null;
+                    this.page     = 1;
                     sessionStorage.removeItem('species_search_query');
                     return;
                 }
 
                 sessionStorage.setItem('species_search_query', q);
 
-                const key = q.toLowerCase() + (this.hasMedia ? ':media' : '');
+                const key = q.toLowerCase() + (this.hasMedia ? ':media' : '') + (this.taxon ? ':' + this.taxon : '') + ':p' + this.page;
                 if (this.cache[key] !== undefined) {
-                    this.results   = this.cache[key];
+                    this.results   = this.cache[key].results;
+                    this.meta      = this.cache[key].meta;
                     this.lastQuery = q;
                     this.searched  = true;
                     return;
@@ -176,8 +253,10 @@
                 this.loading = true;
 
                 try {
-                    const url = `${this.endpoint}?q=${encodeURIComponent(q)}${this.hasMedia ? '&has_media=1' : ''}`;
-                    const res = await fetch(url, {
+                    const params = new URLSearchParams({ q, page: this.page });
+                    if (this.hasMedia) params.set('has_media', '1');
+                    if (this.taxon) params.set('taxon', this.taxon);
+                    const res = await fetch(`${this.endpoint}?${params}`, {
                         headers: {
                             'Accept': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest',
@@ -187,8 +266,9 @@
                     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
                     const data = await res.json();
-                    this.cache[key] = data.results;
+                    this.cache[key] = { results: data.results, meta: data.meta };
                     this.results    = data.results;
+                    this.meta       = data.meta;
                     this.lastQuery  = q;
                     this.searched   = true;
                 } catch (e) {

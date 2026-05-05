@@ -4,9 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Media;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class MediaController extends Controller
 {
+    public function attribution(Media $media): View
+    {
+        $mediable = $media->mediable;
+
+        // Only show attribution for approved species/subspecies images that have source data
+        if (! $mediable || $media->moderation_status !== 'approved') {
+            abort(404);
+        }
+
+        return view('media.attribution', compact('media', 'mediable'));
+    }
+
     public function destroy(Media $media)
     {
         $isAdmin  = auth()->user()->is_admin;
