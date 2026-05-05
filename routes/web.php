@@ -18,6 +18,7 @@ use App\Http\Controllers\ClassifiedInquiryController;
 use App\Http\Controllers\DashboardInquiryController;
 use App\Http\Controllers\ShippingQuoteController;
 use App\Http\Controllers\ShipCenterController;
+use App\Http\Controllers\InboundEmailController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
@@ -281,5 +282,8 @@ Route::middleware('auth')->group(function () {
 // Legal
 Route::get('/privacy', fn () => view('legal.privacy'))->name('legal.privacy');
 Route::get('/terms', fn () => view('legal.terms'))->name('legal.terms');
+
+// SendGrid Inbound Email Webhook
+Route::post('/mail/inbound', [InboundEmailController::class, 'handle'])->name('mail.inbound');
 
 require __DIR__.'/auth.php';
