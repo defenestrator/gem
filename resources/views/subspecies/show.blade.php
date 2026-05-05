@@ -57,18 +57,6 @@
                 </dl>
             </div>
 
-            {{-- Biography --}}
-            @if ($subspecies->description)
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Subspecies Profile</h2>
-                    <div class="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 leading-relaxed space-y-4">
-                        @foreach (array_filter(explode("\n\n", $subspecies->description)) as $paragraph)
-                            <p>{{ $paragraph }}</p>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
-
             {{-- Photo gallery --}}
             @if ($media->isNotEmpty())
                 @php
@@ -194,6 +182,16 @@
                     <a href="{{ route('login') }}" class="text-orange-500 hover:underline font-medium">Log in</a> to submit photos.
                 </div>
             @endauth
+
+            {{-- Biography --}}
+            @if ($subspecies->description)
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Subspecies Profile</h2>
+                    <div class="prose prose-sm dark:prose-invert max-w-none">
+                        {!! Str::markdown(e($subspecies->description)) !!}
+                    </div>
+                </div>
+            @endif
 
         </div>
     </div>

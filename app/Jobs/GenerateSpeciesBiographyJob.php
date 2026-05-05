@@ -61,25 +61,25 @@ class GenerateSpeciesBiographyJob implements ShouldQueue
     {
         $sections = [];
 
-        // Taxonomy block from DB record
-        $sections[] = $this->taxonomyBlock($record);
+        // Taxonomy block
+        $sections[] = "## Taxonomy\n\n" . $this->taxonomyBlock($record);
 
         // Wikipedia full extract — primary prose source
         $wiki = $this->fromWikipedia($name);
         if ($wiki) {
-            $sections[] = $wiki;
+            $sections[] = "## Overview\n\n" . $wiki;
         }
 
         // iNaturalist summary — fallback / supplement when Wikipedia is thin
         $inat = $this->fromINaturalist($name);
         if ($inat && (! $wiki || mb_strlen($wiki) < 500)) {
-            $sections[] = $inat;
+            $sections[] = "## Description\n\n" . $inat;
         }
 
-        // GBIF common names + classification — always append if available
+        // GBIF classification + common names
         $gbif = $this->fromGbif($name);
         if ($gbif) {
-            $sections[] = $gbif;
+            $sections[] = "## Classification\n\n" . $gbif;
         }
 
         $body = implode("\n\n", array_filter($sections));
