@@ -41,15 +41,15 @@ class InquiryController extends Controller
             'status'    => 'new',
         ]);
 
-        i
+        if ($animal->user?->email) {
+            Mail::to($animal->user->email)->queue(new AnimalInquiryMail($inquiry, $animal));
+        }
 
         // Send confirmation email to the inquirer
         Mail::to($inquiry->email)->queue(new InquiryConfirmationMail($inquiry, $animal));
 
         // Send admin notification
-        Mail::to('jeremyblc@gmail.com')->queue(new InquiryAdminNotificationMail($inquiry, $animal));f ($animal->user?->email) {
-            Mail::to($animal->user->email)->queue(new AnimalInquiryMail($inquiry, $animal));
-        }
+        Mail::to('jeremyblc@gmail.com')->queue(new InquiryAdminNotificationMail($inquiry, $animal));
 
         return redirect()
             ->route('animals.show', $animal)
