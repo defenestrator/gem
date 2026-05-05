@@ -8,13 +8,13 @@
         <title>{{ config('app.name', 'Gem Reptiles')  }} scaly critters for every occcasion</title>
 
         <!-- Favicons -->
-        <link rel="icon" type="image/x-icon" href="{{ '/storage/favicon.ico' }}">
-        <link rel="icon" type="image/png" sizes="256x256" href="{{ '/storage/favicon-256.png' }}">
-        
-        <link rel="icon" type="image/png" sizes="100x100" href="{{ '/storage/favicon-100.png' }}">
-        <link rel="icon" type="image/png" href="{{ '/storage/favicon.png' }}">
-        <link rel="apple-touch-icon" href="{{ '/storage/apple-touch-icon.png' }}">
-        <meta name="msapplication-TileImage" content="{{ '/storage/ms-favicon.png' }}">
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <meta name="msapplication-TileImage" content="/ms-favicon.png">
+        <meta name="theme-color" content="#f97316">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
