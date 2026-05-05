@@ -10,7 +10,7 @@
                 </a>
                 <p class="text-xs text-gray-400 leading-relaxed">
                     &copy; {{ date('Y') }} Gem Reptiles. All rights reserved.<br>
-                    Content, images, video &amp; logos are protected by copyright.
+                    Original content, images, video &amp; logos are protected by copyright, except where otherwise attributed.
                 </p>
             </div>
 

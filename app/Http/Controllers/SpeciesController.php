@@ -70,11 +70,11 @@ class SpeciesController extends Controller
         $page    = max(1, (int) $request->input('page', 1));
         $perPage = 100;
 
-        $cacheKey = 'species.search.' . md5(
+        $cacheKey = 'species_search:' . md5(
             mb_strtolower($query)
             . ($hasMedia ? ':media' : '')
             . ($taxonKey ? ':' . $taxonKey : '')
-            . ':p' . $page
+            . ($query === '' ? ':p' . $page : '')
         );
 
         // Browse/taxa queries are stable — cache 1 hour. Text searches expire in 5 min.
@@ -88,7 +88,7 @@ class SpeciesController extends Controller
                 $q->where('higher_taxa', 'like', self::TAXON_PATTERNS[$taxonKey]);
             };
 
-            // Taxa-only browse (no text query) — skip Scout, go straight to DB
+            // Browse mode (no text query) — paginated alphabetical DB query
             if ($query === '') {
                 $paginator = Species::query()
                     ->tap($taxonConstraint)
@@ -101,19 +101,20 @@ class SpeciesController extends Controller
                 return $this->paginatedPayload($paginator);
             }
 
+            // Text search — flat 100-result limit, no pagination
             try {
-                $paginator = Species::search($query)
+                $rows = Species::search($query)
                     ->query(function ($q) use ($hasMedia, $taxonConstraint) {
                         if ($hasMedia) {
                             $q->whereHas('media', fn ($m) => $m->where('moderation_status', 'approved'));
                         }
                         $taxonConstraint($q);
                     })
-                    ->paginate($perPage, 'page', $page);
+                    ->get();
 
-                $paginator->getCollection()->loadMissing('latestApprovedMedia');
+                $rows->loadMissing('latestApprovedMedia');
 
-                return $this->paginatedPayload($paginator);
+                return $this->flatPayload($rows);
             } catch (\Throwable $e) {
                 Log::warning('Species MeiliSearch unavailable, falling back to DB search.', [
                     'error' => $e->getMessage(),
@@ -124,7 +125,7 @@ class SpeciesController extends Controller
                 $start = $term . '%';
                 $any   = '%' . $term . '%';
 
-                $paginator = Species::query()
+                $rows = Species::query()
                     ->where(fn ($q) => $q
                         ->where('common_name', 'like', $any)
                         ->orWhere('species', 'like', $any)
@@ -143,15 +144,30 @@ class SpeciesController extends Controller
                             ELSE 7
                         END
                     ", [$exact, $exact, $start, $start, $any, $any])
-                    ->paginate($perPage, ['*'], 'page', $page);
+                    ->get();
 
-                $paginator->getCollection()->loadMissing('latestApprovedMedia');
+                $rows->loadMissing('latestApprovedMedia');
 
-                return $this->paginatedPayload($paginator);
+                return $this->flatPayload($rows);
             }
         });
 
         return response()->json(array_merge($payload, ['query' => $query]));
+    }
+
+    private function flatPayload(\Illuminate\Support\Collection $rows): array
+    {
+        $results = $rows->map(fn (Species $s) => $this->format($s))->values()->all();
+
+        return [
+            'results' => $results,
+            'meta'    => [
+                'total'        => count($results),
+                'per_page'     => 100,
+                'current_page' => 1,
+                'last_page'    => 1,
+            ],
+        ];
     }
 
     private function paginatedPayload(\Illuminate\Contracts\Pagination\LengthAwarePaginator $paginator): array

@@ -176,7 +176,27 @@
     @push('scripts')
     <script>
     document.addEventListener('alpine:init', () => {
-        Alpine.data('speciesSearch', () => ({
+        const RESULT_CACHE_PREFIX = 'species_rc_';
+    const RESULT_CACHE_INDEX  = 'species_rc_index';
+    const RESULT_CACHE_MAX    = 20; // max pages stored in sessionStorage
+
+    function rcGet(key) {
+        try { const v = sessionStorage.getItem(RESULT_CACHE_PREFIX + key); return v ? JSON.parse(v) : undefined; }
+        catch { return undefined; }
+    }
+
+    function rcSet(key, value) {
+        try {
+            sessionStorage.setItem(RESULT_CACHE_PREFIX + key, JSON.stringify(value));
+            const idx = JSON.parse(sessionStorage.getItem(RESULT_CACHE_INDEX) || '[]');
+            const next = [key, ...idx.filter(k => k !== key)].slice(0, RESULT_CACHE_MAX);
+            // evict oldest entries beyond the limit
+            idx.filter(k => !next.includes(k)).forEach(k => sessionStorage.removeItem(RESULT_CACHE_PREFIX + k));
+            sessionStorage.setItem(RESULT_CACHE_INDEX, JSON.stringify(next));
+        } catch { /* storage full — skip persistence */ }
+    }
+
+    Alpine.data('speciesSearch', () => ({
             endpoint:  '',
             showBase:  '',
             query:       '',
@@ -214,6 +234,13 @@
                 this.$nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
             },
 
+            cacheKey(q) {
+                return q.toLowerCase()
+                    + (this.hasMedia ? ':media' : '')
+                    + (this.taxon    ? ':' + this.taxon : '')
+                    + ':p' + this.page;
+            },
+
             async doSearch(resetPage = false) {
                 const q = this.query.trim();
 
@@ -223,12 +250,16 @@
                 sessionStorage.setItem('species_taxon', this.taxon);
                 sessionStorage.setItem('species_search_query', q);
 
-                const key = q.toLowerCase() + (this.hasMedia ? ':media' : '') + (this.taxon ? ':' + this.taxon : '') + ':p' + this.page;
-                if (this.cache[key] !== undefined) {
-                    this.results   = this.cache[key].results;
-                    this.meta      = this.cache[key].meta;
-                    this.lastQuery = q;
-                    this.searched  = true;
+                const key = this.cacheKey(q);
+
+                // Check in-memory cache first, then sessionStorage
+                const hit = this.cache[key] ?? rcGet(key);
+                if (hit !== undefined) {
+                    this.cache[key] = hit;
+                    this.results    = hit.results;
+                    this.meta       = hit.meta;
+                    this.lastQuery  = q;
+                    this.searched   = true;
                     return;
                 }
 
@@ -247,8 +278,10 @@
 
                     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-                    const data = await res.json();
-                    this.cache[key] = { results: data.results, meta: data.meta };
+                    const data  = await res.json();
+                    const entry = { results: data.results, meta: data.meta };
+                    this.cache[key] = entry;
+                    rcSet(key, entry);
                     this.results    = data.results;
                     this.meta       = data.meta;
                     this.lastQuery  = q;
