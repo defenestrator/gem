@@ -9,7 +9,9 @@
                     <span class="text-white font-semibold text-sm">{{ config('app.name') }}</span>
                 </a>
                 <p class="text-xs text-gray-400 leading-relaxed">
-                    &copy; {{ date('Y') }} Gem Reptiles. All rights reserved.<br>
+                    &copy; {{ date('Y') }} Gem Reptiles. All rights reserved.
+                </p>
+                <p class="text-[10px] text-gray-300 leading-relaxed mt-1">
                     Original content, images, video &amp; logos are protected by copyright, except where otherwise attributed.
                 </p>
             </div>
