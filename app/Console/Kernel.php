@@ -18,8 +18,19 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('animals:sync')->hourly()->withoutOverlapping()->runInBackground();
 
+        if (app()->isLocal()) {
+            $schedule->command('queue:work redis --queue=species-images --tries=3 --timeout=150 --stop-when-empty')
+                ->everyMinute()
+                ->withoutOverlapping(10)
+                ->runInBackground();
+            $schedule->command('queue:work redis --queue=default --tries=3 --timeout=150 --stop-when-empty')
+                ->everyMinute()
+                ->withoutOverlapping(10)
+                ->runInBackground();
+        }
+
         $schedule->command('species:fetch-images --model=all --queue')
-            ->weekly()->sundays()->at('03:00')
+            ->monthlyOn(15, "0:0")
             ->timezone('America/Boise')
             ->withoutOverlapping()
             ->runInBackground();
