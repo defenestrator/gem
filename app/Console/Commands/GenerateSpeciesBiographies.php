@@ -70,8 +70,11 @@ class GenerateSpeciesBiographies extends Command
             $query->whereNull('description')->orWhere('description', '');
         }
 
-        $query->orderBy('id')->limit($limit)->chunkById(100, function ($rows) use (&$count, $modelClass, $force, $dry, $label) {
+        $query->orderBy('id')->chunkById(100, function ($rows) use (&$count, $limit, $modelClass, $force, $dry, $label) {
             foreach ($rows as $row) {
+                if ($count >= $limit) {
+                    return false;
+                }
                 $this->dispatch($modelClass, $row->id, $force, $dry);
                 $count++;
             }
