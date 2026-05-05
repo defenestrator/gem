@@ -22,7 +22,7 @@
                             x-model="query"
                             @input.debounce.300ms="doSearch(true)"
                             placeholder="Scientific name, common name, or family…"
-                            class="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+                            class="w-full px-3 py-2 pr-10 border border-gray-200 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-300 focus:border-orange-300 dark:focus:border-orange-400"
                             autocomplete="off"
                             spellcheck="false"
                         >
@@ -44,7 +44,7 @@
                 <div class="flex flex-wrap gap-x-5 gap-y-2 mt-1">
                     <label class="inline-flex items-center gap-2 cursor-pointer select-none text-sm text-gray-600 dark:text-gray-400">
                         <input type="checkbox" x-model="hasMedia" @change="doSearch(true)"
-                               class="rounded border-gray-300 dark:border-gray-600 text-orange-500 focus:ring-orange-400">
+                               class="rounded border-gray-200 dark:border-gray-700 text-orange-500 focus:ring-orange-300">
                         Has photos
                     </label>
                     <span class="text-gray-300 dark:text-gray-600 hidden sm:inline">|</span>
@@ -60,7 +60,7 @@
                             @click="taxon = (taxon === '{{ $key }}' ? '' : '{{ $key }}'); doSearch(true)"
                             :class="taxon === '{{ $key }}'
                                 ? 'bg-orange-500 text-white border-orange-500'
-                                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600 hover:border-orange-400'"
+                                : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-300'"
                             class="px-3 py-1 text-sm rounded-full border transition select-none">
                         {!! $label !!}
                     </button>
