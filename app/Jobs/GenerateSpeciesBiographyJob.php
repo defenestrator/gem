@@ -84,7 +84,23 @@ class GenerateSpeciesBiographyJob implements ShouldQueue
 
         $body = implode("\n\n", array_filter($sections));
 
-        return $body ?: null;
+        return $body ? $this->normalizeMarkup($body) : null;
+    }
+
+    private function normalizeMarkup(string $text): string
+    {
+        $text = preg_replace('/^====\s*(.+?)\s*====\s*$/m', '#### $1', $text);
+        $text = preg_replace('/^===\s*(.+?)\s*===\s*$/m',   '### $1',  $text);
+        $text = preg_replace('/^==\s*(.+?)\s*==\s*$/m',     '## $1',   $text);
+        $text = preg_replace("/'''(.+?)'''/s", '**$1**', $text);
+        $text = preg_replace("/''(.+?)''/s",   '*$1*',   $text);
+        $text = preg_replace('/\[\[(File|Image):[^\]]+\]\]/i', '', $text);
+        $text = preg_replace('/\[\[[^\]|]+\|([^\]]+)\]\]/', '$1', $text);
+        $text = preg_replace('/\[\[([^\]]+)\]\]/', '$1', $text);
+        $text = preg_replace('/\{\{[^}]+\}\}/', '', $text);
+        $text = preg_replace('/\n{3,}/', "\n\n", $text);
+
+        return trim($text);
     }
 
     // ── Sources ───────────────────────────────────────────────────────────────
