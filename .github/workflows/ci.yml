@@ -49,7 +49,7 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v4
+        uses: shivammathur/setup-php
         with:
           php-version: '8.3'
           extensions: mbstring, pdo, pdo_pgsql, intl, xml, json, gd, curl
