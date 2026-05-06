@@ -129,39 +129,25 @@ jobs:
           max_attempts=100
           attempt=1
 
-          echo "Testing database connectivity with up to ${max_attempts} attempts..."
           while [ $attempt -le $max_attempts ]; do
-            echo "Attempt ${attempt}/${max_attempts}: Testing database connection..."
+            echo "Attempt ${attempt}/${max_attempts}: Checking if PostgreSQL is ready..."
 
-            # Test basic connectivity with pg_isready
             if pg_isready -h 127.0.0.1 -p 5432 -U postgres -d gem_test >/dev/null 2>&1; then
-              echo "pg_isready check passed!"
-
-              # Additional verification: try to connect and run a query
-              if psql -h 127.0.0.1 -p 5432 -U postgres -d gem_test -c "SELECT 1;" >/dev/null 2>&1; then
-                echo "Database connection and query successful!"
-                echo "PostgreSQL is fully ready after ${attempt} attempts."
-                break
-              else
-                echo "pg_isready passed but psql query failed, continuing to wait..."
-              fi
-            else
-              echo "pg_isready check failed, database not ready yet..."
+              echo "PostgreSQL is ready after ${attempt} attempts!"
+              break
             fi
 
             if [ $attempt -eq $max_attempts ]; then
-              echo "Failed to connect to database after ${max_attempts} attempts"
+              echo "PostgreSQL failed to start after ${max_attempts} attempts"
               exit 1
             fi
 
-            echo "Waiting 2 seconds before next attempt..."
             sleep 2
             attempt=$((attempt + 1))
           done
 
-          # Final stabilization delay
-          echo "Database is ready, waiting 3 seconds for final stabilization..."
-          sleep 3
+          # Brief stabilization delay
+          sleep 1
 
       - name: Cache Laravel bootstrap/cache
         uses: actions/cache@v4
