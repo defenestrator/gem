@@ -105,6 +105,22 @@ jobs:
           cp .env.example .env
           php artisan key:generate --force
 
+      - name: Setup Laravel directories and permissions
+        run: |
+          mkdir -p storage/logs
+          mkdir -p storage/framework/cache
+          mkdir -p storage/framework/sessions
+          mkdir -p storage/framework/views
+          chmod -R 775 storage
+          chmod -R 775 bootstrap/cache
+
+      - name: Clear Laravel caches
+        run: |
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan view:clear
+          php artisan route:clear
+
       - name: Test Laravel database connection
         run: |
           echo "Testing Laravel database connection..."
@@ -179,6 +195,9 @@ jobs:
 
       - name: Run migrations
         run: php artisan migrate --force
+
+      - name: Link storage directory
+        run: php artisan storage:link
 
       - name: Optimize Laravel for testing
         run: |
