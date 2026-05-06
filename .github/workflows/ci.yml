@@ -89,6 +89,11 @@ jobs:
         run: |
           if [ -f package-lock.json ] || [ -f yarn.lock ]; then
             npm run build
+            # Verify that the manifest was created
+            if [ ! -f public/build/manifest.json ]; then
+              echo "Error: Vite manifest not found after build"
+              exit 1
+            fi
           fi
 
       - name: Create environment file
