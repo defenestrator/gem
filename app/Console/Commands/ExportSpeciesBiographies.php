@@ -57,7 +57,7 @@ class ExportSpeciesBiographies extends Command
             return self::SUCCESS;
         }
 
-        $path = storage_path("app/{$output}");
+        $path = public_path($output);
         file_put_contents($path, json_encode($rows, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
         $this->info(count($rows) . " record(s) exported → {$path}");
