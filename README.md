@@ -77,6 +77,19 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-06 (feature/content-updates)
+- Species biography generation: `species:generate-bios` queues `GenerateSpeciesBiographyJob` per record; sources Wikipedia, iNaturalist, GBIF; outputs structured Markdown; skips existing bios unless `--force`; `--limit`, `--model`, `--id`, `--dry-run` options
+- `species:work-bios` queue worker command for the `species-bios` queue
+- `species:normalize-bios` command converts Wikipedia `== heading ==` markup to Markdown headings in stored descriptions; `--dry-run` and `--model` options
+- Wikipedia markup normalization applied directly to 7,084 existing species/subspecies rows via SQL `regexp_replace`
+- Biography job now normalizes Wikipedia markup at generation time (headings, bold/italic, links, templates)
+- Bios rendered as Markdown HTML (`Str::markdown`) in species and subspecies detail views, positioned below the photo gallery
+- `species:sync-taxonomy` cross-checks all species against GBIF backbone; flags synonyms in the `changes` field (`GBIF-SYNONYM:date:accepted_name`); fills empty `common_name` from GBIF vernacular names; subspecies-safe (skips missing columns); options: `--dry-run`, `--model`, `--limit`, `--min-confidence`, `--force`, `--genus`, `--family`
+- Taxonomy sync run: 68 species flagged as synonyms (notable: Trimeresurus→Craspedocephalus, Lygosoma→Riopa/Subdoluseps, Lobulia→Alpinoscincus/Nubeoscincus); 480 common names filled
+- Species index pagination: links now appear both above and below the results table; results per page reduced from 100 to 80
+- `species:export-bios` fixed: `chunkById` now includes `id` in select; writes to local disk via `file_put_contents` (default disk is S3)
+- `database/sql/` added to `.gitignore` (scratch SQL scripts)
+
 #### 2026-05-06
 - Installed `keepsuit/laravel-opentelemetry` package for OpenTelemetry integration, enabling tracing and metrics collection
 - Installed `laravel/pulse` package for real-time application performance monitoring and analytics dashboard, compatible with Alpine.js and Blade templates
