@@ -9,9 +9,11 @@
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
         "intervention/image": "^2.7",
+        "keepsuit/laravel-opentelemetry": "^2.2",
         "laravel/breeze": "^2.0",
         "laravel/framework": "^11.0",
         "laravel/passport": "^12.0",
+        "laravel/pulse": "^1.7",
         "laravel/sanctum": "^4.0",
         "laravel/scout": "^11.1",
         "laravel/socialite": "^5.27",
@@ -71,7 +73,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "tbachert/spi": true
         }
     },
     "minimum-stability": "stable",
