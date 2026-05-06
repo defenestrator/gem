@@ -85,6 +85,12 @@ jobs:
             npm ci
           fi
 
+      - name: Build assets
+        run: |
+          if [ -f package-lock.json ] || [ -f yarn.lock ]; then
+            npm run build
+          fi
+
       - name: Create environment file
         run: |
           cp .env.example .env
