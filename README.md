@@ -83,6 +83,7 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 - Configured Pulse with database migrations and published configuration/assets
 - Published OpenTelemetry configuration files for further customization
 - Added admin-only "Monitoring" navigation link in dashboard Quick Actions to access Laravel Pulse dashboard
+- Added "Back to Dashboard" link in Pulse monitoring page header for easy navigation back to admin dashboard
 
 #### 2026-05-04 (continued)
 - `species:fetch-images` source chain expanded to 7 sources: added Reptile Database (HTML scrape, genus/species/subspecies URL params), ARMI USGS gallery (public domain government images), BioLib.cz (3-step HTML scrape, 2 s rate-limit between requests)
