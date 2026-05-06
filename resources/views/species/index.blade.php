@@ -248,6 +248,7 @@
                 this.hasMedia = sessionStorage.getItem('species_has_media') === '1';
                 this.taxon    = sessionStorage.getItem('species_taxon') || '';
                 this.query    = sessionStorage.getItem('species_search_query') || '';
+                this.page     = parseInt(sessionStorage.getItem('species_page') || '1');
                 this.doSearch();
             },
 
@@ -257,6 +258,7 @@
                 this.page  = 1;
                 sessionStorage.removeItem('species_search_query');
                 sessionStorage.removeItem('species_taxon');
+                sessionStorage.removeItem('species_page');
                 this.doSearch();
             },
 
@@ -281,6 +283,7 @@
                 sessionStorage.setItem('species_has_media', this.hasMedia ? '1' : '0');
                 sessionStorage.setItem('species_taxon', this.taxon);
                 sessionStorage.setItem('species_search_query', q);
+                sessionStorage.setItem('species_page', this.page);
 
                 const key = this.cacheKey(q);
 
