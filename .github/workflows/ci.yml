@@ -134,6 +134,8 @@ jobs:
 
             if pg_isready -h 127.0.0.1 -p 5432 -U postgres -d gem_test >/dev/null 2>&1; then
               echo "PostgreSQL is ready after ${attempt} attempts!"
+              echo "Waiting 10 seconds for full initialization..."
+              sleep 10
               break
             fi
 
@@ -145,9 +147,6 @@ jobs:
             sleep 2
             attempt=$((attempt + 1))
           done
-
-          # Brief stabilization delay
-          sleep 1
 
       - name: Cache Laravel bootstrap/cache
         uses: actions/cache@v4
