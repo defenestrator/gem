@@ -97,22 +97,7 @@ jobs:
           else
             # Create a minimal manifest for testing if no assets to build
             mkdir -p public/build
-            cat > public/build/manifest.json << 'EOF'
-{
-  "resources/css/app.css": {
-    "file": "assets/app.css",
-    "name": "app",
-    "src": "resources/css/app.css",
-    "isEntry": true
-  },
-  "resources/js/app.js": {
-    "file": "assets/app.js",
-    "name": "app",
-    "src": "resources/js/app.js",
-    "isEntry": true
-  }
-}
-EOF
+            echo '{"resources/css/app.css":{"file":"assets/app.css","name":"app","src":"resources/css/app.css","isEntry":true},"resources/js/app.js":{"file":"assets/app.js","name":"app","src":"resources/js/app.js","isEntry":true}}' > public/build/manifest.json
           fi
 
       - name: Create environment file
