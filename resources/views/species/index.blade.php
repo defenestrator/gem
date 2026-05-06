@@ -93,6 +93,38 @@
                             </template>
                         </span>
                     </div>
+                    {{-- Pagination (top) --}}
+                    <template x-if="meta && meta.last_page > 1">
+                        <div class="px-6 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between gap-2 flex-wrap">
+                            <button @click="goToPage(meta.current_page - 1)"
+                                    :disabled="meta.current_page <= 1"
+                                    class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300
+                                           hover:bg-orange-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition">
+                                &larr; Prev
+                            </button>
+
+                            <div class="flex items-center gap-1 flex-wrap justify-center">
+                                <template x-for="p in meta.last_page" :key="p">
+                                    <button @click="goToPage(p)"
+                                            :class="p === meta.current_page
+                                                ? 'bg-orange-500 text-white border-orange-500'
+                                                : 'text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-orange-50 dark:hover:bg-gray-700'"
+                                            x-show="p === 1 || p === meta.last_page || Math.abs(p - meta.current_page) <= 2"
+                                            class="px-3 py-1.5 text-sm rounded-lg border transition"
+                                            x-text="p">
+                                    </button>
+                                </template>
+                            </div>
+
+                            <button @click="goToPage(meta.current_page + 1)"
+                                    :disabled="meta.current_page >= meta.last_page"
+                                    class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300
+                                           hover:bg-orange-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition">
+                                Next &rarr;
+                            </button>
+                        </div>
+                    </template>
+
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
                             <thead class="bg-gray-50 dark:bg-gray-700 text-xs uppercase text-gray-500 dark:text-gray-400">

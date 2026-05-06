@@ -68,7 +68,7 @@ class SpeciesController extends Controller
         $taxonKey = array_key_exists($taxonKey, self::TAXON_PATTERNS) ? $taxonKey : '';
 
         $page    = max(1, (int) $request->input('page', 1));
-        $perPage = 100;
+        $perPage = 80;
 
         $cacheKey = 'species_search:' . md5(
             mb_strtolower($query)
@@ -163,7 +163,7 @@ class SpeciesController extends Controller
             'results' => $results,
             'meta'    => [
                 'total'        => count($results),
-                'per_page'     => 100,
+                'per_page'     => 80,
                 'current_page' => 1,
                 'last_page'    => 1,
             ],
