@@ -23,9 +23,9 @@ jobs:
           - 5432:5432
         options: >-
           --health-cmd "pg_isready -U postgres -d gem_test"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 20
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
     env:
       APP_ENV: testing
       DB_CONNECTION: pgsql
@@ -37,28 +37,9 @@ jobs:
       CACHE_DRIVER: array
       SESSION_DRIVER: array
       QUEUE_CONNECTION: sync
+
     steps:
       - uses: actions/checkout@v4
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            vendor
-            ~/.composer/cache
-          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
-
-      - name: Cache Node.js dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json', 'yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -68,36 +49,48 @@ jobs:
           coverage: none
           tools: composer:v2
 
-      - name: Cache PHP extensions
+      - name: Cache Composer dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.phpenv/versions/$(php --version | head -n 1 | cut -d " " -f 2 | cut -d "." -f 1-2)/lib/php/extensions
-          key: ${{ runner.os }}-php-ext-${{ hashFiles('composer.json') }}
-          restore-keys: |
-            ${{ runner.os }}-php-ext-
+          path: |
+            vendor
+            ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Cache Node dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
+      - name: Cache Vite build
+        id: vite-cache
+        uses: actions/cache@v4
+        with:
+          path: public/build
+          key: ${{ runner.os }}-vite-${{ hashFiles('package-lock.json', 'vite.config.js', 'resources/js/**', 'resources/css/**') }}
+          restore-keys: ${{ runner.os }}-vite-
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
+        run: composer install --prefer-dist --no-progress --optimize-autoloader
 
-      - name: Install Node.js dependencies
-        run: |
-          if [ -f package-lock.json ] || [ -f yarn.lock ]; then
-            npm ci
-          fi
+      - name: Install Node dependencies
+        if: steps.vite-cache.outputs.cache-hit != 'true'
+        run: npm ci
 
       - name: Build assets
+        if: steps.vite-cache.outputs.cache-hit != 'true'
+        run: npm run build
+
+      - name: Ensure Vite manifest exists
         run: |
-          if [ -f package-lock.json ] || [ -f yarn.lock ]; then
-            npm run build
-            # Verify that the manifest was created
-            if [ ! -f public/build/manifest.json ]; then
-              echo "Error: Vite manifest not found after build"
-              exit 1
-            fi
-          else
-            # Create a minimal manifest for testing if no assets to build
+          if [ ! -f public/build/manifest.json ]; then
             mkdir -p public/build
-            echo '{"resources/css/app.css":{"file":"assets/app.css","name":"app","src":"resources/css/app.css","isEntry":true},"resources/js/app.js":{"file":"assets/app.js","name":"app","src":"resources/js/app.js","isEntry":true}}' > public/build/manifest.json
+            echo '{"resources/css/app.css":{"file":"assets/app.css","src":"resources/css/app.css","isEntry":true},"resources/js/app.js":{"file":"assets/app.js","src":"resources/js/app.js","isEntry":true}}' > public/build/manifest.json
           fi
 
       - name: Create environment file
@@ -105,105 +98,19 @@ jobs:
           cp .env.example .env
           php artisan key:generate --force
 
-      - name: Setup Laravel directories and permissions
+      - name: Setup storage directories
         run: |
-          mkdir -p storage/logs
-          mkdir -p storage/framework/cache
-          mkdir -p storage/framework/sessions
-          mkdir -p storage/framework/views
-          chmod -R 775 storage
-          chmod -R 775 bootstrap/cache
-
-      - name: Clear Laravel caches
-        run: |
-          php artisan config:clear
-          php artisan cache:clear
-          php artisan view:clear
-          php artisan route:clear
-
-      - name: Test Laravel database connection
-        run: |
-          echo "Testing Laravel database connection..."
-          php artisan tinker --execute="try { DB::connection()->getPdo(); echo 'Database connection successful!'; } catch (Exception \$e) { echo 'Database connection failed: ' . \$e->getMessage(); exit(1); }"
-
-      - name: Cache database schema
-        uses: actions/cache@v4
-        with:
-          path: |
-            database/migrations
-            database/schema
-          key: ${{ runner.os }}-db-schema-${{ hashFiles('database/migrations/**/*.php', 'database/schema/*.php') }}
-          restore-keys: |
-            ${{ runner.os }}-db-schema-
-
-      - name: Install PostgreSQL client
-        run: sudo apt-get update && sudo apt-get install -y postgresql-client
-
-      - name: Wait for PostgreSQL
-        run: |
-          echo "Waiting for PostgreSQL to be ready..."
-          max_attempts=100
-          attempt=1
-
-          while [ $attempt -le $max_attempts ]; do
-            echo "Attempt ${attempt}/${max_attempts}: Checking if PostgreSQL is ready..."
-
-            if pg_isready -h 127.0.0.1 -p 5432 -U postgres -d gem_test >/dev/null 2>&1; then
-              echo "PostgreSQL is ready after ${attempt} attempts!"
-              echo "Waiting 10 seconds for full initialization..."
-              sleep 10
-              break
-            fi
-
-            if [ $attempt -eq $max_attempts ]; then
-              echo "PostgreSQL failed to start after ${max_attempts} attempts"
-              exit 1
-            fi
-
-            sleep 2
-            attempt=$((attempt + 1))
-          done
-
-      - name: Cache Laravel bootstrap/cache
-        uses: actions/cache@v4
-        with:
-          path: bootstrap/cache
-          key: ${{ runner.os }}-laravel-cache-${{ hashFiles('composer.lock', 'config/**/*.php') }}
-          restore-keys: |
-            ${{ runner.os }}-laravel-cache-
-
-      - name: Cache Laravel storage/framework
-        uses: actions/cache@v4
-        with:
-          path: |
-            storage/framework/cache
-            storage/framework/sessions
-            storage/framework/views
-          key: ${{ runner.os }}-laravel-storage-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-laravel-storage-
-
-      - name: Cache Vite build assets
-        uses: actions/cache@v4
-        with:
-          path: |
-            public/build
-            resources/assets/build
-          key: ${{ runner.os }}-vite-${{ hashFiles('package-lock.json', 'yarn.lock', 'vite.config.js', 'resources/js/**', 'resources/css/**') }}
-          restore-keys: |
-            ${{ runner.os }}-vite-
+          mkdir -p storage/logs storage/framework/{cache,sessions,views}
+          chmod -R 775 storage bootstrap/cache
 
       - name: Run migrations
         run: php artisan migrate --force
 
-      - name: Link storage directory
+      - name: Link storage
         run: php artisan storage:link
 
-      - name: Optimize Laravel for testing
-        run: |
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
+      - name: Optimize
+        run: php artisan optimize
 
       - name: Run tests
         run: php artisan test
