@@ -78,6 +78,10 @@
                             <span class="bg-white text-orange-600 text-xs font-bold px-1.5 py-0.5 rounded-full leading-none">{{ $newInquiries }}</span>
                         @endif
                     </a>
+                    <a href="{{ route('pulse') }}"
+                        class="bg-purple-500 text-white py-2 px-4 rounded-lg hover:bg-purple-700 text-sm font-semibold">
+                        Monitoring
+                    </a>
                     @endif
                     <a href="{{ route('profile.edit') }}"
                         class="border border-orange-300 dark:border-orange-600 text-gray-600 dark:text-white py-2 px-4 rounded-lg bg-orange-200 dark:bg-orange-700 hover:bg-orange-50 dark:hover:bg-orange-800 text-sm font-semibold">
