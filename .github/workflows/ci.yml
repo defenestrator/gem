@@ -43,10 +43,22 @@ jobs:
       - name: Cache Composer dependencies
         uses: actions/cache@v4
         with:
-          path: vendor
+          path: |
+            vendor
+            ~/.composer/cache
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
+
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json', 'yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -54,14 +66,39 @@ jobs:
           php-version: '8.3'
           extensions: mbstring, pdo, pdo_pgsql, intl, xml, json, gd, curl
           coverage: none
+          tools: composer:v2
+
+      - name: Cache PHP extensions
+        uses: actions/cache@v4
+        with:
+          path: ~/.phpenv/versions/$(php --version | head -n 1 | cut -d " " -f 2 | cut -d "." -f 1-2)/lib/php/extensions
+          key: ${{ runner.os }}-php-ext-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-php-ext-
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
+
+      - name: Install Node.js dependencies
+        run: |
+          if [ -f package-lock.json ] || [ -f yarn.lock ]; then
+            npm ci
+          fi
 
       - name: Create environment file
         run: |
           cp .env.example .env
           php artisan key:generate --force
+
+      - name: Cache database schema
+        uses: actions/cache@v4
+        with:
+          path: |
+            database/migrations
+            database/schema
+          key: ${{ runner.os }}-db-schema-${{ hashFiles('database/migrations/**/*.php', 'database/schema/*.php') }}
+          restore-keys: |
+            ${{ runner.os }}-db-schema-
 
       - name: Install PostgreSQL client
         run: sudo apt-get update && sudo apt-get install -y postgresql-client
@@ -72,8 +109,43 @@ jobs:
             sleep 1
           done
 
+      - name: Cache Laravel bootstrap/cache
+        uses: actions/cache@v4
+        with:
+          path: bootstrap/cache
+          key: ${{ runner.os }}-laravel-cache-${{ hashFiles('composer.lock', 'config/**/*.php') }}
+          restore-keys: |
+            ${{ runner.os }}-laravel-cache-
+
+      - name: Cache Laravel storage/framework
+        uses: actions/cache@v4
+        with:
+          path: |
+            storage/framework/cache
+            storage/framework/sessions
+            storage/framework/views
+          key: ${{ runner.os }}-laravel-storage-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-laravel-storage-
+
+      - name: Cache Vite build assets
+        uses: actions/cache@v4
+        with:
+          path: |
+            public/build
+            resources/assets/build
+          key: ${{ runner.os }}-vite-${{ hashFiles('package-lock.json', 'yarn.lock', 'vite.config.js', 'resources/js/**', 'resources/css/**') }}
+          restore-keys: |
+            ${{ runner.os }}-vite-
+
       - name: Run migrations
         run: php artisan migrate --force
+
+      - name: Optimize Laravel for testing
+        run: |
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
 
       - name: Run tests
         run: php artisan test
