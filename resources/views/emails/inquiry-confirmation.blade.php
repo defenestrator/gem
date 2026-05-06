@@ -1,4 +1,4 @@
-<x-mail::layout>
+<x-mail-layout>
     <div style="margin-bottom: 24px;">
         <h2 style="font-size: 20px; font-weight: 600; color: #111827; margin: 0 0 12px 0;">Inquiry Confirmation</h2>
         <p style="color: #6b7280; margin: 0;">Your inquiry has been sent successfully!</p>
@@ -60,13 +60,4 @@
             View Animal Listing
         </a>
     </p>
-</x-mail::layout>
-
-        <div class="text-center mt-8">
-            <p class="text-sm text-gray-500">
-                Thank you for your interest in our reptiles!<br>
-                <strong>Gem Reptiles</strong>
-            </p>
-        </div>
-    </div>
-</x-guest-layout>
+</x-mail-layout>

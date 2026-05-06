@@ -1,65 +1,57 @@
-<x-guest-layout>
-    <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
-        <div class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-orange-600">New Inquiry Received</h1>
-            <p class="text-gray-600 mt-2">Someone has inquired about an animal listing</p>
-        </div>
+<x-mail-layout>
+    <div style="margin-bottom: 24px;">
+        <h2 style="font-size: 20px; font-weight: 600; color: #111827; margin: 0 0 8px 0;">New Inquiry Received</h2>
+        <p style="color: #6b7280; margin: 0;">Someone has inquired about an animal listing.</p>
+    </div>
 
-        <div class="border-t border-gray-200 pt-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Inquiry Details</h2>
+    <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
 
-            <div class="space-y-3">
-                <div>
-                    <span class="font-medium text-gray-700">Animal:</span>
-                    <span class="text-gray-900">{{ $animal->pet_name }}</span>
-                </div>
+    <table style="width: 100%; margin-bottom: 24px;">
+        <tr>
+            <td style="padding: 8px 0; color: #555; width: 40%;"><strong>Animal:</strong></td>
+            <td style="padding: 8px 0; color: #111827;">{{ $animal->pet_name }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0; color: #555;"><strong>Inquirer Name:</strong></td>
+            <td style="padding: 8px 0; color: #111827;">{{ $inquiry->name }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0; color: #555;"><strong>Inquirer Email:</strong></td>
+            <td style="padding: 8px 0; color: #111827;">{{ $inquiry->email }}</td>
+        </tr>
+        @if($inquiry->phone)
+        <tr>
+            <td style="padding: 8px 0; color: #555;"><strong>Inquirer Phone:</strong></td>
+            <td style="padding: 8px 0; color: #111827;">{{ $inquiry->phone }}</td>
+        </tr>
+        @endif
+        <tr>
+            <td style="padding: 8px 0; color: #555;"><strong>Submitted:</strong></td>
+            <td style="padding: 8px 0; color: #111827;">{{ $inquiry->created_at->format('M j, Y g:i A') }}</td>
+        </tr>
+    </table>
 
-                <div>
-                    <span class="font-medium text-gray-700">Inquirer Name:</span>
-                    <span class="text-gray-900">{{ $inquiry->name }}</span>
-                </div>
+    <div style="background-color: #f9fafb; border-left: 4px solid #f97316; padding: 12px 16px; margin-bottom: 24px;">
+        <strong style="color: #555;">Message:</strong>
+        <div style="margin-top: 8px; color: #111827; white-space: pre-wrap;">{{ $inquiry->message }}</div>
+    </div>
 
-                <div>
-                    <span class="font-medium text-gray-700">Inquirer Email:</span>
-                    <span class="text-gray-900">{{ $inquiry->email }}</span>
-                </div>
+    <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
 
-                @if($inquiry->phone)
-                <div>
-                    <span class="font-medium text-gray-700">Inquirer Phone:</span>
-                    <span class="text-gray-900">{{ $inquiry->phone }}</span>
-                </div>
-                @endif
-
-                <div>
-                    <span class="font-medium text-gray-700">Message:</span>
-                    <div class="mt-1 p-3 bg-gray-50 rounded text-gray-900 whitespace-pre-wrap">
-                        {{ $inquiry->message }}
-                    </div>
-                </div>
-
-                <div>
-                    <span class="font-medium text-gray-700">Submitted:</span>
-                    <span class="text-gray-900">{{ $inquiry->created_at->format('M j, Y g:i A') }}</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="border-t border-gray-200 pt-6 mt-6">
-            <div class="flex space-x-4">
-                <a href="{{ route('animals.show', $animal) }}" class="flex-1 bg-orange-500 text-white text-center py-2 px-4 rounded-lg hover:bg-orange-600 transition">
+    <table style="width: 100%;">
+        <tr>
+            <td style="padding-right: 8px;">
+                <a href="{{ route('animals.show', $animal) }}"
+                   style="display: block; background-color: #f97316; color: #ffffff; text-align: center; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: 600;">
                     View Animal Listing
                 </a>
-                <a href="mailto:{{ $inquiry->email }}?subject=Re: Inquiry about {{ $animal->pet_name }}" class="flex-1 bg-green-500 text-white text-center py-2 px-4 rounded-lg hover:bg-green-600 transition">
+            </td>
+            <td style="padding-left: 8px;">
+                <a href="mailto:{{ $inquiry->email }}?subject=Re: Inquiry about {{ $animal->pet_name }}"
+                   style="display: block; background-color: #16a34a; color: #ffffff; text-align: center; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: 600;">
                     Reply to Inquirer
                 </a>
-            </div>
-        </div>
-
-        <div class="text-center mt-8">
-            <p class="text-sm text-gray-500">
-                <strong>Gem Reptiles Admin Notification</strong>
-            </p>
-        </div>
-    </div>
-</x-guest-layout>
+            </td>
+        </tr>
+    </table>
+</x-mail-layout>
