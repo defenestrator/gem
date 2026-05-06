@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\Species;
 use App\Models\Subspecies;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Storage;
 
 class ExportSpeciesBiographies extends Command
 {
@@ -58,8 +57,8 @@ class ExportSpeciesBiographies extends Command
             return self::SUCCESS;
         }
 
-        Storage::put($output, json_encode($rows, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         $path = storage_path("app/{$output}");
+        file_put_contents($path, json_encode($rows, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
         $this->info(count($rows) . " record(s) exported → {$path}");
 
