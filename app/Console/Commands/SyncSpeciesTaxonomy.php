@@ -75,7 +75,9 @@ class SyncSpeciesTaxonomy extends Command
             $query->where('higher_taxa', 'like', '%' . $this->option('family') . '%');
         }
 
-        if (! $force) {
+        $isSpecies = $modelClass === Species::class;
+
+        if (! $force && $isSpecies) {
             $query->where(function ($q) {
                 $q->whereNull('changes')
                   ->orWhere('changes', 'not like', '%' . self::SYNONYM_TAG . '%');
@@ -84,14 +86,14 @@ class SyncSpeciesTaxonomy extends Command
 
         $count = 0;
 
-        $query->orderBy('id')->chunkById(100, function ($rows) use ($modelClass, $limit, $minConf, $dry, $force, &$count) {
+        $query->orderBy('id')->chunkById(100, function ($rows) use ($modelClass, $isSpecies, $limit, $minConf, $dry, $force, &$count) {
             foreach ($rows as $record) {
                 if ($limit > 0 && $count >= $limit) {
                     return false;
                 }
 
                 $name = $modelClass === Species::class ? $record->species : $record->full_name;
-                $this->processRecord($record, $name, $modelClass, $minConf, $dry);
+                $this->processRecord($record, $name, $modelClass, $isSpecies, $minConf, $dry);
                 $count++;
                 $this->checked++;
 
@@ -101,7 +103,7 @@ class SyncSpeciesTaxonomy extends Command
         });
     }
 
-    private function processRecord(mixed $record, string $name, string $modelClass, int $minConf, bool $dry): void
+    private function processRecord(mixed $record, string $name, string $modelClass, bool $isSpecies, int $minConf, bool $dry): void
     {
         $match = $this->gbifMatch($name);
 
@@ -118,24 +120,30 @@ class SyncSpeciesTaxonomy extends Command
 
         $changes = [];
 
-        // ── Synonym detection ──────────────────────────────────────────────────
-        if (($match['status'] ?? '') === 'SYNONYM') {
+        // ── Synonym detection (species only — subspecies has no changes column) ─
+        if ($isSpecies && ($match['status'] ?? '') === 'SYNONYM') {
             $acceptedName = $match['species'] ?? ($match['canonicalName'] ?? null);
             if ($acceptedName && $acceptedName !== $name) {
-                $tag   = self::SYNONYM_TAG . ':' . date('Y-m-d') . ':' . $acceptedName;
+                $tag      = self::SYNONYM_TAG . ':' . date('Y-m-d') . ':' . $acceptedName;
                 $existing = $record->changes ?? '';
 
                 if (! str_contains($existing, self::SYNONYM_TAG . ':')) {
                     $changes['changes'] = trim(($existing ? $existing . '; ' : '') . $tag);
-
                     $this->line("  <comment>[SYNONYM]</comment> {$name} → {$acceptedName} (confidence {$confidence}%)");
                     $this->synonyms++;
                 }
             }
+        } elseif (! $isSpecies && ($match['status'] ?? '') === 'SYNONYM') {
+            $acceptedName = $match['species'] ?? ($match['canonicalName'] ?? null);
+            if ($acceptedName && $acceptedName !== $name) {
+                $this->line("  <comment>[SYNONYM/subspecies]</comment> {$name} → {$acceptedName} (confidence {$confidence}%) [log only]");
+                Log::info('taxonomy-sync: subspecies synonym', ['name' => $name, 'accepted' => $acceptedName]);
+                $this->synonyms++;
+            }
         }
 
-        // ── Fill empty common_name from GBIF vernacular ────────────────────────
-        if (empty($record->common_name)) {
+        // ── Fill empty common_name from GBIF vernacular (species only) ─────────
+        if ($isSpecies && empty($record->common_name)) {
             $vernacular = $this->gbifVernacular((int) ($match['usageKey'] ?? 0));
             if ($vernacular) {
                 $changes['common_name'] = $vernacular;
