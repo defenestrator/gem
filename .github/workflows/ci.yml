@@ -25,7 +25,7 @@ jobs:
           --health-cmd "pg_isready -U postgres -d gem_test"
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 5
+          --health-retries 20
     env:
       APP_ENV: testing
       DB_CONNECTION: pgsql
@@ -126,38 +126,41 @@ jobs:
       - name: Wait for PostgreSQL
         run: |
           echo "Waiting for PostgreSQL to be ready..."
-          timeout=60
-          counter=0
-          while ! pg_isready -h 127.0.0.1 -p 5432 -U postgres -d gem_test; do
-            if [ $counter -ge $timeout ]; then
-              echo "PostgreSQL failed to start within ${timeout} seconds"
+          max_attempts=100
+          attempt=1
+
+          echo "Testing database connectivity with up to ${max_attempts} attempts..."
+          while [ $attempt -le $max_attempts ]; do
+            echo "Attempt ${attempt}/${max_attempts}: Testing database connection..."
+
+            # Test basic connectivity with pg_isready
+            if pg_isready -h 127.0.0.1 -p 5432 -U postgres -d gem_test >/dev/null 2>&1; then
+              echo "pg_isready check passed!"
+
+              # Additional verification: try to connect and run a query
+              if psql -h 127.0.0.1 -p 5432 -U postgres -d gem_test -c "SELECT 1;" >/dev/null 2>&1; then
+                echo "Database connection and query successful!"
+                echo "PostgreSQL is fully ready after ${attempt} attempts."
+                break
+              else
+                echo "pg_isready passed but psql query failed, continuing to wait..."
+              fi
+            else
+              echo "pg_isready check failed, database not ready yet..."
+            fi
+
+            if [ $attempt -eq $max_attempts ]; then
+              echo "Failed to connect to database after ${max_attempts} attempts"
               exit 1
             fi
-            echo "PostgreSQL not ready yet, waiting... (${counter}s)"
+
+            echo "Waiting 2 seconds before next attempt..."
             sleep 2
-            counter=$((counter + 2))
-          done
-          echo "PostgreSQL is ready!"
-
-          # Additional check: try to connect and run a simple query
-          echo "Testing database connectivity..."
-          for i in {1..10}; do
-            if psql -h 127.0.0.1 -p 5432 -U postgres -d gem_test -c "SELECT 1;" >/dev/null 2>&1; then
-              echo "Database connection successful!"
-              break
-            else
-              echo "Database connection failed, retrying in 2 seconds... (${i}/10)"
-              sleep 2
-            fi
+            attempt=$((attempt + 1))
           done
 
-          # Final verification
-          if ! psql -h 127.0.0.1 -p 5432 -U postgres -d gem_test -c "SELECT 1;" >/dev/null 2>&1; then
-            echo "Failed to connect to database after all retries"
-            exit 1
-          fi
-
-          # Give it a moment to fully stabilize
+          # Final stabilization delay
+          echo "Database is ready, waiting 3 seconds for final stabilization..."
           sleep 3
 
       - name: Cache Laravel bootstrap/cache
