@@ -1,7 +1,7 @@
 <x-pulse>
     <div class="mb-6 flex items-center justify-between">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Application Monitoring</h1>
-        <a href="{{ route('dashboard') }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold flex items-center gap-2">
+        <a href="{{ route('dashboard') }}" class="text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 font-semibold flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
