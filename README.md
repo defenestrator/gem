@@ -82,6 +82,7 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 - Installed `laravel/pulse` package for real-time application performance monitoring and analytics dashboard, compatible with Alpine.js and Blade templates
 - Configured Pulse with database migrations and published configuration/assets
 - Published OpenTelemetry configuration files for further customization
+- Added admin-only "Monitoring" navigation link in dashboard Quick Actions to access Laravel Pulse dashboard
 
 #### 2026-05-04 (continued)
 - `species:fetch-images` source chain expanded to 7 sources: added Reptile Database (HTML scrape, genus/species/subspecies URL params), ARMI USGS gallery (public domain government images), BioLib.cz (3-step HTML scrape, 2 s rate-limit between requests)
