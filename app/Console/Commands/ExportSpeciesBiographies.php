@@ -24,7 +24,7 @@ class ExportSpeciesBiographies extends Command
         if (in_array($model, ['species', 'all'])) {
             Species::whereNotNull('description')
                 ->where('description', '!=', '')
-                ->select('species', 'description')
+                ->select('id', 'species', 'description')
                 ->orderBy('species')
                 ->chunkById(500, function ($chunk) use (&$rows) {
                     foreach ($chunk as $s) {
@@ -40,7 +40,7 @@ class ExportSpeciesBiographies extends Command
         if (in_array($model, ['subspecies', 'all'])) {
             Subspecies::whereNotNull('description')
                 ->where('description', '!=', '')
-                ->select('genus', 'species', 'subspecies', 'description')
+                ->select('id', 'genus', 'species', 'subspecies', 'description')
                 ->orderBy('genus')->orderBy('species')->orderBy('subspecies')
                 ->chunkById(500, function ($chunk) use (&$rows) {
                     foreach ($chunk as $s) {
