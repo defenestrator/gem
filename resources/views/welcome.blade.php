@@ -22,7 +22,7 @@
             <h2 class="my-2 text-l" >Captive-bred Pythons and Colubrids by <span class="font-medium text-green-400 font-serif">Gem Reptiles</span></h2>
             {{-- <h5 class="my-4">
                 <a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles MorphMarket Store">
-                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
+                    <button class="bg-neutral-600 text-white py-2 px-4 rounded-lg hover:bg-neutral-700">
                     Gem Reptiles on MorphMarket
                     </button>   
                 </a>
@@ -112,7 +112,7 @@
                                    target="_blank"
                                    rel="noopener noreferrer"
                                    title="View {{ $animal['Title*'] }} on MorphMarket"
-                                   class="flex-1 bg-orange-500 text-white py-2 px-2 rounded-lg hover:bg-orange-700 text-sm text-center font-semibold">
+                                   class="flex-1 bg-neutral-600 text-white py-2 px-2 rounded-lg hover:bg-neutral-700 text-sm text-center font-semibold">
                                     MorphMarket
                                 </a>
                                 <a href="{{ route('animals.inquiries.create', ['animal' => $animal['Animal_Id*']]) }}"
@@ -129,7 +129,7 @@
             <h4 class="mt-4 font-bold text-2xl"><a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles on MorphMarket">Visit our MorphMarket Store!</a></h4>
             <h5 class="my-4">
                 <a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles MorphMarket Store">
-                    <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
+                    <button class="bg-neutral-600 text-white py-2 px-4 rounded-lg hover:bg-neutral-700">
                     Gem Reptiles on MorphMarket
                     </button>   
                 </a>
