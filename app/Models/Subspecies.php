@@ -20,6 +20,11 @@ class Subspecies extends Model
         'description',
     ];
 
+    public function contentSubmissions()
+    {
+        return $this->morphMany(ContentSubmission::class, 'submittable');
+    }
+
     public function parentSpecies()
     {
         return $this->belongsTo(Species::class, 'species_id');

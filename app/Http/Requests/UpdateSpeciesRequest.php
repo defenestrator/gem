@@ -6,23 +6,21 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateSpeciesRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return auth()->check() && auth()->user()->is_admin;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'species'        => ['required', 'string', 'max:255'],
+            'author'         => ['nullable', 'string', 'max:255'],
+            'common_name'    => ['nullable', 'string'],
+            'higher_taxa'    => ['nullable', 'string', 'max:255'],
+            'species_number' => ['nullable', 'string', 'max:255'],
+            'changes'        => ['nullable', 'string', 'max:255'],
+            'description'    => ['nullable', 'string'],
         ];
     }
 }

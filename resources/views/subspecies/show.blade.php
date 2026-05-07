@@ -19,9 +19,17 @@
 
             {{-- Taxonomy card --}}
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <div class="flex flex-wrap items-start justify-between gap-4">
                 <h1 class="text-3xl font-bold italic text-gray-900 dark:text-gray-100 mb-1">
                     {{ $subspecies->full_name }}
                 </h1>
+                @if ($isAdmin)
+                    <a href="{{ route('dashboard.subspecies.edit', $subspecies) }}"
+                       class="shrink-0 text-xs font-semibold bg-gray-100 dark:bg-gray-700 hover:bg-orange-100 dark:hover:bg-orange-900/40 text-gray-700 dark:text-gray-200 hover:text-orange-700 dark:hover:text-orange-300 px-3 py-1.5 rounded-lg transition">
+                        Edit Subspecies
+                    </a>
+                @endif
+                </div>
 
                 <dl class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                     <div>
@@ -89,7 +97,7 @@
 
                     <div class="flex gap-2 p-3 overflow-x-auto bg-gray-50 dark:bg-gray-900 flex-wrap">
                         @foreach ($media as $photo)
-                            <div class="relative flex-shrink-0">
+                            <div class="relative flex-shrink-0 group">
                                 <button type="button"
                                     @click="activeMedia = photos.find(p => p.id === {{ $photo->id }})"
                                     :class="activeMedia?.id === {{ $photo->id }} ? 'ring-2 ring-orange-500' : 'opacity-70 hover:opacity-100'"
@@ -102,6 +110,18 @@
                                         {{ $photo->moderation_status === 'pending' ? 'bg-yellow-400 text-yellow-900' : 'bg-red-500 text-white' }}">
                                         {{ strtoupper($photo->moderation_status) }}
                                     </span>
+                                @endif
+                                @if ($isAdmin)
+                                    <form method="POST"
+                                          action="{{ route('dashboard.subspecies.media.detach', [$subspecies, $photo]) }}"
+                                          class="absolute bottom-0 inset-x-0 hidden group-hover:flex justify-center bg-black/50 py-0.5"
+                                          onsubmit="return confirm('Detach this photo?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-[10px] text-white font-bold hover:text-red-300 transition">
+                                            Detach
+                                        </button>
+                                    </form>
                                 @endif
                             </div>
                         @endforeach
@@ -192,6 +212,40 @@
                     </div>
                 </div>
             @endif
+
+            {{-- Description submission --}}
+            @auth
+                @unless ($isAdmin)
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                        <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200 mb-1">
+                            {{ $subspecies->description ? 'Suggest a description update' : 'Submit a description' }}
+                        </h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                            Submissions are reviewed before publication. Markdown supported.
+                        </p>
+                        <form method="POST" action="{{ route('subspecies.submissions.store', $subspecies) }}">
+                            @csrf
+                            <textarea name="proposed_value" rows="8" required minlength="50"
+                                placeholder="Write a subspecies description in Markdown..."
+                                class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 text-sm font-mono">{{ old('proposed_value') }}</textarea>
+                            @error('proposed_value')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                            <div class="mt-4">
+                                <button type="submit"
+                                    class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-5 rounded-lg transition text-sm">
+                                    Submit for review
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                @endunless
+            @else
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 text-sm text-gray-500 dark:text-gray-400 text-center">
+                    <a href="{{ route('login') }}" class="text-orange-500 hover:underline font-medium">Log in</a>
+                    to suggest a description update.
+                </div>
+            @endauth
 
         </div>
     </div>

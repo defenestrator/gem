@@ -46,6 +46,11 @@ class Species extends Model
         return 'species';
     }
 
+    public function contentSubmissions()
+    {
+        return $this->morphMany(ContentSubmission::class, 'submittable');
+    }
+
     public function animals()
     {
         return $this->hasMany(Animal::class);

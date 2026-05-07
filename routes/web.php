@@ -2,7 +2,11 @@
 
 use App\Http\Controllers\AnimalController;
 use App\Models\Animal;
+use App\Http\Controllers\ContentSubmissionController;
+use App\Http\Controllers\DashboardContentSubmissionController;
 use App\Http\Controllers\DashboardMediaModerationController;
+use App\Http\Controllers\DashboardSpeciesController;
+use App\Http\Controllers\DashboardSubspeciesController;
 use App\Http\Controllers\SpeciesController;
 use App\Http\Controllers\SubspeciesController;
 use App\Http\Controllers\DashboardAnimalController;
@@ -236,10 +240,12 @@ Route::get('/species', [SpeciesController::class, 'index'])->name('species.index
 Route::get('/species/search', [SpeciesController::class, 'search'])->name('species.search');
 Route::get('/species/{species}', [SpeciesController::class, 'show'])->name('species.show');
 Route::post('/species/{species}/media', [SpeciesController::class, 'storeMedia'])->name('species.media.store')->middleware('auth');
+Route::post('/species/{species}/submissions', [ContentSubmissionController::class, 'storeForSpecies'])->name('species.submissions.store')->middleware('auth');
 
 // Subspecies Routes
 Route::get('/subspecies/{subspecies}', [SubspeciesController::class, 'show'])->name('subspecies.show');
 Route::post('/subspecies/{subspecies}/media', [SubspeciesController::class, 'storeMedia'])->name('subspecies.media.store')->middleware('auth');
+Route::post('/subspecies/{subspecies}/submissions', [ContentSubmissionController::class, 'storeForSubspecies'])->name('subspecies.submissions.store')->middleware('auth');
 Route::get('/media/{media}/attribution', [MediaController::class, 'attribution'])->name('media.attribution');
 
 // Animals Routes
@@ -275,6 +281,21 @@ Route::middleware('auth')->group(function () {
         Route::get('dashboard/media', [DashboardMediaModerationController::class, 'index'])->name('media.index');
         Route::patch('dashboard/media/{media}/approve', [DashboardMediaModerationController::class, 'approve'])->name('media.approve');
         Route::patch('dashboard/media/{media}/reject', [DashboardMediaModerationController::class, 'reject'])->name('media.reject');
+
+        // Species admin editing + media detach
+        Route::get('dashboard/species/{species}/edit', [DashboardSpeciesController::class, 'edit'])->name('species.edit');
+        Route::patch('dashboard/species/{species}', [DashboardSpeciesController::class, 'update'])->name('species.update');
+        Route::delete('dashboard/species/{species}/media/{media}', [DashboardSpeciesController::class, 'detachMedia'])->name('species.media.detach');
+
+        // Subspecies admin editing + media detach
+        Route::get('dashboard/subspecies/{subspecies}/edit', [DashboardSubspeciesController::class, 'edit'])->name('subspecies.edit');
+        Route::patch('dashboard/subspecies/{subspecies}', [DashboardSubspeciesController::class, 'update'])->name('subspecies.update');
+        Route::delete('dashboard/subspecies/{subspecies}/media/{media}', [DashboardSubspeciesController::class, 'detachMedia'])->name('subspecies.media.detach');
+
+        // Content submission moderation (admin only)
+        Route::get('dashboard/submissions', [DashboardContentSubmissionController::class, 'index'])->name('submissions.index');
+        Route::patch('dashboard/submissions/{submission}/approve', [DashboardContentSubmissionController::class, 'approve'])->name('submissions.approve');
+        Route::patch('dashboard/submissions/{submission}/reject', [DashboardContentSubmissionController::class, 'reject'])->name('submissions.reject');
 
     });
 });

@@ -77,6 +77,13 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-06 (species-admin)
+- Admin can edit all fields on species (`species`, `common_name`, `author`, `higher_taxa`, `species_number`, `changes`, `description`) via `dashboard/species/{id}/edit`; same for subspecies (`genus`, `species`, `subspecies`, `author`, `description`) via `dashboard/subspecies/{id}/edit`
+- Admin can detach photos from species/subspecies (hard-deletes DB row, file stays on S3) via hover-reveal Detach button on show pages and edit pages
+- Authenticated (non-admin) users can submit description proposals on species and subspecies detail pages; submissions go to `species_content_submissions` table with `pending` status
+- Admin moderation queue at `dashboard/submissions`: approve (writes `proposed_value` to `description`) or reject; reviewer and timestamp recorded
+- `media.deleted_at` column added (scaffolding for future soft-delete media library feature)
+
 #### 2026-05-06
 - `species:import-checklist` command imports data from the Reptile Database XLSX checklist: 1,288 new species, 219 new subspecies, 9 taxonomy change notes, 53 `type_species` flag corrections; joins on `sp_id`/`species_number`; `--dry-run` and `--task` options (species|changes|type_species|subspecies|all)
 - Species index back button now restores previous page number via `species_page` sessionStorage key
