@@ -9,6 +9,10 @@ git pull origin main
 # PHP dependencies
 $FORGE_PHP composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
+# Fetch Vite manifest from CDN (built and uploaded by CI before this hook fires)
+mkdir -p public/build
+curl -sf "https://gemx.sfo3.digitaloceanspaces.com/build/manifest.json" -o public/build/manifest.json
+
 # Cache config/routes/views
 $FORGE_PHP artisan optimize
 
