@@ -35,7 +35,7 @@
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @endproduction
     </head>
-    <body class="font-sans text-gray-900 antialiased flex flex-col min-h-screen">
+    <body class="font-sans text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-900 antialiased flex flex-col min-h-screen">
         <x-guest-navigation />
         <!-- Page Heading -->
         @if (isset($header))
