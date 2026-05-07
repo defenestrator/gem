@@ -1,4 +1,13 @@
 <x-app-layout>
+    @push('meta')
+    @php
+        $parentCommon = $subspecies->parentSpecies->common_name ? " ({$subspecies->parentSpecies->common_name} subspecies)" : ' subspecies';
+        $metaDesc = $subspecies->description
+            ? $subspecies->full_name . $parentCommon . ' — ' . \Illuminate\Support\Str::limit(strip_tags($subspecies->description), 120)
+            : $subspecies->full_name . $parentCommon . ' — taxonomy, classification, and photos.';
+    @endphp
+    <meta name="description" content="{{ $metaDesc }}">
+    @endpush
     <x-slot name="header">
         <div class="flex items-center gap-3 flex-wrap">
             <a href="{{ route('species.index') }}" class="text-gray-400 hover:text-orange-500 transition text-sm">← Species</a>

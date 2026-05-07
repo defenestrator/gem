@@ -79,6 +79,13 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-07 (SEO + performance)
+- Meta descriptions added to all public-facing routes: homepage, category pages, animals index/show, species index/show, subspecies show, sellers index/show, classifieds index/show
+- `@stack('meta')` added to both layouts (`app.blade.php`, `guest.blade.php`) for per-page meta injection
+- Page titles updated to use `Gem Reptiles` consistently in both layouts; typo in guest layout title fixed
+- Bunny.net font loading changed from render-blocking `<link rel="stylesheet">` to non-blocking `rel="preload"` + `onload` swap with `<noscript>` fallback; eliminates font-induced paint delay
+- Species search thumbnails: added `width="40" height="40"` (prevents CLS) and `loading="lazy"` (defers off-screen image fetches)
+
 #### 2026-05-07
 - Cloudflare Turnstile rewritten: widget now uses `data-execution="execute"` + `data-appearance="interaction-only"` — challenge runs on form submit (via `submitWithTurnstile()`), not on page load; eliminates Safari password-save dialog race condition that was invalidating tokens
 - Turnstile component owns the `cf-turnstile-response` hidden input (`data-response-field="false"`); widget resets can no longer clear the token

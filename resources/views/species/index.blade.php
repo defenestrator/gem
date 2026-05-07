@@ -1,4 +1,7 @@
 <x-app-layout>
+    @push('meta')
+    <meta name="description" content="Search the reptile species database. Explore over 12,000 species of lizards, snakes, geckos, turtles, tortoises, and more with photos and taxonomy.">
+    @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             Species Database
@@ -143,6 +146,7 @@
                                             <template x-if="row.thumbnail">
                                                 <a :href="`${showBase}/${row.id}`">
                                                     <img :src="row.thumbnail" :alt="row.species"
+                                                         width="40" height="40" loading="lazy"
                                                          class="h-10 w-10 object-cover rounded-md mx-auto ring-1 ring-gray-200 dark:ring-gray-600">
                                                 </a>
                                             </template>

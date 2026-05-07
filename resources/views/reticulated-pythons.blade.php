@@ -1,4 +1,7 @@
 <x-guest-layout>
+    @push('meta')
+    <meta name="description" content="Captive-bred reticulated pythons (Malayopython reticulatus) for sale from Gem Reptiles. Localities, morphs, and super dwarfs available.">
+    @endpush
     <div class="w-full min-h-screen flex justify-center items-center">
         <div id="main-tile" class="text-left min-h-[70vh] bg-gray-800 text-gray-200 p-12 rounded-xl shadow-l2xl shadow-inner">
             <h1 class="mt-4 text-3xl text-orange-600">Reticulated Pythons</h1>

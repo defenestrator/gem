@@ -1,4 +1,7 @@
 <x-app-layout>
+    @push('meta')
+    <meta name="description" content="Browse reptile breeders and sellers on Gem Reptiles. Find captive-bred snakes, lizards, and more from trusted sellers.">
+    @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             Sellers

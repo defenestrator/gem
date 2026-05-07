@@ -1,4 +1,7 @@
 <x-app-layout>
+    @push('meta')
+    <meta name="description" content="Reptile classified ads on Gem Reptiles. Buy and sell captive-bred snakes, lizards, and other reptiles.">
+    @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             Classified Ads

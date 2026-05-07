@@ -1,4 +1,7 @@
 <x-guest-layout>
+    @push('meta')
+    <meta name="description" content="Browse captive-bred reptiles for sale from Gem Reptiles by category: ball pythons, corn snakes, carpet pythons, reticulated pythons, and western hognose snakes.">
+    @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Available Animals By Category') }}

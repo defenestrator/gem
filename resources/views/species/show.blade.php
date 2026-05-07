@@ -1,4 +1,13 @@
 <x-app-layout>
+    @push('meta')
+    @php
+        $metaName = $species->common_name ? "{$species->species} ({$species->common_name})" : $species->species;
+        $metaDesc = $species->description
+            ? $metaName . ' — ' . \Illuminate\Support\Str::limit(strip_tags($species->description), 120)
+            : $metaName . ' — taxonomy, classification, subspecies, and photos.';
+    @endphp
+    <meta name="description" content="{{ $metaDesc }}">
+    @endpush
     <x-slot name="header">
         <div class="flex items-center gap-3">
             <a href="{{ route('species.index') }}" class="text-gray-400 hover:text-orange-500 transition text-sm">← Species</a>

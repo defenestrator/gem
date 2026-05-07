@@ -1,4 +1,11 @@
 <x-app-layout>
+    @push('meta')
+    @php
+        $metaDesc = $seller->name . ' — reptile breeder on Gem Reptiles.';
+        if ($seller->description) $metaDesc .= ' ' . \Illuminate\Support\Str::limit($seller->description, 120);
+    @endphp
+    <meta name="description" content="{{ $metaDesc }}">
+    @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ $seller->name }}

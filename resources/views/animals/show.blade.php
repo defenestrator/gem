@@ -1,4 +1,15 @@
 <x-app-layout>
+    @push('meta')
+    @php
+        $parts = array_filter([
+            $animal->pet_name,
+            $animal->category ? $animal->category . ' · ' . ($animal->female ? 'Female' : 'Male') : null,
+            $animal->availability?->label(),
+            $animal->description ? \Illuminate\Support\Str::limit(strip_tags($animal->description), 100) : 'Captive-bred at Gem Reptiles.',
+        ]);
+    @endphp
+    <meta name="description" content="{{ implode(' — ', $parts) }}">
+    @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ $animal->pet_name }}

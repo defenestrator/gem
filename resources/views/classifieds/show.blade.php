@@ -1,4 +1,11 @@
 <x-app-layout>
+    @push('meta')
+    @php
+        $metaDesc = $classified->title . ' — $' . number_format($classified->price, 2) . '.';
+        if ($classified->description) $metaDesc .= ' ' . \Illuminate\Support\Str::limit(strip_tags($classified->description), 120);
+    @endphp
+    <meta name="description" content="{{ $metaDesc }}">
+    @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ $classified->title }}

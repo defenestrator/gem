@@ -1,4 +1,7 @@
 <x-guest-layout>
+    @push('meta')
+    <meta name="description" content="Shop captive-bred ball pythons, corn snakes, carpet pythons, reticulated pythons, and western hognose snakes from Gem Reptiles. Quality reptiles bred with care.">
+    @endpush
     <div class="w-full min-h-screen flex justify-center items-center pb-12">
         <div id="main-tile" class="text-left min-h-[70vh] bg-gray-800 text-gray-200 p-6 rounded-xl shadow-l2xl shadow-inner pb-12">
             <h1 class="my-2 text-3xl text-orange-500 font-serif">The Wild Type</h1>

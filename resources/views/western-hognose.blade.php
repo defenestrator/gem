@@ -1,4 +1,7 @@
 <x-guest-layout>
+    @push('meta')
+    <meta name="description" content="Captive-bred western hognose snakes (Heterodon nasicus) for sale from Gem Reptiles. Browse available morphs and contact us to inquire.">
+    @endpush
     <div class="w-full min-h-screen flex justify-center items-center">
         <div id="main-tile" class="text-left min-h-[70vh] bg-gray-800 text-gray-200 p-12 rounded-xl shadow-l2xl shadow-inner">
             <h1 class="mt-4 text-3xl text-orange-600">Western Hognose Snakes</h1>
