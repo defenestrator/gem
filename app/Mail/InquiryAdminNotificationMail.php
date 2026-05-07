@@ -22,7 +22,7 @@ class InquiryAdminNotificationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "New inquiry about {$this->animal->pet_name}",
+            subject: "New inquiry about {$this->animal->pet_name} [{$this->animal->slug}]",
         );
     }
 

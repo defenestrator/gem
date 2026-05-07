@@ -22,7 +22,7 @@ class InquiryConfirmationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Your inquiry about {$this->animal->pet_name} has been sent",
+            subject: "Your inquiry about {$this->animal->pet_name} [{$this->animal->slug}] has been sent",
         );
     }
 

@@ -23,7 +23,7 @@ class AnimalInquiryMail extends Mailable
     {
         return new Envelope(
             replyTo: $this->inquiry->email,
-            subject: "Inquiry about {$this->animal->pet_name}",
+            subject: "Inquiry about {$this->animal->pet_name} [{$this->animal->slug}]",
         );
     }
 
