@@ -72,6 +72,10 @@ Public visitors submit inquiries via `/animals/{slug}/inquire` or `/classifieds/
 
 Tailwind CSS 3 + Alpine.js for reactive UI and component state.
 
+## Schema Reference
+
+Before planning migrations or new tables, read `database/schema/pgsql-schema.sql` — it is the authoritative base schema and the existing migrations are appended to it.
+
 ## Core Rules
 
 - `Model::query()` not `DB::table()`
