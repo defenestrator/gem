@@ -1,4 +1,5 @@
 <x-guest-layout>
+@section('title', 'Confirm Password')
     <div class="bg-gray-800 rounded-lg shadow-lg mx-auto max-w-lg p-8 space-y-6">
         <div class="mb-4 text-sm text-gray-200">
             {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}

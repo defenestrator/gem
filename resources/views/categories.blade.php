@@ -1,4 +1,5 @@
 <x-guest-layout>
+@section('title', 'Browse by Category')
     @push('meta')
     <meta name="description" content="Browse captive-bred reptiles for sale from Gem Reptiles by category: ball pythons, corn snakes, carpet pythons, reticulated pythons, and western hognose snakes.">
     @endpush

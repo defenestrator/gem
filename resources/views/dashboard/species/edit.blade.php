@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('title', 'Edit: ' . $species->species)
     <x-slot name="header">
         <div class="flex items-center gap-3 flex-wrap">
             <a href="{{ route('species.show', $species) }}"

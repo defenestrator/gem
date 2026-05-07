@@ -1,4 +1,5 @@
 <x-guest-layout>
+@section('title', 'Carpet Pythons')
     @push('meta')
     <meta name="description" content="Captive-bred carpet pythons (Morelia spilota) for sale from Gem Reptiles. Browse available localities and morphs.">
     @endpush

@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('title', 'Inquire About ' . $animal->pet_name)
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             Inquire about {{ $animal->pet_name }}

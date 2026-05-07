@@ -1,4 +1,5 @@
 <x-guest-layout>
+@section('title', 'Set New Password')
     <div class="bg-gray-800 rounded-lg shadow-lg mx-auto max-w-lg p-8 space-y-6">
         <form method="POST" action="{{ route('password.store') }}">
             @csrf

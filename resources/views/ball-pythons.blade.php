@@ -1,4 +1,5 @@
 <x-guest-layout>
+@section('title', 'Ball Pythons')
     @push('meta')
     <meta name="description" content="Captive-bred ball pythons (Python regius) for sale from Gem Reptiles. Browse available morphs and contact us to inquire.">
     @endpush

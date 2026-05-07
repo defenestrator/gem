@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('title', $seller->name)
     @push('meta')
     @php
         $metaDesc = $seller->name . ' — reptile breeder on Gem Reptiles.';

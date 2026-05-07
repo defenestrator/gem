@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('title', 'Photo Attribution')
     <x-slot name="header">
         <div class="flex items-center gap-3 flex-wrap">
             @php

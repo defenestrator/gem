@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('title', $species->species . ($species->common_name ? ' — ' . $species->common_name : ''))
     @push('meta')
     @php
         $metaName = $species->common_name ? "{$species->species} ({$species->common_name})" : $species->species;

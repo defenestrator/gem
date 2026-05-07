@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('title', 'Animals for Sale')
     @push('meta')
     <meta name="description" content="Browse captive-bred reptiles for sale at Gem Reptiles. Filter by availability, species, and category.">
     @php $lcpThumb = $animals->first()?->media->first(); @endphp

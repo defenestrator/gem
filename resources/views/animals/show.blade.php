@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('title', $animal->pet_name)
     @push('meta')
     @php
         $parts = array_filter([

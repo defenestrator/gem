@@ -1,4 +1,5 @@
 <x-guest-layout>
+@section('title', 'Reset Password')
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 

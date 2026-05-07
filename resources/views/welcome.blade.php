@@ -1,4 +1,5 @@
 <x-guest-layout>
+@section('title', 'Captive-bred Reptiles for Sale')
     @php
         // Resolve first visible animal image for LCP preload hint in <head>
         $lcpImage = null;
@@ -19,7 +20,7 @@
     <div class="w-full min-h-screen flex justify-center items-center pb-12">
         <div id="main-tile" class="text-left min-h-[70vh] bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 p-6 rounded-xl shadow-l2xl shadow-inner pb-12">
             <h1 class="my-2 text-3xl text-green-500 font-serif">The Wild Type</h1>
-            <h2 class="my-2 text-l" >Captive-bred Pythons and Colubrids by <span class="font-medium text-green-400 font-serif">Gem Reptiles</span></h2>
+            <h2 class="my-2 text-l text-neutral-600" >Captive-bred Pythons and Colubrids by <span class="font-heavy text-neutral-600 font-serif">Gem Reptiles</span></h2>
             {{-- <h5 class="my-4">
                 <a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles MorphMarket Store">
                     <button class="bg-neutral-600 text-white py-2 px-4 rounded-lg hover:bg-neutral-700">

@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('title', 'Species Database')
     @push('meta')
     <meta name="description" content="Search the reptile species database. Explore over 12,000 species of lizards, snakes, geckos, turtles, tortoises, and more with photos and taxonomy.">
     @php $firstThumb = $initial['results'][0]['thumbnail'] ?? null; @endphp
@@ -157,7 +158,7 @@
                                                 </a>
                                             </template>
                                             <template x-if="!row.thumbnail">
-                                                <span class="inline-block h-[100px] w-[100px] rounded-md bg-gray-100 dark:bg-gray-700 mx-auto"></span>
+                                                <span class="inline-block h-[100px] w-[100px] rounded-md bg-gradient-to-b from-neutral-200 to-gray-100 dark:from-gray-600 dark:to-gray-900 mx-auto"></span>
                                             </template>
                                         </td>
                                         <td class="px-1 py-2">

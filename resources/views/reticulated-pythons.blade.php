@@ -1,4 +1,5 @@
 <x-guest-layout>
+@section('title', 'Reticulated Pythons')
     @push('meta')
     <meta name="description" content="Captive-bred reticulated pythons (Malayopython reticulatus) for sale from Gem Reptiles. Localities, morphs, and super dwarfs available.">
     @endpush

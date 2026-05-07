@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('title', $classified->title)
     @push('meta')
     @php
         $metaDesc = $classified->title . ' — $' . number_format($classified->price, 2) . '.';

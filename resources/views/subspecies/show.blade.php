@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('title', $subspecies->full_name)
     @push('meta')
     @php
         $parentCommon = $subspecies->parentSpecies->common_name ? " ({$subspecies->parentSpecies->common_name} subspecies)" : ' subspecies';

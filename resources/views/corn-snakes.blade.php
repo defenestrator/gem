@@ -1,4 +1,5 @@
 <x-guest-layout>
+@section('title', 'Corn Snakes')
     @push('meta')
     <meta name="description" content="Captive-bred corn snakes (Pantherophis guttatus) for sale from Gem Reptiles. Browse available morphs and contact us to inquire.">
     @endpush

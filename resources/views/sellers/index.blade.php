@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('title', 'Breeders & Sellers')
     @push('meta')
     <meta name="description" content="Browse reptile breeders and sellers on Gem Reptiles. Find captive-bred snakes, lizards, and more from trusted sellers.">
     @endpush

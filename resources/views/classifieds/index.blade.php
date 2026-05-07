@@ -1,4 +1,5 @@
 <x-app-layout>
+@section('title', 'Classifieds')
     @push('meta')
     <meta name="description" content="Reptile classified ads on Gem Reptiles. Buy and sell captive-bred snakes, lizards, and other reptiles.">
     @endpush
