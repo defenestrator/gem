@@ -7,10 +7,34 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Traits\Sluggable;
 use App\Models\Traits\HasMedia;
+use Laravel\Scout\Searchable;
 
 class Animal extends Model
 {
-    use HasFactory, HasMedia, Sluggable;
+    use HasFactory, HasMedia, Searchable, Sluggable;
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'id'           => $this->id,
+            'pet_name'     => $this->pet_name,
+            'category'     => $this->category,
+            'description'  => $this->description,
+            'availability' => $this->availability?->value,
+            'species'      => $this->species?->species,
+            'common_name'  => $this->species?->common_name,
+        ];
+    }
+
+    public function searchableAs(): string
+    {
+        return 'animals';
+    }
+
+    public function shouldBeSearchable(): bool
+    {
+        return $this->status === 'published';
+    }
 
     protected $fillable = [
         'slug',

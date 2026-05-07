@@ -268,6 +268,7 @@ Route::get('/media/{media}/attribution', [MediaController::class, 'attribution']
 
 // Animals Routes
 Route::get('/animals', [AnimalController::class, 'index'])->name('animals.index');
+Route::get('/animals/search', [AnimalController::class, 'search'])->name('animals.search');
 Route::get('/animals/{animal:slug}', [AnimalController::class, 'show'])->name('animals.show');
 Route::get('/animals/{animal:slug}/inquire', [InquiryController::class, 'create'])->name('animals.inquiries.create');
 Route::post('/animals/{animal:slug}/inquire', [InquiryController::class, 'store'])->name('animals.inquiries.store');
