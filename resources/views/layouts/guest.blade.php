@@ -23,8 +23,16 @@
         <link rel="preload" href="https://fonts.bunny.net/css?family=montserrat:400,500,600|fauna-one:400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=montserrat:400,500,600|fauna-one:400&display=swap"></noscript>
 
+        <!-- Critical: body background prevents FOUC when CSS loads async -->
+        <style>body{background-color:#9ca3af}</style>
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @production
+            <link rel="preload" href="{{ Vite::asset('resources/css/app.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+            <noscript><link rel="stylesheet" href="{{ Vite::asset('resources/css/app.css') }}"></noscript>
+            @vite('resources/js/app.js')
+        @else
+            @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @endproduction
     </head>
     <body class="font-sans text-gray-900 antialiased bg-gray-400 flex flex-col min-h-screen">
         <x-guest-navigation />

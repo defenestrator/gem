@@ -31,7 +31,7 @@
                         >
                         {{-- spinner --}}
                         <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none"
-                             x-show="loading" x-transition>
+                             x-show="loading" x-cloak>
                             <svg class="animate-spin h-4 w-4 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
@@ -39,7 +39,7 @@
                         </div>
                     </div>
                     <button type="button" @click="clearSearch()"
-                            x-show="query.length > 0" x-transition
+                            x-show="query.length > 0"
                             class="px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">
                         Clear
                     </button>
@@ -132,7 +132,7 @@
                         <table class="w-full text-sm">
                             <thead class="bg-gray-50 dark:bg-gray-700 text-xs uppercase text-gray-500 dark:text-gray-400">
                                 <tr>
-                                    <th class="px-2 py-3 text-center font-semibold w-14">Photo</th>
+                                    <th class="px-2 py-3 text-center font-semibold w-28">Photo</th>
                                     <th class="px-4 py-3 text-left font-semibold">Scientific Name</th>
                                     <th class="px-4 py-3 text-left font-semibold">Common Name</th>
                                     <th class="px-4 py-3 text-left font-semibold hidden md:table-cell">Family / Taxon</th>
@@ -146,14 +146,14 @@
                                             <template x-if="row.thumbnail">
                                                 <a :href="`${showBase}/${row.id}`">
                                                     <img :src="row.thumbnail" :alt="row.species"
-                                                         width="40" height="40"
+                                                         width="100" height="100"
                                                          :loading="$index === 0 ? null : 'lazy'"
                                                          :fetchpriority="$index === 0 ? 'high' : 'auto'"
-                                                         class="h-10 w-10 object-cover rounded-md mx-auto ring-1 ring-gray-200 dark:ring-gray-600">
+                                                         class="h-[100px] w-[100px] object-cover rounded-md mx-auto ring-1 ring-gray-200 dark:ring-gray-600">
                                                 </a>
                                             </template>
                                             <template x-if="!row.thumbnail">
-                                                <span class="inline-block h-10 w-10 rounded-md bg-gray-100 dark:bg-gray-700 mx-auto"></span>
+                                                <span class="inline-block h-[100px] w-[100px] rounded-md bg-gray-100 dark:bg-gray-700 mx-auto"></span>
                                             </template>
                                         </td>
                                         <td class="px-4 py-3">

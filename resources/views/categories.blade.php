@@ -15,7 +15,7 @@
             @if(isset($categories['Corn Snakes']))
             <div class="bg-gray-700 rounded-lg shadow-md overflow-hidden flex flex-col text-white">
                 <a href="{{ route('categories.corn-snakes') }}">
-                    <img src="/Corns.jpeg" alt="Corn Snakes" class="w-full aspect-square object-cover"/>
+                    <img src="/Corns.jpeg" alt="Corn Snakes" width="800" height="800" class="w-full aspect-square object-cover"/>
                 </a>
                 <div class="p-6 flex flex-col flex-1">
                     <h2 class="text-xl font-medium text-white">Corn Snakes</h2>
@@ -33,7 +33,7 @@
             @if(isset($categories['Carpet Pythons']) && $categories['Carpet Pythons'] > 0)
             <div class="bg-gray-700 rounded-lg shadow-md overflow-hidden flex flex-col text-white">
                 <a href="{{ route('categories.carpet-pythons') }}">
-                    <img src="/Carpets.jpeg" alt="Carpet Pythons" class="w-full aspect-square object-cover"/>
+                    <img src="/Carpets.jpeg" alt="Carpet Pythons" width="800" height="800" class="w-full aspect-square object-cover"/>
                 </a>
                 <div class="p-6 flex flex-col flex-1">
                     <h2 class="text-xl font-medium text-white">Carpet Pythons</h2>
@@ -51,7 +51,7 @@
             @if(isset($categories['Ball Pythons']) && $categories['Ball Pythons'] > 0)
             <div class="bg-gray-700 rounded-lg shadow-md overflow-hidden flex flex-col text-white">
                 <a href="{{ route('categories.ball-pythons') }}">
-                    <img src="/Balls.jpeg" alt="Ball Pythons" class="w-full aspect-square object-cover"/>
+                    <img src="/Balls.jpeg" alt="Ball Pythons" width="800" height="800" class="w-full aspect-square object-cover"/>
                 </a>
                 <div class="p-6 flex flex-col flex-1">
                     <h2 class="text-xl font-medium text-white">Ball Pythons</h2>
@@ -69,7 +69,7 @@
             @if(isset($categories['Reticulated Pythons']) && $categories['Reticulated Pythons'] > 0)
             <div class="bg-gray-700 rounded-lg shadow-md overflow-hidden flex flex-col text-white">
                 <a href="{{ route('categories.reticulated-pythons') }}">
-                    <img src="/Retics.jpeg" alt="Reticulated Pythons" class="w-full aspect-square object-cover"/>
+                    <img src="/Retics.jpeg" alt="Reticulated Pythons" width="800" height="800" class="w-full aspect-square object-cover"/>
                 </a>
                 <div class="p-6 flex flex-col flex-1">
                     <h2 class="text-xl font-medium text-white">Reticulated Pythons</h2>
@@ -87,7 +87,7 @@
             @if(isset($categories['Western Hognose']))
             <div class="bg-gray-700 rounded-lg shadow-md overflow-hidden flex flex-col text-white">
                 <a href="{{ route('categories.western-hognose') }}">
-                    <img src="/Hognose.jpeg" alt="Western Hognose" class="w-full aspect-square object-cover"/>
+                    <img src="/Hognose.jpeg" alt="Western Hognose" width="800" height="800" class="w-full aspect-square object-cover"/>
                 </a>
                 <div class="p-6 flex flex-col flex-1">
                     <h2 class="text-xl font-medium text-white">Western Hognose</h2>

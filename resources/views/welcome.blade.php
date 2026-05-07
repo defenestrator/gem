@@ -71,6 +71,7 @@
                                 @endphp
                                 <img src="{{ $firstPhoto }}"
                                      alt="{{ $altText }}"
+                                     width="800" height="800"
                                      @if($isLcp) fetchpriority="high" @else loading="lazy" @endif
                                      class="w-full aspect-square object-cover">
                             @endif

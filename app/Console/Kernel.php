@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
         }
 
         $schedule->command('species:fetch-images --model=all --queue')
-            ->monthlyOn(15, "0:0")
+            ->weeklyOn("Sunday", "0:0")
             ->timezone('America/Boise')
             ->withoutOverlapping()
             ->runInBackground();

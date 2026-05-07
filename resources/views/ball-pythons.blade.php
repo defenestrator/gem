@@ -22,7 +22,7 @@
                                     $photos = explode(' ', $animal['Photo_Urls']);
                                     $firstPhoto = $photos[0];
                                 @endphp
-                                <img src="{{ $firstPhoto }}" alt="{{ $animal['Title*'] }}" class="w-full aspect-square object-cover">
+                                <img src="{{ $firstPhoto }}" alt="{{ $animal['Title*'] }}" width="800" height="800" class="w-full aspect-square object-cover">
                             @endif
                             <div class="p-4">
                                 <h3 class="text-lg font-semibold text-orange-400 mb-2">{{ $animal['Title*'] }}</h3>

@@ -24,7 +24,13 @@
         <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=montserrat:400,500,600|fauna-one:400&display=swap"></noscript>
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @production
+            <link rel="preload" href="{{ Vite::asset('resources/css/app.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+            <noscript><link rel="stylesheet" href="{{ Vite::asset('resources/css/app.css') }}"></noscript>
+            @vite('resources/js/app.js')
+        @else
+            @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @endproduction
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
