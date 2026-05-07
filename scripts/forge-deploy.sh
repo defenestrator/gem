@@ -27,6 +27,6 @@ $FORGE_PHP artisan queue:restart
 $FORGE_PHP artisan app:warm --base-url=http://127.0.0.1 --images=thumbs --concurrency=25
 
 # Flush DO Spaces CDN cache so users get fresh assets immediately
-$FORGE_PHP artisan cdn:flush
+# $FORGE_PHP artisan cdn:flush
 
 echo "Deploy complete."
