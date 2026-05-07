@@ -15,6 +15,7 @@
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
         <link rel="manifest" href="/site.webmanifest">
         <meta name="msapplication-TileImage" content="/ms-favicon.png">
+        <meta name="msapplication-TileColor" content="#f97316">
         <meta name="theme-color" content="#f97316">
 
         <!-- Fonts -->

@@ -14,29 +14,27 @@
                 </a>
             </h5> --}}
             <div class="mx-auto flex justify-left">
-                <h2 href="/available">
-                    Available Animals:
-                </h2>                
+                <h2>Available Animals:</h2>
             </div>
             
             <div class="mt-6 flex flex-wrap gap-1 items-center">
                 <span class="text-gray-300 font-semibold">Sort by:</span>
-                <a href="{{ route('welcome', ['sort' => 'recent']) }}" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'recent' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
+                <a href="{{ route('welcome', ['sort' => 'recent']) }}" title="Sort by most recently updated" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'recent' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
                     <span class="text-xs">Updated</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'price-low']) }}" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'price-low' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
+                <a href="{{ route('welcome', ['sort' => 'price-low']) }}" title="Sort by lowest price first" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'price-low' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
                     <span class="text-xs">Lowest Price</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'price-high']) }}" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'price-high' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
+                <a href="{{ route('welcome', ['sort' => 'price-high']) }}" title="Sort by highest price first" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'price-high' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
                     <span class="text-xs">Highest Price</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'date-new']) }}" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'date-new' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
+                <a href="{{ route('welcome', ['sort' => 'date-new']) }}" title="Sort by newest hatch date first" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'date-new' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
                     <span class="text-xs">Newest Hatched</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'category']) }}" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'category' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
+                <a href="{{ route('welcome', ['sort' => 'category']) }}" title="Sort by category A to Z" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'category' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
                     <span class="text-xs">Category (Asc)</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'category-desc']) }}" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'category-desc' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
+                <a href="{{ route('welcome', ['sort' => 'category-desc']) }}" title="Sort by category Z to A" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'category-desc' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
                     <span class="text-xs">Category (Desc)</span>
                 </a>
             </div>
@@ -49,15 +47,24 @@
                                 @php
                                     $photos = explode(' ', $animal['Photo_Urls']);
                                     $firstPhoto = $photos[0];
+                                    $altText = $animal['Title*'] . ' — ' . $animal['Category*']
+                                        . (!empty($animal['Sex']) ? ', ' . $animal['Sex'] : '')
+                                        . (!empty($animal['Traits']) ? ' (' . $animal['Traits'] . ')' : '')
+                                        . ', captive-bred by Gem Reptiles';
                                 @endphp
-                                <img src="{{ $firstPhoto }}" alt="{{ $animal['Title*'] }}" class="w-full aspect-square object-cover">
+                                <img src="{{ $firstPhoto }}"
+                                     alt="{{ $altText }}"
+                                     loading="lazy"
+                                     class="w-full aspect-square object-cover">
                             @endif
                             <div class="p-4 flex flex-col flex-1">
                             <h3 class="text-lg font-semibold font-serif text-orange-400 mb-1">{{ $animal['Title*'] }}</h3>
                             @php $species = $speciesMap[$animal['Animal_Id*']] ?? null; @endphp
                             @if ($species)
                                 <p class="text-xs italic text-gray-400 mb-2">
-                                    <a href="{{ route('species.show', $species) }}" class="hover:text-orange-400 hover:underline transition">
+                                    <a href="{{ route('species.show', $species) }}"
+                                       title="View {{ $species->species }} species information"
+                                       class="hover:text-orange-400 hover:underline transition">
                                         {{ $species->species }}
                                     </a>
                                 </p>
@@ -82,10 +89,16 @@
                             @endif
                             <p class="text-lg font-serif font-black text-green-200 mb-4 mt-auto">${{ $animal['Price'] }}</p>
                             <div class="flex gap-2">
-                                <a href="{{ $animal['Mm_Url**'] }}" target="_blank" class="flex-1 bg-orange-500 text-white py-2 px-2 rounded-lg hover:bg-orange-700 text-sm text-center font-semibold">
+                                <a href="{{ $animal['Mm_Url**'] }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   title="View {{ $animal['Title*'] }} on MorphMarket"
+                                   class="flex-1 bg-orange-500 text-white py-2 px-2 rounded-lg hover:bg-orange-700 text-sm text-center font-semibold">
                                     MorphMarket
                                 </a>
-                                <a href="{{ route('animals.inquiries.create', ['animal' => $animal['Animal_Id*']]) }}" class="flex-1 bg-green-600 text-white py-2 px-2 rounded-lg hover:bg-green-800 text-sm font-semibold text-center">
+                                <a href="{{ route('animals.inquiries.create', ['animal' => $animal['Animal_Id*']]) }}"
+                                   title="Send an inquiry about {{ $animal['Title*'] }}"
+                                   class="flex-1 bg-green-600 text-white py-2 px-2 rounded-lg hover:bg-green-800 text-sm font-semibold text-center">
                                     Inquire
                                 </a>
                             </div>

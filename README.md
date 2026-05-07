@@ -85,6 +85,10 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 - `config/image.php` created; Intervention/Image configured to use Imagick driver
 - Command options: `--dry-run`, `--force`, `--no-sync`, `--skip-optimize`, `--batch=N`
 
+#### 2026-05-07 (welcome page + favicon)
+- `welcome.blade.php`: `title` attributes on all sort/action/external links; richer `alt` text on animal images (name + category + sex + traits); `loading="lazy"` on animal images; `rel="noopener noreferrer"` on MorphMarket external links; invalid `<h2 href>` element corrected
+- Favicon: both layouts now identical — removed redundant non-standard 100x100/192x192/256x256 `rel="icon"` links from guest layout (webmanifest covers Android/PWA sizes); added `msapplication-TileColor` to both layouts
+
 #### 2026-05-07 (SEO + performance)
 - Meta descriptions added to all public-facing routes: homepage, category pages, animals index/show, species index/show, subspecies show, sellers index/show, classifieds index/show
 - `@stack('meta')` added to both layouts (`app.blade.php`, `guest.blade.php`) for per-page meta injection
