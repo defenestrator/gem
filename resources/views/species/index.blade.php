@@ -136,17 +136,17 @@
                         <table class="w-full text-sm">
                             <thead class="bg-gray-50 dark:bg-gray-700 text-xs uppercase text-gray-500 dark:text-gray-400">
                                 <tr>
-                                    <th class="px-2 py-2 text-center font-semibold w-24">Photo</th>
-                                    <th class="px-3 py-2 text-left font-semibold">Scientific Name</th>
-                                    <th class="px-3 py-2 text-left font-semibold">Common Name</th>
-                                    <th class="px-3 py-2 text-left font-semibold hidden md:table-cell">Family / Taxon</th>
-                                    <th class="px-3 py-2 text-left font-semibold hidden lg:table-cell">Author</th>
+                                    <th class="px-1 py-2 text-center font-semibold w-24">Photo</th>
+                                    <th class="px-1 py-2 text-left font-semibold">Scientific Name</th>
+                                    <th class="px-1 py-2 text-left font-semibold">Common Name</th>
+                                    <th class="px-1 py-2 text-left font-semibold hidden md:table-cell">Family / Taxon</th>
+                                    <th class="px-1 py-2 text-left font-semibold hidden lg:table-cell">Author</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                                 <template x-for="row in results" :key="row.id">
                                     <tr class="hover:bg-orange-50 dark:hover:bg-gray-700 transition">
-                                        <td class="px-2 py-1.5 text-center">
+                                        <td class="px-1 py-1.5 text-center">
                                             <template x-if="row.thumbnail">
                                                 <a :href="`${showBase}/${row.id}`">
                                                     <img :src="row.thumbnail" :alt="row.species"
@@ -160,12 +160,12 @@
                                                 <span class="inline-block h-[100px] w-[100px] rounded-md bg-gray-100 dark:bg-gray-700 mx-auto"></span>
                                             </template>
                                         </td>
-                                        <td class="px-3 py-2">
+                                        <td class="px-1 py-2">
                                             <a :href="`${showBase}/${row.id}`"
                                                class="italic font-medium text-orange-600 dark:text-orange-400 hover:underline"
                                                x-text="row.species"></a>
                                         </td>
-                                        <td class="px-3 py-2 text-gray-600 dark:text-gray-300 whitespace-normal break-words"
+                                        <td class="px-1 py-2 text-gray-600 dark:text-gray-300 whitespace-wrap break-words"
                                             x-text="row.common_name || '—'"></td>
                                         <td class="px-3 py-2 text-gray-500 dark:text-gray-400 hidden md:table-cell text-xs"
                                             x-text="row.higher_taxa || '—'"></td>
