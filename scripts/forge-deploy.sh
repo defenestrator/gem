@@ -9,9 +9,8 @@ git pull origin main
 # PHP dependencies
 $FORGE_PHP composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
-# JS assets
-npm ci --prefer-offline
-npm run build
+# Cache config/routes/views
+$FORGE_PHP artisan optimize
 
 # Database
 $FORGE_PHP artisan migrate --force
