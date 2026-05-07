@@ -1,6 +1,10 @@
 <x-app-layout>
     @push('meta')
     <meta name="description" content="Browse captive-bred reptiles for sale at Gem Reptiles. Filter by availability, species, and category.">
+    @php $lcpThumb = $animals->first()?->media->first(); @endphp
+    @if($lcpThumb)
+    <link rel="preload" as="image" href="{{ $lcpThumb->url }}" fetchpriority="high">
+    @endif
     @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -67,6 +71,7 @@
                             <a href="{{ route('animals.show', $animal) }}" class="relative block">
                                 @if ($thumb)
                                     <img src="{{ $thumb->url }}" alt="{{ $animal->pet_name }}"
+                                        @if($loop->first) fetchpriority="high" @else loading="lazy" @endif
                                         class="w-full aspect-square object-cover">
                                 @else
                                     <div class="w-full aspect-square bg-gray-200 dark:bg-gray-700 flex items-center justify-center">

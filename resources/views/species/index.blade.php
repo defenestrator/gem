@@ -146,7 +146,9 @@
                                             <template x-if="row.thumbnail">
                                                 <a :href="`${showBase}/${row.id}`">
                                                     <img :src="row.thumbnail" :alt="row.species"
-                                                         width="40" height="40" loading="lazy"
+                                                         width="40" height="40"
+                                                         :loading="$index === 0 ? null : 'lazy'"
+                                                         :fetchpriority="$index === 0 ? 'high' : 'auto'"
                                                          class="h-10 w-10 object-cover rounded-md mx-auto ring-1 ring-gray-200 dark:ring-gray-600">
                                                 </a>
                                             </template>
@@ -325,6 +327,13 @@
                     this.meta       = data.meta;
                     this.lastQuery  = q;
                     this.searched   = true;
+                    if (this.page === 1 && data.results[0]?.thumbnail) {
+                        const link = document.createElement('link');
+                        link.rel = 'preload'; link.as = 'image';
+                        link.href = data.results[0].thumbnail;
+                        link.setAttribute('fetchpriority', 'high');
+                        document.head.appendChild(link);
+                    }
                 } catch (e) {
                     console.error('Species search failed:', e);
                     this.results  = [];

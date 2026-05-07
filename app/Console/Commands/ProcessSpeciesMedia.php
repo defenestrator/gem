@@ -112,7 +112,12 @@ class ProcessSpeciesMedia extends Command
             throw new \RuntimeException("Local file missing: {$localPath}");
         }
 
-        $thumbLocal = $this->thumbLocalPath($s3Key);
+        // Thumbnail path is keyed by current mediable_id, not the historical upload path.
+        // media.url may use a stale species.id from a different environment (e.g. local
+        // import exported to production where IDs differ); mediable_id is always authoritative.
+        $filename   = pathinfo($s3Key, PATHINFO_FILENAME) . '.jpg';
+        $thumbS3Key = self::THUMB_PREFIX . 'species/' . $media->mediable_id . '/' . $filename;
+        $thumbLocal = "{$this->localBase}/{$thumbS3Key}";
         $thumbDir   = dirname($thumbLocal);
 
         if (! is_dir($thumbDir)) {
@@ -135,33 +140,20 @@ class ProcessSpeciesMedia extends Command
             }
         }
 
-        // Persist thumbnail URL to DB
-        $thumbS3Key = self::THUMB_PREFIX . $s3Key;
         $media->thumbnail_url = 'https://' . self::SPACES_HOST . '/' . $thumbS3Key;
         $media->save();
     }
 
     /**
      * Derive local filesystem path and S3 key from a DO Spaces URL.
-     * e.g. https://gemx.sfo3.digitaloceanspaces.com/species/75/foo.jpg
-     *   → [storage/app/public/spaces/species/75/foo.jpg, species/75/foo.jpg]
+     * e.g. https://gemx.sfo3.digitaloceanspaces.com/species/211/foo.jpg
+     *   → [storage/app/public/spaces/species/211/foo.jpg, species/211/foo.jpg]
      */
     private function resolve(string $url): array
     {
-        $s3Key    = ltrim(parse_url($url, PHP_URL_PATH), '/');
-        $local    = $this->localBase . '/' . $s3Key;
+        $s3Key = ltrim(parse_url($url, PHP_URL_PATH), '/');
+        $local = "{$this->localBase}/{$s3Key}";
         return [$local, $s3Key];
-    }
-
-    /**
-     * Map an S3 key to its local thumbnail path (always .jpg).
-     * e.g. species/75/foo.png → storage/app/public/spaces/thumbs/species/75/foo.jpg
-     */
-    private function thumbLocalPath(string $s3Key): string
-    {
-        $dir  = pathinfo($s3Key, PATHINFO_DIRNAME);
-        $name = pathinfo($s3Key, PATHINFO_FILENAME);
-        return $this->localBase . '/' . self::THUMB_PREFIX . $dir . '/' . $name . '.jpg';
     }
 
     private function syncDown(): bool

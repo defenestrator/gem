@@ -67,6 +67,13 @@ $getAnimals = function() {
         Route::post('/dashboard/animals/import', [AnimalImportController::class, 'upload'])->name('dashboard.animals.import.upload');
     });
 
+// Redirect /favicon.ico to CDN with long cache headers.
+// NOTE: nginx serves public/favicon.ico before PHP on Forge; to enable this redirect
+// in production, add to Forge nginx config:
+//   location = /favicon.ico { try_files $uri /index.php?$query_string; }
+Route::get('/favicon.ico', fn() => redirect('https://gemx.sfo3.digitaloceanspaces.com/assets/favicon.ico', 301)
+    ->header('Cache-Control', 'public, max-age=31536000, immutable'));
+
 Route::get('/', function (Request $request) use ($getAnimals) {
     $sort = $request->query('sort', 'recent');
     $file = storage_path('app/public/animals.json');

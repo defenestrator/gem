@@ -1,6 +1,20 @@
 <x-guest-layout>
+    @php
+        // Resolve first visible animal image for LCP preload hint in <head>
+        $lcpImage = null;
+        foreach ($animals as $_a) {
+            if ($_a['State'] === 'For Sale' && $_a['Enabled'] === 'Active' && !empty($_a['Photo_Urls'])) {
+                $lcpImage = explode(' ', $_a['Photo_Urls'])[0];
+                break;
+            }
+        }
+        unset($_a);
+    @endphp
     @push('meta')
     <meta name="description" content="Shop captive-bred ball pythons, corn snakes, carpet pythons, reticulated pythons, and western hognose snakes from Gem Reptiles. Quality reptiles bred with care.">
+    @if($lcpImage)
+    <link rel="preload" as="image" href="{{ $lcpImage }}" fetchpriority="high">
+    @endif
     @endpush
     <div class="w-full min-h-screen flex justify-center items-center pb-12">
         <div id="main-tile" class="text-left min-h-[70vh] bg-gray-800 text-gray-200 p-6 rounded-xl shadow-l2xl shadow-inner pb-12">
@@ -39,6 +53,7 @@
                 </a>
             </div>
             
+            @php $cardIndex = 0; @endphp
             <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
                 @foreach($animals as $animal)
                     @if($animal['State'] === 'For Sale' && $animal['Enabled'] === 'Active')
@@ -47,6 +62,8 @@
                                 @php
                                     $photos = explode(' ', $animal['Photo_Urls']);
                                     $firstPhoto = $photos[0];
+                                    $isLcp = ($cardIndex === 0);
+                                    $cardIndex++;
                                     $altText = $animal['Title*'] . ' — ' . $animal['Category*']
                                         . (!empty($animal['Sex']) ? ', ' . $animal['Sex'] : '')
                                         . (!empty($animal['Traits']) ? ' (' . $animal['Traits'] . ')' : '')
@@ -54,7 +71,7 @@
                                 @endphp
                                 <img src="{{ $firstPhoto }}"
                                      alt="{{ $altText }}"
-                                     loading="lazy"
+                                     @if($isLcp) fetchpriority="high" @else loading="lazy" @endif
                                      class="w-full aspect-square object-cover">
                             @endif
                             <div class="p-4 flex flex-col flex-1">
