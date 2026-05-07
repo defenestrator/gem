@@ -66,7 +66,7 @@
                     <button type="button"
                             @click="taxon = (taxon === '{{ $key }}' ? '' : '{{ $key }}'); doSearch(true)"
                             :class="taxon === '{{ $key }}'
-                                ? 'bg-orange-500 text-white border-orange-500'
+                                ? 'bg-neutral-700 text-white border-neutral-700'
                                 : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-300'"
                             class="px-3 py-1 text-sm rounded-full border transition select-none">
                         {!! $label !!}
@@ -114,7 +114,7 @@
                                 <template x-for="p in meta.last_page" :key="p">
                                     <button @click="goToPage(p)"
                                             :class="p === meta.current_page
-                                                ? 'bg-orange-500 text-white border-orange-500'
+                                                ? 'bg-neutral-700 text-white border-neutral-700'
                                                 : 'text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-orange-50 dark:hover:bg-gray-700'"
                                             x-show="p === 1 || p === meta.last_page || Math.abs(p - meta.current_page) <= 2"
                                             class="px-2.5 py-1 text-sm rounded-lg border transition"
@@ -191,7 +191,7 @@
                                 <template x-for="p in meta.last_page" :key="p">
                                     <button @click="goToPage(p)"
                                             :class="p === meta.current_page
-                                                ? 'bg-orange-500 text-white border-orange-500'
+                                                ? 'bg-neutral-700 text-white border-neutral-700'
                                                 : 'text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-orange-50 dark:hover:bg-gray-700'"
                                             x-show="p === 1 || p === meta.last_page || Math.abs(p - meta.current_page) <= 2"
                                             class="px-2.5 py-1 text-sm rounded-lg border transition"

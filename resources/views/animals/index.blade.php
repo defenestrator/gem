@@ -57,7 +57,7 @@
                 <span class="text-gray-600 dark:text-gray-400 font-semibold">Sort by:</span>
                 @foreach (['recent' => 'Newest', 'oldest' => 'Oldest', 'name-asc' => 'Name A–Z', 'name-desc' => 'Name Z–A'] as $value => $label)
                     <a href="{{ route('animals.index', array_merge(request()->query(), ['sort' => $value])) }}"
-                        class="px-3 py-1 rounded-lg text-sm font-medium {{ $currentSort === $value ? 'bg-orange-600 text-white' : 'bg-orange-500 text-white hover:bg-orange-600' }}">
+                        class="px-3 py-1 rounded-lg text-sm font-medium {{ $currentSort === $value ? 'bg-neutral-700 text-white' : 'bg-neutral-500 text-white hover:bg-neutral-600' }}">
                         {{ $label }}
                     </a>
                 @endforeach
