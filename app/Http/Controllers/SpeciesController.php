@@ -194,7 +194,7 @@ class SpeciesController extends Controller
             'common_name' => $s->common_name,
             'higher_taxa' => $s->higher_taxa,
             'author'      => $s->author,
-            'thumbnail'   => $s->latestApprovedMedia?->url,
+            'thumbnail'   => $s->latestApprovedMedia?->thumbnail_url ?? $s->latestApprovedMedia?->url,
         ];
     }
 }

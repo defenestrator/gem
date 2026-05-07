@@ -79,6 +79,12 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-07 (species media pipeline)
+- `media:process-species` command: syncs `species/` prefix from DO Spaces to `storage/app/spaces/`, generates 100×100 square JPEG thumbnails via Intervention/Image (Imagick driver), recompresses JPEG originals at Q85, syncs optimized originals and new `thumbs/species/` prefix back to DO Spaces, and updates `media.thumbnail_url` idempotently
+- `media.thumbnail_url` column added; `SpeciesController::format()` serves `thumbnail_url ?? url` so the species search index immediately uses 100px thumbnails once generated
+- `config/image.php` created; Intervention/Image configured to use Imagick driver
+- Command options: `--dry-run`, `--force`, `--no-sync`, `--skip-optimize`, `--batch=N`
+
 #### 2026-05-07 (SEO + performance)
 - Meta descriptions added to all public-facing routes: homepage, category pages, animals index/show, species index/show, subspecies show, sellers index/show, classifieds index/show
 - `@stack('meta')` added to both layouts (`app.blade.php`, `guest.blade.php`) for per-page meta injection
