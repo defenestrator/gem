@@ -27,9 +27,7 @@
                     </div>
 
                     <form method="POST" action="{{ route('classifieds.inquiries.store', $classified) }}"
-                          x-data="{ turnstileOk: false }"
-                          @turnstile:verified.document="turnstileOk = true"
-                          @submit.prevent="if (turnstileOk) $el.submit()">
+                          @submit.prevent="submitWithTurnstile($el)">
                         @csrf
 
                         <div class="mb-4">
@@ -78,9 +76,7 @@
 
                         <div class="flex gap-4 items-center">
                             <button type="submit"
-                                x-bind:disabled="!turnstileOk"
-                                x-bind:class="!turnstileOk ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-700'"
-                                class="bg-orange-500 text-white py-2 px-6 rounded-lg font-semibold transition-opacity">
+                                class="bg-orange-500 text-white py-2 px-6 rounded-lg hover:bg-orange-700 font-semibold">
                                 Send Inquiry
                             </button>
                             <a href="{{ route('classifieds.show', $classified) }}"

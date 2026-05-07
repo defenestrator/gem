@@ -8,9 +8,7 @@
     <main class="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="bg-gray-800 text-gray-200 rounded-lg shadow-lg mx-auto max-w-lg p-8 space-y-6">
             <form method="POST" action="{{ route('register') }}"
-                  x-data="{ turnstileOk: false }"
-                  @turnstile:verified.document="turnstileOk = true"
-                  @submit.prevent="if (turnstileOk) $el.submit()">
+                  @submit.prevent="submitWithTurnstile($el)">
                 @csrf
 
                 {{-- Honeypot: hidden from humans, filled by bots --}}
@@ -68,9 +66,7 @@
                         {{ __('Already registered?') }}
                     </a>
 
-                    <x-primary-button class="ml-4"
-                        x-bind:disabled="!turnstileOk"
-                        x-bind:class="!turnstileOk ? 'opacity-50 cursor-not-allowed' : ''">
+                    <x-primary-button class="ml-4">
                         {{ __('Register') }}
                     </x-primary-button>
                 </div>
