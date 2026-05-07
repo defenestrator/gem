@@ -13,7 +13,8 @@ $FORGE_PHP composer install --no-interaction --prefer-dist --optimize-autoloader
 mkdir -p public/build
 curl -sf "https://gemx.sfo3.digitaloceanspaces.com/build/manifest.json" -o public/build/manifest.json
 
-# Cache config/routes/views
+# Clear stale caches then rebuild
+$FORGE_PHP artisan optimize:clear
 $FORGE_PHP artisan optimize
 
 # Database
