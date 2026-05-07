@@ -120,6 +120,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: Production
 
     steps:
       - uses: actions/checkout@v4
@@ -138,7 +139,7 @@ jobs:
 
       - name: Build assets for CDN
         env:
-          ASSET_URL: ${{ secrets.ASSET_URL }}
+          ASSET_URL: ${{ vars.ASSET_URL }}
         run: npm run build
 
       - name: Sync to DO Spaces
