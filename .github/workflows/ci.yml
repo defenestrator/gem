@@ -148,11 +148,15 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DO_SPACES_SECRET }}
           AWS_DEFAULT_REGION: sfo3
         run: |
-          aws s3 sync public/build/ s3://gemx/build/ \
+          aws s3 sync public/build/assets/ s3://gemx/build/assets/ \
             --endpoint-url=https://sfo3.digitaloceanspaces.com \
             --acl public-read \
             --cache-control "public, max-age=31536000, immutable" \
             --delete
+          aws s3 cp public/build/manifest.json s3://gemx/build/manifest.json \
+            --endpoint-url=https://sfo3.digitaloceanspaces.com \
+            --acl public-read \
+            --cache-control "no-cache, no-store, must-revalidate"
 
       - name: Trigger deploy
         env:
