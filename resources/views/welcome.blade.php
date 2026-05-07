@@ -72,7 +72,7 @@
                                 <img src="{{ $firstPhoto }}"
                                      alt="{{ $altText }}"
                                      width="800" height="800"
-                                     @if($isLcp) fetchpriority="high" @else loading="lazy" @endif
+                                     @if($isLcp) fetchpriority="high" @else loading="lazy" decoding="async" @endif
                                      class="w-full aspect-square object-cover">
                             @endif
                             <div class="p-4 flex flex-col flex-1">

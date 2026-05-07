@@ -20,6 +20,7 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
+        <link rel="preconnect" href="https://gemx.sfo3.digitaloceanspaces.com" crossorigin>
         <link rel="preload" href="https://fonts.bunny.net/css?family=montserrat:400,500,600|fauna-one:400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=montserrat:400,500,600|fauna-one:400&display=swap"></noscript>
 

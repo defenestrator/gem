@@ -1,6 +1,10 @@
 <x-app-layout>
     @push('meta')
     <meta name="description" content="Search the reptile species database. Explore over 12,000 species of lizards, snakes, geckos, turtles, tortoises, and more with photos and taxonomy.">
+    @php $firstThumb = $initial['results'][0]['thumbnail'] ?? null; @endphp
+    @if($firstThumb)
+    <link rel="preload" as="image" href="{{ $firstThumb }}" fetchpriority="high">
+    @endif
     @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -212,6 +216,7 @@
     </div>
 
     @push('scripts')
+    <script>window.__speciesInitial__ = @json($initial);</script>
     <script>
     document.addEventListener('alpine:init', () => {
         const RESULT_CACHE_PREFIX = 'species_rc_';
@@ -255,6 +260,21 @@
                 this.taxon    = sessionStorage.getItem('species_taxon') || '';
                 this.query    = sessionStorage.getItem('species_search_query') || '';
                 this.page     = parseInt(sessionStorage.getItem('species_page') || '1');
+
+                const isDefault = this.query === '' && this.taxon === '' && !this.hasMedia && this.page === 1;
+                if (isDefault && window.__speciesInitial__) {
+                    const d   = window.__speciesInitial__;
+                    const key = this.cacheKey('');
+                    const entry = { results: d.results, meta: d.meta };
+                    this.cache[key] = entry;
+                    rcSet(key, entry);
+                    this.results   = d.results;
+                    this.meta      = d.meta;
+                    this.lastQuery = '';
+                    this.searched  = true;
+                    return;
+                }
+
                 this.doSearch();
             },
 
