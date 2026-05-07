@@ -67,12 +67,23 @@ $getAnimals = function() {
         Route::post('/dashboard/animals/import', [AnimalImportController::class, 'upload'])->name('dashboard.animals.import.upload');
     });
 
-// Redirect /favicon.ico to CDN with long cache headers.
-// NOTE: nginx serves public/favicon.ico before PHP on Forge; to enable this redirect
-// in production, add to Forge nginx config:
-//   location = /favicon.ico { try_files $uri /index.php?$query_string; }
-Route::get('/favicon.ico', fn() => redirect('https://gemx.sfo3.digitaloceanspaces.com/assets/favicon.ico', 301)
-    ->header('Cache-Control', 'public, max-age=31536000, immutable'));
+// 301 redirects for all favicon/manifest paths → DO Spaces CDN.
+// Nginx serves public/ files before PHP — activate these routes by adding
+// scripts/nginx-favicons.conf to the Forge site nginx config (see that file).
+foreach ([
+    '/favicon.ico'                     => 'favicon.ico',
+    '/favicon.png'                     => 'favicon.png',
+    '/favicon-16x16.png'               => 'favicon-16x16.png',
+    '/favicon-32x32.png'               => 'favicon-32x32.png',
+    '/apple-touch-icon.png'            => 'apple-touch-icon.png',
+    '/apple-touch-icon-precomposed.png'=> 'apple-touch-icon.png',
+    '/site.webmanifest'                => 'site.webmanifest',
+    '/ms-favicon.png'                  => 'ms-favicon.png',
+] as $path => $asset) {
+    Route::get($path, fn() => redirect(
+        "https://gemx.sfo3.digitaloceanspaces.com/assets/{$asset}", 301
+    )->header('Cache-Control', 'public, max-age=31536000, immutable'));
+}
 
 Route::get('/', function (Request $request) use ($getAnimals) {
     $sort = $request->query('sort', 'recent');
