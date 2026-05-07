@@ -90,6 +90,30 @@ class SyncAnimals extends Command
 
         $this->call('animals:mirror-media');
 
+        // Rewrite Photo_Urls in animals.json with the DO Spaces URLs now in the DB,
+        // so the welcome and category pages stop serving MorphMarket/CloudFront images.
+        $this->info('Rewriting Photo_Urls in animals.json from mirrored DB media...');
+
+        $mediaBySlug = Animal::query()
+            ->with(['media' => fn ($q) => $q->select('id', 'mediable_id', 'mediable_type', 'url')])
+            ->get(['id', 'slug'])
+            ->mapWithKeys(fn ($a) => [
+                $a->slug => $a->media->pluck('url')->filter()->values()->all(),
+            ]);
+
+        $updated = 0;
+        foreach ($data as &$item) {
+            $slug = $item['Animal_Id*'] ?? null;
+            if ($slug && ! empty($mediaBySlug[$slug])) {
+                $item['Photo_Urls'] = implode(' ', $mediaBySlug[$slug]);
+                $updated++;
+            }
+        }
+        unset($item);
+
+        $disk->put('animals.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        $this->info("Rewrote Photo_Urls for {$updated} animals.");
+
         return self::SUCCESS;
     }
 

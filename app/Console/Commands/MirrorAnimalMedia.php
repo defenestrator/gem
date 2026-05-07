@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Animal;
 use App\Models\Media;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
@@ -11,8 +12,9 @@ use Illuminate\Support\Str;
 class MirrorAnimalMedia extends Command
 {
     protected $signature = 'animals:mirror-media
-        {--dry-run : Show what would be mirrored without writing anything}
-        {--force   : Re-mirror images already on DO Spaces}';
+        {--dry-run      : Show what would be mirrored without writing anything}
+        {--force        : Re-mirror images already on DO Spaces}
+        {--rewrite-json : Rewrite animals.json Photo_Urls from DB after mirroring}';
 
     protected $description = 'Download animal images from external CDN and re-host on DO Spaces';
 
@@ -88,6 +90,48 @@ class MirrorAnimalMedia extends Command
         $this->newLine();
         $this->info("Done. Mirrored: {$ok}" . ($fail ? ", failed: {$fail}" : '') . ($dryRun ? ' [dry-run]' : ''));
 
+        if ($this->option('rewrite-json') && ! $dryRun) {
+            $this->rewriteAnimalsJson();
+        }
+
         return $fail > 0 ? self::FAILURE : self::SUCCESS;
+    }
+
+    private function rewriteAnimalsJson(): void
+    {
+        $disk = Storage::disk('public');
+
+        if (! $disk->exists('animals.json')) {
+            $this->warn('animals.json not found — skipping Photo_Urls rewrite.');
+            return;
+        }
+
+        $data = json_decode($disk->get('animals.json'), true);
+        if (! is_array($data)) {
+            $this->warn('animals.json invalid JSON — skipping rewrite.');
+            return;
+        }
+
+        $this->info('Rewriting Photo_Urls in animals.json from mirrored DB media...');
+
+        $mediaBySlug = Animal::query()
+            ->with(['media' => fn ($q) => $q->select('id', 'mediable_id', 'mediable_type', 'url')])
+            ->get(['id', 'slug'])
+            ->mapWithKeys(fn ($a) => [
+                $a->slug => $a->media->pluck('url')->filter()->values()->all(),
+            ]);
+
+        $updated = 0;
+        foreach ($data as &$item) {
+            $slug = $item['Animal_Id*'] ?? null;
+            if ($slug && ! empty($mediaBySlug[$slug])) {
+                $item['Photo_Urls'] = implode(' ', $mediaBySlug[$slug]);
+                $updated++;
+            }
+        }
+        unset($item);
+
+        $disk->put('animals.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        $this->info("Rewrote Photo_Urls for {$updated} animals.");
     }
 }
