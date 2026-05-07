@@ -21,7 +21,7 @@ class SpeciesController extends Controller
         $initial  = Cache::remember($cacheKey, 3600, function () {
             $paginator = Species::query()
                 ->orderBy('species')
-                ->paginate(80, ['*'], 'page', 1);
+                ->paginate(96, ['*'], 'page', 1);
             $paginator->getCollection()->loadMissing('latestApprovedMedia');
             return $this->paginatedPayload($paginator);
         });
@@ -79,7 +79,7 @@ class SpeciesController extends Controller
         $taxonKey = array_key_exists($taxonKey, self::TAXON_PATTERNS) ? $taxonKey : '';
 
         $page    = max(1, (int) $request->input('page', 1));
-        $perPage = 80;
+        $perPage = 96;
 
         $cacheKey = 'species_search:' . md5(
             mb_strtolower($query)
@@ -174,7 +174,7 @@ class SpeciesController extends Controller
             'results' => $results,
             'meta'    => [
                 'total'        => count($results),
-                'per_page'     => 80,
+                'per_page'     => 96,
                 'current_page' => 1,
                 'last_page'    => 1,
             ],
