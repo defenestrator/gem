@@ -110,7 +110,13 @@ class ProcessSpeciesMedia extends Command
         [$localPath, $s3Key] = $this->resolve($media->url);
 
         if (! file_exists($localPath)) {
-            throw new \RuntimeException("Local file missing: {$localPath}");
+            // S3 object doesn't exist (orphaned media record) — delete it so
+            // species:fetch-images can create a fresh record with a real image.
+            if (! Storage::disk('s3')->exists($s3Key)) {
+                $media->delete();
+                throw new \RuntimeException("S3 object missing — orphaned media record {$media->id} deleted");
+            }
+            throw new \RuntimeException("Local file missing after sync: {$localPath}");
         }
 
         // Reject HTML error pages stored as images — FetchSpeciesImages may have persisted
