@@ -37,7 +37,7 @@
                             <span class="ml-2 text-lg sm:text-2xl text-gray-700 dark:text-gray-300 font-medium"><b class="font-bold">Laravel</b> Pulse</span>
                         </div>
                         <div class="flex items-center gap-3 sm:gap-6">
-                            <a href="{{ route('dashboard') }}" class="text-sm text-blue-400 hover:text-blue-200 font-medium cursor-pointer">
+                            <a href="{{ route('dashboard') }}" class="text-sm text-white hover:text-blue-200 font-medium cursor-pointer">
                                 &larr; Dashboard
                             </a>
                             <livewire:pulse.period-selector />
