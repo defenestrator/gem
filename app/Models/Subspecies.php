@@ -18,6 +18,11 @@ class Subspecies extends Model
         'subspecies',
         'author',
         'description',
+        'description_revisions',
+    ];
+
+    protected $casts = [
+        'description_revisions' => 'array',
     ];
 
     public function contentSubmissions()

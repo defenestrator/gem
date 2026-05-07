@@ -27,7 +27,23 @@ class DashboardContentSubmissionController extends Controller
     {
         abort_unless(auth()->user()->is_admin, 403);
 
-        $submission->submittable->update(['description' => $submission->proposed_value]);
+        $submittable = $submission->submittable;
+        $revisions   = $submittable->description_revisions ?? [];
+
+        $revisions[] = [
+            'value'              => $submission->proposed_value,
+            'submitted_by_id'    => $submission->user_id,
+            'submitted_by_name'  => $submission->user->name,
+            'approved_by_id'     => auth()->id(),
+            'approved_by_name'   => auth()->user()->name,
+            'submission_id'      => $submission->id,
+            'approved_at'        => now()->toISOString(),
+        ];
+
+        $submittable->update([
+            'description'           => $submission->proposed_value,
+            'description_revisions' => $revisions,
+        ]);
 
         $submission->update([
             'status'      => 'approved',

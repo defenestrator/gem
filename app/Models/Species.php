@@ -22,10 +22,12 @@ class Species extends Model
         'species_number',
         'changes',
         'description',
+        'description_revisions',
     ];
 
     protected $casts = [
-        'type_species' => SpeciesTypeCast::class,
+        'type_species'          => SpeciesTypeCast::class,
+        'description_revisions' => 'array',
     ];
 
     public function toSearchableArray(): array

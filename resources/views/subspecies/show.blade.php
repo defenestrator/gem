@@ -222,6 +222,41 @@
                 </div>
             @endif
 
+            {{-- Revision history --}}
+            @if (!empty($subspecies->description_revisions))
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <details>
+                        <summary class="cursor-pointer text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-orange-500 transition select-none">
+                            Revision History ({{ count($subspecies->description_revisions) }})
+                        </summary>
+                        <ol class="mt-4 space-y-4 list-none">
+                            @foreach (array_reverse($subspecies->description_revisions) as $i => $rev)
+                                @php $n = count($subspecies->description_revisions) - $i; @endphp
+                                <li class="border-l-2 {{ $i === 0 ? 'border-orange-400' : 'border-gray-200 dark:border-gray-700' }} pl-4">
+                                    <div class="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500 mb-1">
+                                        <span class="font-semibold {{ $i === 0 ? 'text-orange-500' : 'text-gray-500 dark:text-gray-400' }}">
+                                            Rev. {{ $n }}{{ $i === 0 ? ' (current)' : '' }}
+                                        </span>
+                                        <span>&mdash;</span>
+                                        <span>{{ \Carbon\Carbon::parse($rev['approved_at'])->format('M j, Y') }}</span>
+                                        <span>&mdash;</span>
+                                        <span>by {{ $rev['submitted_by_name'] }}</span>
+                                    </div>
+                                    <details class="text-sm text-gray-600 dark:text-gray-300">
+                                        <summary class="cursor-pointer text-xs text-gray-400 hover:text-orange-500 transition select-none">
+                                            {{ \Illuminate\Support\Str::limit(strip_tags($rev['value']), 100) }}
+                                        </summary>
+                                        <div class="mt-2 prose prose-sm dark:prose-invert max-w-none">
+                                            {!! \Illuminate\Support\Str::markdown(e($rev['value'])) !!}
+                                        </div>
+                                    </details>
+                                </li>
+                            @endforeach
+                        </ol>
+                    </details>
+                </div>
+            @endif
+
             {{-- Description submission --}}
             @auth
                 @unless ($isAdmin)
