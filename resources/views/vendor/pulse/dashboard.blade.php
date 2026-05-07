@@ -1,13 +1,4 @@
 <x-pulse>
-    <div class="mb-6 flex items-center justify-between">
-        <a href="{{ route('dashboard') }}" class="text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 font-semibold flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
-            Back to Dashboard
-        </a>
-    </div>
-
     <livewire:pulse.servers cols="full" />
 
     <livewire:pulse.usage cols="4" rows="2" />

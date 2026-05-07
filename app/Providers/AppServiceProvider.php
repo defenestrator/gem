@@ -14,5 +14,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Event::listen(SocialiteWasCalled::class, TwitchExtendSocialite::class);
+
+        // Allow overriding Pulse anonymous components (registered via anonymousComponentPath with prefix 'pulse')
+        view()->prependNamespace(md5('pulse'), resource_path('views/vendor/pulse/components'));
     }
 }
