@@ -90,4 +90,5 @@ Before planning migrations or new tables, read `database/schema/pgsql-schema.sql
 - Always update `README.md` changelog after completing a feature changeset
 - At the end of every functional changeset, after tests pass and README is updated, run: `git add . && git commit -m "{commit message}" && git push` — replace `{commit message}` with a concise, contextually correct message describing the changeset. - Do not credit Claude or Anthropic as co-authors. Remove the string "
 - `AnimalAvailability` enum must be used for animal state — do not store raw strings
+- Never create regressions in dev or production — when changing view+controller pairs, commit together; `ASSET_URL` is production-only, never set in local `.env`
 - Push to main like a boss
