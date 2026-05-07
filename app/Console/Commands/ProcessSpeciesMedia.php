@@ -35,7 +35,7 @@ class ProcessSpeciesMedia extends Command
         $skipOptimize = (bool) $this->option('skip-optimize');
         $batchSize    = max(1, (int) $this->option('batch'));
 
-        $this->localBase = storage_path('app/spaces');
+        $this->localBase = storage_path('app/public/spaces');
 
         if ($dryRun) {
             $this->warn('[DRY RUN] No files will be written.');
@@ -144,7 +144,7 @@ class ProcessSpeciesMedia extends Command
     /**
      * Derive local filesystem path and S3 key from a DO Spaces URL.
      * e.g. https://gemx.sfo3.digitaloceanspaces.com/species/75/foo.jpg
-     *   → [storage/app/spaces/species/75/foo.jpg, species/75/foo.jpg]
+     *   → [storage/app/public/spaces/species/75/foo.jpg, species/75/foo.jpg]
      */
     private function resolve(string $url): array
     {
@@ -155,7 +155,7 @@ class ProcessSpeciesMedia extends Command
 
     /**
      * Map an S3 key to its local thumbnail path (always .jpg).
-     * e.g. species/75/foo.png → storage/app/spaces/thumbs/species/75/foo.jpg
+     * e.g. species/75/foo.png → storage/app/public/spaces/thumbs/species/75/foo.jpg
      */
     private function thumbLocalPath(string $s3Key): string
     {
