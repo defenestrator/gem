@@ -59,4 +59,9 @@ return [
         'model' => env('ANTHROPIC_MODEL', 'claude-haiku-4-5-20251001'),
     ],
 
+    'digitalocean' => [
+        'token'           => env('DO_API_TOKEN'),
+        'cdn_endpoint_id' => env('DO_CDN_ENDPOINT_ID'),
+    ],
+
 ];
