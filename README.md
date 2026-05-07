@@ -79,6 +79,18 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-07 (performance: SSR species init + CDN preconnect)
+- Species search index: `SpeciesController::index()` pre-fetches page-1 results using same Redis cache key as `search()`; results injected as `window.__speciesInitial__`; Alpine `init()` consumes SSR data directly when in default state (no query/taxon/hasMedia/page=1), skipping the initial XHR entirely
+- Both layouts: `<link rel="preconnect" href="https://gemx.sfo3.digitaloceanspaces.com" crossorigin>` — browser opens TLS connection before first image request
+- welcome.blade.php: `decoding="async"` on all non-LCP lazy-loaded animal card images
+- Species thumbnails sized to 100×100px (up from 40×40px); `fetchpriority="high"` on first result row image; `loading="lazy"` bound per-row via Alpine `$index`
+- Axios removed from JS bundle (`bootstrap.js`); all XHR uses native `fetch()` — bundle 84KB → 45KB
+- CSS bundle: removed invalid `@tailwind forms;` directive and redundant compiled-views glob from tailwind.config.js — bundle 81KB → 71KB
+- Async CSS loading in production via `rel="preload" as="style" onload` swap with `<noscript>` fallback; inline critical `background-color` prevents FOUC in guest layout
+- welcome.blade.php: LCP image computed server-side, `<link rel="preload" as="image">` injected in `<head>`, first card image `fetchpriority="high"` (no `loading="lazy"`), rest lazy+decoding=async; `width="800" height="800"` on all card images (CLS)
+- Removed `x-transition` from Alpine spinner and clear button (prevented forced reflow on layout-property reads)
+- 301 redirects for all favicon/manifest paths via `routes/web.php` loop; `scripts/nginx-favicons.conf` added for Forge nginx config to pass favicon paths through to PHP
+
 #### 2026-05-07 (species media pipeline)
 - `media:process-species` command: syncs `species/` prefix from DO Spaces to `storage/app/spaces/`, generates 100×100 square JPEG thumbnails via Intervention/Image (Imagick driver), recompresses JPEG originals at Q85, syncs optimized originals and new `thumbs/species/` prefix back to DO Spaces, and updates `media.thumbnail_url` idempotently
 - `media.thumbnail_url` column added; `SpeciesController::format()` serves `thumbnail_url ?? url` so the species search index immediately uses 100px thumbnails once generated
