@@ -31,8 +31,7 @@
                     <form method="POST" action="{{ route('animals.inquiries.store', $animal) }}"
                           x-data="{ turnstileOk: false }"
                           @turnstile:verified.document="turnstileOk = true"
-                          @turnstile:expired.document="turnstileOk = false"
-                          @turnstile:error.document="turnstileOk = false">
+                          @submit.prevent="if (turnstileOk) $el.submit()">
                         @csrf
 
                         <div class="mb-4">

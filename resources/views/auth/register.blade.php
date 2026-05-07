@@ -10,8 +10,7 @@
             <form method="POST" action="{{ route('register') }}"
                   x-data="{ turnstileOk: false }"
                   @turnstile:verified.document="turnstileOk = true"
-                  @turnstile:expired.document="turnstileOk = false"
-                  @turnstile:error.document="turnstileOk = false">
+                  @submit.prevent="if (turnstileOk) $el.submit()">
                 @csrf
 
                 {{-- Honeypot: hidden from humans, filled by bots --}}
@@ -32,6 +31,11 @@
                     <x-input-label for="email" :value="__('Email')" />
                     <x-text-input id="email" class="block ml-1 mt-1 w-full p-2" type="email" name="email" :value="old('email')" required autocomplete="username" />
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                </div>
+
+                <!-- Turnstile — placed before password fields so Safari's password-save popup doesn't cover it -->
+                <div class="mt-4">
+                    <x-turnstile />
                 </div>
 
                 <!-- Password -->
@@ -58,11 +62,6 @@
                 </div>
 
                 {{-- <x-social-auth-buttons /> --}}
-
-                <!-- Turnstile -->
-                <div class="mt-4">
-                    <x-turnstile />
-                </div>
 
                 <div class="flex items-center justify-end mt-4">
                     <a class="underline text-sm text-gray-300 hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
