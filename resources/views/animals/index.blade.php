@@ -140,7 +140,7 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="mt-6">{{ $animals->links() }}</div>
+                <div class="mt-6 [&_nav_p]:mr-6">{{ $animals->links() }}</div>
             @else
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
                     <p class="text-gray-600 dark:text-gray-300">No animals found.</p>
