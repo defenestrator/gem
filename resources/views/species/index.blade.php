@@ -48,18 +48,18 @@
                         Clear
                     </button>
                 </div>
-                <div class="flex items-center gap-1.5 mt-1 overflow-x-auto pb-1">
-                    <label class="inline-flex items-center gap-1.5 cursor-pointer select-none text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">
+                <div class="flex flex-wrap gap-x-5 gap-y-2 mt-1">
+                    <label class="inline-flex items-center gap-2 cursor-pointer select-none text-sm text-gray-600 dark:text-gray-400">
                         <input type="checkbox" x-model="hasMedia" @change="doSearch(true)"
                                class="rounded border-gray-200 dark:border-gray-700 text-orange-500 focus:ring-orange-300">
                         Has photos
                     </label>
-                    <span class="text-gray-300 dark:text-gray-600 flex-shrink-0">|</span>
+                    <span class="text-gray-300 dark:text-gray-600 hidden sm:inline">|</span>
                     @foreach ([
                         'lizards'      => 'Lizards',
                         'snakes'       => 'Snakes',
                         'geckos'       => 'Geckos',
-                        'turtles'      => 'Turtles',
+                        'turtles'      => 'Turtles &amp; Tortoises',
                         'amphisbaenia' => 'Amphisbaenia',
                         'crocodilians' => 'Crocodilians',
                     ] as $key => $label)
@@ -68,7 +68,7 @@
                             :class="taxon === '{{ $key }}'
                                 ? 'bg-orange-500 text-white border-orange-500'
                                 : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-300'"
-                            class="px-2 py-0.5 text-xs rounded-full border transition select-none flex-shrink-0 whitespace-nowrap">
+                            class="px-3 py-1 text-sm rounded-full border transition select-none">
                         {!! $label !!}
                     </button>
                     @endforeach
@@ -105,7 +105,7 @@
                         <div class="px-6 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between gap-2 flex-wrap">
                             <button @click="goToPage(meta.current_page - 1)"
                                     :disabled="meta.current_page <= 1"
-                                    class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300
+                                    class="px-2 py-1 text-xs rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300
                                            hover:bg-orange-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition">
                                 &larr; Prev
                             </button>
@@ -117,7 +117,7 @@
                                                 ? 'bg-orange-500 text-white border-orange-500'
                                                 : 'text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-orange-50 dark:hover:bg-gray-700'"
                                             x-show="p === 1 || p === meta.last_page || Math.abs(p - meta.current_page) <= 2"
-                                            class="px-3 py-1.5 text-sm rounded-lg border transition"
+                                            class="px-2 py-1 text-xs rounded-lg border transition"
                                             x-text="p">
                                     </button>
                                 </template>
@@ -125,7 +125,7 @@
 
                             <button @click="goToPage(meta.current_page + 1)"
                                     :disabled="meta.current_page >= meta.last_page"
-                                    class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300
+                                    class="px-2 py-1 text-xs rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300
                                            hover:bg-orange-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition">
                                 Next &rarr;
                             </button>
@@ -182,7 +182,7 @@
                         <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between gap-2 flex-wrap">
                             <button @click="goToPage(meta.current_page - 1)"
                                     :disabled="meta.current_page <= 1"
-                                    class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300
+                                    class="px-2 py-1 text-xs rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300
                                            hover:bg-orange-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition">
                                 &larr; Prev
                             </button>
@@ -194,7 +194,7 @@
                                                 ? 'bg-orange-500 text-white border-orange-500'
                                                 : 'text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-orange-50 dark:hover:bg-gray-700'"
                                             x-show="p === 1 || p === meta.last_page || Math.abs(p - meta.current_page) <= 2"
-                                            class="px-3 py-1.5 text-sm rounded-lg border transition"
+                                            class="px-2 py-1 text-xs rounded-lg border transition"
                                             x-text="p">
                                     </button>
                                 </template>
@@ -202,7 +202,7 @@
 
                             <button @click="goToPage(meta.current_page + 1)"
                                     :disabled="meta.current_page >= meta.last_page"
-                                    class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300
+                                    class="px-2 py-1 text-xs rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300
                                            hover:bg-orange-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition">
                                 Next &rarr;
                             </button>
