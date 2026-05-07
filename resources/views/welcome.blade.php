@@ -18,8 +18,8 @@
     @endpush
     <div class="w-full min-h-screen flex justify-center items-center pb-12">
         <div id="main-tile" class="text-left min-h-[70vh] bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 p-6 rounded-xl shadow-l2xl shadow-inner pb-12">
-            <h1 class="my-2 text-3xl text-orange-500 font-serif">The Wild Type</h1>
-            <h2 class="my-2 text-l" >Captive-bred Pythons and Colubrids by <span class="text-orange-400">Gem Reptiles</span></h2>
+            <h1 class="my-2 text-3xl text-green-500 font-serif">The Wild Type</h1>
+            <h2 class="my-2 text-l" >Captive-bred Pythons and Colubrids by <span class="font-medium text-green-400 font-serif">Gem Reptiles</span></h2>
             {{-- <h5 class="my-4">
                 <a href="https://www.morphmarket.com/stores/gem" title="Gem Reptiles MorphMarket Store">
                     <button class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
@@ -32,23 +32,23 @@
             </div>
             
             <div class="mt-6 flex flex-wrap gap-1 items-center">
-                <span class="text-gray-600 dark:text-gray-300 font-semibold">Sort by:</span>
-                <a href="{{ route('welcome', ['sort' => 'recent']) }}" title="Sort by most recently updated" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'recent' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
+                
+                <a href="{{ route('welcome', ['sort' => 'recent']) }}" title="Sort by most recently updated" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'recent' ? 'bg-gray-600' : 'bg-gray-400 dark:bg-gray-600 hover:bg-gray-500' }} text-white text-sm font-medium">
                     <span class="text-xs">Updated</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'price-low']) }}" title="Sort by lowest price first" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'price-low' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
+                <a href="{{ route('welcome', ['sort' => 'price-low']) }}" title="Sort by lowest price first" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'price-low' ? 'bg-gray-600' : 'bg-gray-400 dark:bg-gray-600 hover:bg-gray-500' }} text-white text-sm font-medium">
                     <span class="text-xs">Lowest Price</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'price-high']) }}" title="Sort by highest price first" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'price-high' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
+                <a href="{{ route('welcome', ['sort' => 'price-high']) }}" title="Sort by highest price first" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'price-high' ? 'bg-gray-600' : 'bg-gray-400 dark:bg-gray-600 hover:bg-gray-500' }} text-white text-sm font-medium">
                     <span class="text-xs">Highest Price</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'date-new']) }}" title="Sort by newest hatch date first" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'date-new' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
+                <a href="{{ route('welcome', ['sort' => 'date-new']) }}" title="Sort by newest hatch date first" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'date-new' ? 'bg-gray-600' : 'bg-gray-400 dark:bg-gray-600 hover:bg-gray-500' }} text-white text-sm font-medium">
                     <span class="text-xs">Newest Hatched</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'category']) }}" title="Sort by category A to Z" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'category' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
+                <a href="{{ route('welcome', ['sort' => 'category']) }}" title="Sort by category A to Z" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'category' ? 'bg-gray-600' : 'bg-gray-400 dark:bg-gray-600 hover:bg-gray-500' }} text-white text-sm font-medium">
                     <span class="text-xs">Category (Asc)</span>
                 </a>
-                <a href="{{ route('welcome', ['sort' => 'category-desc']) }}" title="Sort by category Z to A" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'category-desc' ? 'bg-orange-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white text-sm font-medium">
+                <a href="{{ route('welcome', ['sort' => 'category-desc']) }}" title="Sort by category Z to A" class="px-2 py-0.5 rounded-lg {{ $currentSort === 'category-desc' ? 'bg-gray-600' : 'bg-gray-400 dark:bg-gray-600 hover:bg-gray-500' }} text-white text-sm font-medium">
                     <span class="text-xs">Category (Desc)</span>
                 </a>
             </div>
