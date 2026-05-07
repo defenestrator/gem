@@ -38,11 +38,6 @@ class WarmCache extends Command
 
         $this->info("Warming cache against {$base}");
         $this->newLine();
-
-        // ── 1. Config / route / view cache ───────────────────────────────────
-        $this->call('optimize');
-        $this->newLine();
-
         // ── 2. Species search Redis cache ────────────────────────────────────
         $this->info('Species search cache:');
         $searchUrl = $base . '/species/search';
