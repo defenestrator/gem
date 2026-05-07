@@ -114,16 +114,14 @@ class ProcessSpeciesMedia extends Command
         }
 
         // Reject HTML error pages stored as images — FetchSpeciesImages may have persisted
-        // a redirect/error response body to S3. Delete the bad object and null the URL so
-        // the record can be re-fetched by species:fetch-images.
+        // a redirect/error response body to S3. Delete the bad S3 object and the media
+        // record so species:fetch-images can create a fresh one.
         $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($localPath);
         if (! str_starts_with($mime ?? '', 'image/')) {
             @unlink($localPath);
             Storage::disk('s3')->delete($s3Key);
-            $media->url = null;
-            $media->thumbnail_url = null;
-            $media->save();
-            throw new \RuntimeException("Non-image content ({$mime}) — removed from S3, url cleared for re-fetch");
+            $media->delete();
+            throw new \RuntimeException("Non-image content ({$mime}) — S3 object and media record deleted for re-fetch");
         }
 
         // Thumbnail path is keyed by current mediable_id, not the historical upload path.
