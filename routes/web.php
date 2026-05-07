@@ -237,7 +237,7 @@ if (config('features.easyship')) {
 
 // Species Routes
 Route::get('/species', [SpeciesController::class, 'index'])->name('species.index');
-Route::get('/species/search', [SpeciesController::class, 'search'])->name('species.search');
+Route::get('/species/search', [SpeciesController::class, 'search'])->name('species.search')->middleware('cache.headers:public;max_age=300;s_maxage=300;etag');
 Route::get('/species/{species}', [SpeciesController::class, 'show'])->name('species.show');
 Route::post('/species/{species}/media', [SpeciesController::class, 'storeMedia'])->name('species.media.store')->middleware('auth');
 Route::post('/species/{species}/submissions', [ContentSubmissionController::class, 'storeForSpecies'])->name('species.submissions.store')->middleware('auth');
