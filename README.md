@@ -79,6 +79,16 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-07
+- Cloudflare Turnstile rewritten: widget now uses `data-execution="execute"` + `data-appearance="interaction-only"` — challenge runs on form submit (via `submitWithTurnstile()`), not on page load; eliminates Safari password-save dialog race condition that was invalidating tokens
+- Turnstile component owns the `cf-turnstile-response` hidden input (`data-response-field="false"`); widget resets can no longer clear the token
+- `UserSeeder`: 32 verified + 1 unverified non-admin users via Faker `safeEmail`
+- CI `assets` job: declare `environment: Production` to unlock environment secrets/vars; use `vars.ASSET_URL` (not `secrets`)
+- Forge deploy: fetch `manifest.json` from DO Spaces CDN via `curl` (public-read, no-cache headers); `optimize:clear` before `optimize` to nuke stale view cache
+- Frontend assets build and CDN sync moved to CI `assets` job (runs after tests pass on main); Forge no longer builds JS
+- `manifest.json` synced with `no-cache` headers separately from hashed assets (`immutable`); deploy hook fires only after sync completes
+- Vite `base` only applied in `production` mode; stale `public/hot` file deleted
+
 #### 2026-05-06
 - "Back to Dashboard" link moved into Pulse header via anonymous component override (`resources/views/vendor/pulse/components/pulse.blade.php`); registered via `prependNamespace` in `AppServiceProvider` to override Pulse's `anonymousComponentPath`
 - Vite config fixed: `base` (CDN asset URL) now only applied in `production` mode; dev mode no longer pollutes `public/hot` with CDN path, preventing stale hot file asset routing errors
