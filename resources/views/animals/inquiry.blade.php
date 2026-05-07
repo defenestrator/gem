@@ -28,7 +28,11 @@
                         </div>
                     </div>
 
-                    <form method="POST" action="{{ route('animals.inquiries.store', $animal) }}">
+                    <form method="POST" action="{{ route('animals.inquiries.store', $animal) }}"
+                          x-data="{ turnstileOk: false }"
+                          @turnstile:verified.document="turnstileOk = true"
+                          @turnstile:expired.document="turnstileOk = false"
+                          @turnstile:error.document="turnstileOk = false">
                         @csrf
 
                         <div class="mb-4">
@@ -81,7 +85,9 @@
 
                         <div class="flex gap-4 items-center mt-6">
                             <button type="submit"
-                                class="bg-orange-500 text-white py-2 px-6 rounded-lg hover:bg-orange-700 font-semibold">
+                                x-bind:disabled="!turnstileOk"
+                                x-bind:class="!turnstileOk ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-700'"
+                                class="bg-orange-500 text-white py-2 px-6 rounded-lg font-semibold transition-opacity">
                                 Send Inquiry
                             </button>
                             <a href="{{ route('animals.show', $animal) }}"

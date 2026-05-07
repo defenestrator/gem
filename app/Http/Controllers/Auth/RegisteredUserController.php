@@ -18,9 +18,7 @@ class RegisteredUserController extends Controller
 {
     public function create(): View
     {
-        return view('auth.register', [
-            'turnstileSiteKey' => config('services.turnstile.site'),
-        ]);
+        return view('auth.register');
     }
 
     public function store(Request $request): RedirectResponse

@@ -7,7 +7,11 @@
 
     <main class="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="bg-gray-800 text-gray-200 rounded-lg shadow-lg mx-auto max-w-lg p-8 space-y-6">
-            <form method="POST" action="{{ route('register') }}">
+            <form method="POST" action="{{ route('register') }}"
+                  x-data="{ turnstileOk: false }"
+                  @turnstile:verified.document="turnstileOk = true"
+                  @turnstile:expired.document="turnstileOk = false"
+                  @turnstile:error.document="turnstileOk = false">
                 @csrf
 
                 {{-- Honeypot: hidden from humans, filled by bots --}}
@@ -57,8 +61,7 @@
 
                 <!-- Turnstile -->
                 <div class="mt-4">
-                    <div class="cf-turnstile" data-sitekey="{{ $turnstileSiteKey }}"></div>
-                    <x-input-error :messages="$errors->get('cf-turnstile-response')" class="mt-2" />
+                    <x-turnstile />
                 </div>
 
                 <div class="flex items-center justify-end mt-4">
@@ -66,15 +69,13 @@
                         {{ __('Already registered?') }}
                     </a>
 
-                    <x-primary-button class="ml-4">
+                    <x-primary-button class="ml-4"
+                        x-bind:disabled="!turnstileOk"
+                        x-bind:class="!turnstileOk ? 'opacity-50 cursor-not-allowed' : ''">
                         {{ __('Register') }}
                     </x-primary-button>
                 </div>
             </form>
         </div>
     </main>
-
-    @push('scripts')
-        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-    @endpush
 </x-guest-layout>
