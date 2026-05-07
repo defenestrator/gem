@@ -77,6 +77,12 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-06
+- "Back to Dashboard" link moved into Pulse header via anonymous component override (`resources/views/vendor/pulse/components/pulse.blade.php`); registered via `prependNamespace` in `AppServiceProvider` to override Pulse's `anonymousComponentPath`
+- Vite config fixed: `base` (CDN asset URL) now only applied in `production` mode; dev mode no longer pollutes `public/hot` with CDN path, preventing stale hot file asset routing errors
+- Nav renamed "Photos" → "Media" (admin-only nav link)
+- Animal slug added to all inquiry email subjects (`AnimalInquiryMail`, `InquiryConfirmationMail`, `InquiryAdminNotificationMail`)
+
 #### 2026-05-06 (species-admin)
 - Admin can edit all fields on species (`species`, `common_name`, `author`, `higher_taxa`, `species_number`, `changes`, `description`) via `dashboard/species/{id}/edit`; same for subspecies (`genus`, `species`, `subspecies`, `author`, `description`) via `dashboard/subspecies/{id}/edit`
 - Admin can detach photos from species/subspecies (hard-deletes DB row, file stays on S3) via hover-reveal Detach button on show pages and edit pages
