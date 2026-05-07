@@ -23,7 +23,7 @@ class Kernel extends ConsoleKernel
                 ->everyMinute()
                 ->withoutOverlapping(10)
                 ->runInBackground();
-            $schedule->command('queue:work redis --queue=default --tries=3 --timeout=300 --stop-when-empty')
+            $schedule->command('queue:work redis --queue=default --tries=3 --timeout=3600 --stop-when-empty')
                 ->everyMinute()
                 ->withoutOverlapping(10)
                 ->runInBackground();
