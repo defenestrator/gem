@@ -27,7 +27,7 @@
                     </x-nav-link>
                     <x-nav-link :href="route('dashboard.media.index')" :active="request()->routeIs('dashboard.media.*')">
                         <span class="relative inline-flex items-center gap-1">
-                            {{ __('Photos') }}
+                            {{ __('Media') }}
                             @php $pendingPhotoCount = \App\Models\Media::where('moderation_status', 'pending')->count(); @endphp
                             @if($pendingPhotoCount)
                                 <span class="bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full leading-none">{{ $pendingPhotoCount }}</span>
@@ -118,7 +118,7 @@
                 @endif
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('dashboard.media.index')" :active="request()->routeIs('dashboard.media.*')">
-                {{ __('Photos') }}
+                {{ __('Media') }}
                 @php $pendingPhotoCount ??= \App\Models\Media::where('moderation_status', 'pending')->count(); @endphp
                 @if($pendingPhotoCount)
                     <span class="ml-1 bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{{ $pendingPhotoCount }}</span>
