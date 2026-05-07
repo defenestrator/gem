@@ -1,5 +1,7 @@
 [![Laravel Forge Site Deployment Status](https://img.shields.io/endpoint?url=https%3A%2F%2Fforge.laravel.com%2Fsite-badges%2Fd4a76f09-5d07-425e-a0f9-dda77044c23e&style=plastic)](https://forge.laravel.com/jeremy-anderson-okr/bright-viper/2088781)
 
+[![CI](https://github.com/defenestrator/gem/actions/workflows/ci.yml/badge.svg)](https://github.com/defenestrator/gem/actions/workflows/ci.yml)
+
 ## About gemreptiles.com v3
 
 We are a boutique hobbyist reptile breeding operation owned and operated by the love of my life, Becky and myself. I do all the web/business development, some of the husbandry and all of the marketing. Becky does most of the husbandry, even though I have the most experience with reptiles, we have more than 60 years of combined experience keeping and breeding exotics.
