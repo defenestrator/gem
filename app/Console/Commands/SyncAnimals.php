@@ -88,6 +88,8 @@ class SyncAnimals extends Command
 
         $this->info("Synced {$synced} animals.");
 
+        $this->call('animals:mirror-media');
+
         return self::SUCCESS;
     }
 
