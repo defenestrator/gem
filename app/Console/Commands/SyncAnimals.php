@@ -90,22 +90,27 @@ class SyncAnimals extends Command
 
         $this->call('animals:mirror-media');
 
-        // Rewrite Photo_Urls in animals.json with the DO Spaces URLs now in the DB,
-        // so the welcome and category pages stop serving MorphMarket/CloudFront images.
-        $this->info('Rewriting Photo_Urls in animals.json from mirrored DB media...');
+        $this->call('media:process-animals');
+
+        // Rewrite Photo_Urls and Thumbnail_Url in animals.json from mirrored+processed DB media.
+        $this->info('Rewriting Photo_Urls and Thumbnail_Url in animals.json from DB media...');
 
         $mediaBySlug = Animal::query()
-            ->with(['media' => fn ($q) => $q->select('id', 'mediable_id', 'mediable_type', 'url')])
+            ->with(['media' => fn ($q) => $q->select('id', 'mediable_id', 'mediable_type', 'url', 'thumbnail_url')])
             ->get(['id', 'slug'])
             ->mapWithKeys(fn ($a) => [
-                $a->slug => $a->media->pluck('url')->filter()->values()->all(),
+                $a->slug => [
+                    'urls'      => $a->media->pluck('url')->filter()->values()->all(),
+                    'thumbnail' => $a->media->first()?->thumbnail_url,
+                ],
             ]);
 
         $updated = 0;
         foreach ($data as &$item) {
             $slug = $item['Animal_Id*'] ?? null;
-            if ($slug && ! empty($mediaBySlug[$slug])) {
-                $item['Photo_Urls'] = implode(' ', $mediaBySlug[$slug]);
+            if ($slug && ! empty($mediaBySlug[$slug]['urls'])) {
+                $item['Photo_Urls']    = implode(' ', $mediaBySlug[$slug]['urls']);
+                $item['Thumbnail_Url'] = $mediaBySlug[$slug]['thumbnail'] ?? null;
                 $updated++;
             }
         }

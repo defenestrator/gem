@@ -64,12 +64,13 @@
                                     $firstPhoto = $photos[0];
                                     $isLcp = ($cardIndex === 0);
                                     $cardIndex++;
+                                    $imgSrc = $isLcp ? $firstPhoto : ($animal['Thumbnail_Url'] ?? $firstPhoto);
                                     $altText = $animal['Title*'] . ' — ' . $animal['Category*']
                                         . (!empty($animal['Sex']) ? ', ' . $animal['Sex'] : '')
                                         . (!empty($animal['Traits']) ? ' (' . $animal['Traits'] . ')' : '')
                                         . ', captive-bred by Gem Reptiles';
                                 @endphp
-                                <img src="{{ $firstPhoto }}"
+                                <img src="{{ $imgSrc }}"
                                      alt="{{ $altText }}"
                                      width="800" height="800"
                                      @if($isLcp) fetchpriority="high" @else loading="lazy" decoding="async" @endif

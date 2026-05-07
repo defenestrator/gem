@@ -91,6 +91,12 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 - Removed `x-transition` from Alpine spinner and clear button (prevented forced reflow on layout-property reads)
 - 301 redirects for all favicon/manifest paths via `routes/web.php` loop; `scripts/nginx-favicons.conf` added for Forge nginx config to pass favicon paths through to PHP
 
+#### 2026-05-07 (animal media pipeline)
+- `media:process-animals` command: syncs `animals/` prefix from DO Spaces, generates 400×400 square JPEG thumbnails via Intervention/Image, recompresses originals at Q85, syncs optimized originals and `thumbs/animals/` back to DO Spaces, updates `media.thumbnail_url` per record
+- `animals:sync` now calls `media:process-animals` after `animals:mirror-media`; JSON rewrite adds `Thumbnail_Url` field (first media record's thumbnail) alongside existing `Photo_Urls`
+- `welcome.blade.php`: non-LCP animal cards use `Thumbnail_Url ?? Photo_Urls[0]`; LCP card always uses full-size original
+- `animals/index.blade.php`: card `img src` uses `thumbnail_url ?? url`; LCP preload hint uses thumbnail
+
 #### 2026-05-07 (species media pipeline)
 - `media:process-species` command: syncs `species/` prefix from DO Spaces to `storage/app/spaces/`, generates 100×100 square JPEG thumbnails via Intervention/Image (Imagick driver), recompresses JPEG originals at Q85, syncs optimized originals and new `thumbs/species/` prefix back to DO Spaces, and updates `media.thumbnail_url` idempotently
 - `media.thumbnail_url` column added; `SpeciesController::format()` serves `thumbnail_url ?? url` so the species search index immediately uses 100px thumbnails once generated

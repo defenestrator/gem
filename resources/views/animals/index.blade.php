@@ -3,7 +3,7 @@
     <meta name="description" content="Browse captive-bred reptiles for sale at Gem Reptiles. Filter by availability, species, and category.">
     @php $lcpThumb = $animals->first()?->media->first(); @endphp
     @if($lcpThumb)
-    <link rel="preload" as="image" href="{{ $lcpThumb->url }}" fetchpriority="high">
+    <link rel="preload" as="image" href="{{ $lcpThumb->thumbnail_url ?? $lcpThumb->url }}" fetchpriority="high">
     @endif
     @endpush
     <x-slot name="header">
@@ -70,7 +70,7 @@
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition flex flex-col">
                             <a href="{{ route('animals.show', $animal) }}" class="relative block">
                                 @if ($thumb)
-                                    <img src="{{ $thumb->url }}" alt="{{ $animal->pet_name }}"
+                                    <img src="{{ $thumb->thumbnail_url ?? $thumb->url }}" alt="{{ $animal->pet_name }}"
                                         @if($loop->first) fetchpriority="high" @else loading="lazy" @endif
                                         class="w-full aspect-square object-cover">
                                 @else
