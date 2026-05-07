@@ -77,6 +77,11 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-06
+- `species:import-checklist` command imports data from the Reptile Database XLSX checklist: 1,288 new species, 219 new subspecies, 9 taxonomy change notes, 53 `type_species` flag corrections; joins on `sp_id`/`species_number`; `--dry-run` and `--task` options (species|changes|type_species|subspecies|all)
+- Species index back button now restores previous page number via `species_page` sessionStorage key
+- Deploy hook: CI triggers POST to `DEPLOY_HOOK` GitHub Secret after tests pass on main
+
 #### 2026-05-06 (feature/content-updates)
 - Species biography generation: `species:generate-bios` queues `GenerateSpeciesBiographyJob` per record; sources Wikipedia, iNaturalist, GBIF; outputs structured Markdown; skips existing bios unless `--force`; `--limit`, `--model`, `--id`, `--dry-run` options
 - `species:work-bios` queue worker command for the `species-bios` queue
