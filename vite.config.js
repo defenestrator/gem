@@ -4,7 +4,7 @@ import basicSsl from '@vitejs/plugin-basic-ssl'
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
-    const assetBase = env.ASSET_URL ? `${env.ASSET_URL}/build/` : undefined;
+    const assetBase = mode === 'production' && env.ASSET_URL ? `${env.ASSET_URL}/build/` : undefined;
 
     return {
         base: assetBase,
