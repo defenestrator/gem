@@ -26,6 +26,31 @@ class WarmCache extends Command
         'crocodilians',
     ];
 
+    private const WELCOME_SORTS = [
+        'recent',
+        'price-low',
+        'price-high',
+        'date-new',
+        'category',
+        'category-desc',
+    ];
+
+    private const ANIMAL_SORTS = [
+        'recent',
+        'name-asc',
+        'name-desc',
+        'oldest',
+    ];
+
+    private const ANIMAL_AVAILABILITIES = [
+        'for_sale',
+        'on_hold',
+        'holdback',
+        'breeder',
+        'sold',
+        'not_for_sale',
+    ];
+
     // Direct DO Spaces origin — what is stored in media.url
     private const SPACES_ORIGIN = 'https://gemx.sfo3.digitaloceanspaces.com/';
 
@@ -38,7 +63,25 @@ class WarmCache extends Command
 
         $this->info("Warming cache against {$base}");
         $this->newLine();
-        // ── 2. Species search Redis cache ────────────────────────────────────
+
+        // ── 1. Welcome page sort variants ────────────────────────────────────
+        $this->info('Welcome page cache:');
+        foreach (self::WELCOME_SORTS as $sort) {
+            $this->warmHtml($base . '/', ['sort' => $sort], "sort={$sort}");
+        }
+        $this->newLine();
+
+        // ── 2. Animals page sort + availability variants ──────────────────────
+        $this->info('Animals page cache:');
+        foreach (self::ANIMAL_SORTS as $sort) {
+            $this->warmHtml($base . '/animals', ['sort' => $sort], "sort={$sort}");
+        }
+        foreach (self::ANIMAL_AVAILABILITIES as $avail) {
+            $this->warmHtml($base . '/animals', ['availability' => $avail], "availability={$avail}");
+        }
+        $this->newLine();
+
+        // ── 3. Species search Redis cache ────────────────────────────────────
         $this->info('Species search cache:');
         $searchUrl = $base . '/species/search';
 
@@ -143,6 +186,20 @@ class WarmCache extends Command
     }
 
     // ── App route warming ────────────────────────────────────────────────────
+
+    private function warmHtml(string $url, array $params, string $label): void
+    {
+        try {
+            $res = Http::timeout(30)->withoutVerifying()->get($url, $params);
+            if ($res->successful()) {
+                $this->line("  <info>✓</info> {$label} — HTTP {$res->status()}");
+            } else {
+                $this->warn("  ✗ {$label} — HTTP {$res->status()}");
+            }
+        } catch (\Throwable $e) {
+            $this->warn("  ✗ {$label} — {$e->getMessage()}");
+        }
+    }
 
     private function warmRoute(string $url, array $params, string $label): void
     {
