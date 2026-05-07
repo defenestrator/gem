@@ -15,7 +15,18 @@ class SpeciesController extends Controller
 {
     public function index(): View
     {
-        return view('species.index');
+        // Pre-fetch page-1 results so the view can skip the initial XHR and preload
+        // the first thumbnail from the server. Reuses the same cache key as search().
+        $cacheKey = 'species_search:' . md5(':p1');
+        $initial  = Cache::remember($cacheKey, 3600, function () {
+            $paginator = Species::query()
+                ->orderBy('species')
+                ->paginate(80, ['*'], 'page', 1);
+            $paginator->getCollection()->loadMissing('latestApprovedMedia');
+            return $this->paginatedPayload($paginator);
+        });
+
+        return view('species.index', compact('initial'));
     }
 
     public function show(Species $species): View
