@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SyncAnimalsJob;
 use App\Models\Animal;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
 class AnimalImportController extends Controller
@@ -31,8 +31,8 @@ class AnimalImportController extends Controller
 
         Storage::disk('public')->put('animals.json', $json);
 
-        Artisan::call('animals:sync');
+        SyncAnimalsJob::dispatch();
 
-        return redirect()->route('dashboard')->with('import_success', 'Animals synced successfully.');
+        return redirect()->route('dashboard')->with('import_success', 'Import queued — animals will sync in the background.');
     }
 }
