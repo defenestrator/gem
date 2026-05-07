@@ -246,7 +246,18 @@ class FetchSpeciesImages extends Command
                 continue;
             }
 
-            $ext  = strtolower(pathinfo(parse_url($imageData['download_url'], PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg');
+            // Reject HTML error pages / redirects stored as image bytes
+            $actualMime = (new \finfo(FILEINFO_MIME_TYPE))->buffer($bytes);
+            if (! str_starts_with($actualMime ?? '', 'image/')) {
+                $this->warn("    Non-image response ({$actualMime}): {$imageData['download_url']}");
+                Log::warning("fetch-images: non-image content for {$name}", ['url' => $imageData['download_url'], 'mime' => $actualMime]);
+                $this->failed++;
+                continue;
+            }
+
+            // Prefer the MIME-detected extension over the URL path extension
+            $mimeExtMap = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/gif' => 'gif', 'image/webp' => 'webp'];
+            $ext  = $mimeExtMap[$actualMime] ?? strtolower(pathinfo(parse_url($imageData['download_url'], PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg');
             $path = "{$type}/{$record->id}/" . Str::slug($name) . "-{$index}.{$ext}";
 
             try {

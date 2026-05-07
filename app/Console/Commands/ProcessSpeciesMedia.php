@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Media;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
 class ProcessSpeciesMedia extends Command
@@ -110,6 +111,19 @@ class ProcessSpeciesMedia extends Command
 
         if (! file_exists($localPath)) {
             throw new \RuntimeException("Local file missing: {$localPath}");
+        }
+
+        // Reject HTML error pages stored as images — FetchSpeciesImages may have persisted
+        // a redirect/error response body to S3. Delete the bad object and null the URL so
+        // the record can be re-fetched by species:fetch-images.
+        $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($localPath);
+        if (! str_starts_with($mime ?? '', 'image/')) {
+            @unlink($localPath);
+            Storage::disk('s3')->delete($s3Key);
+            $media->url = null;
+            $media->thumbnail_url = null;
+            $media->save();
+            throw new \RuntimeException("Non-image content ({$mime}) — removed from S3, url cleared for re-fetch");
         }
 
         // Thumbnail path is keyed by current mediable_id, not the historical upload path.
