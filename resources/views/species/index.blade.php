@@ -48,18 +48,18 @@
                         Clear
                     </button>
                 </div>
-                <div class="flex flex-wrap gap-x-5 gap-y-2 mt-1">
-                    <label class="inline-flex items-center gap-2 cursor-pointer select-none text-sm text-gray-600 dark:text-gray-400">
+                <div class="flex items-center gap-1.5 mt-1 overflow-x-auto pb-1">
+                    <label class="inline-flex items-center gap-1.5 cursor-pointer select-none text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">
                         <input type="checkbox" x-model="hasMedia" @change="doSearch(true)"
                                class="rounded border-gray-200 dark:border-gray-700 text-orange-500 focus:ring-orange-300">
                         Has photos
                     </label>
-                    <span class="text-gray-300 dark:text-gray-600 hidden sm:inline">|</span>
+                    <span class="text-gray-300 dark:text-gray-600 flex-shrink-0">|</span>
                     @foreach ([
                         'lizards'      => 'Lizards',
                         'snakes'       => 'Snakes',
                         'geckos'       => 'Geckos',
-                        'turtles'      => 'Turtles &amp; Tortoises',
+                        'turtles'      => 'Turtles',
                         'amphisbaenia' => 'Amphisbaenia',
                         'crocodilians' => 'Crocodilians',
                     ] as $key => $label)
@@ -68,7 +68,7 @@
                             :class="taxon === '{{ $key }}'
                                 ? 'bg-orange-500 text-white border-orange-500'
                                 : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-300'"
-                            class="px-3 py-1 text-sm rounded-full border transition select-none">
+                            class="px-2 py-0.5 text-xs rounded-full border transition select-none flex-shrink-0 whitespace-nowrap">
                         {!! $label !!}
                     </button>
                     @endforeach
