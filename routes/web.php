@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\SupportTicketController;
 use App\Models\Animal;
 use App\Http\Controllers\ContentSubmissionController;
 use App\Http\Controllers\DashboardContentSubmissionController;
@@ -318,6 +319,10 @@ Route::middleware('auth')->group(function () {
 
     });
 });
+
+// Support
+Route::get('/support', [SupportTicketController::class, 'create'])->name('support.create');
+Route::post('/support', [SupportTicketController::class, 'store'])->name('support.store');
 
 // Legal
 Route::get('/privacy', fn () => view('legal.privacy'))->name('legal.privacy');

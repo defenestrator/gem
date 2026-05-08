@@ -26,6 +26,9 @@
                     <li>
                         <a href="{{ route('legal.terms') }}" class="hover:text-white transition-colors">Terms of Service</a>
                     </li>
+                    <li>
+                        <a href="{{ route('support.create') }}" class="hover:text-white transition-colors">Support</a>
+                    </li>
                 </ul>
             </div>
 
