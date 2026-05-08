@@ -79,6 +79,10 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-08 (support ticket: fix email verification flow)
+- New support ticket users now also receive a password reset link so they can log in before clicking the verification link
+- Without a known password, users had no path to authenticate and complete email verification
+
 #### 2026-05-08 (rebrand Seller/Vendor → Social Media / Profiles)
 - Routes `/sellers` → `/profiles`, names `sellers.index/show` → `profiles.index/show`
 - Nav label "Sellers" → "Profiles"

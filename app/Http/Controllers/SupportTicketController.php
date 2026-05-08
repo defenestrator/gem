@@ -9,6 +9,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -38,6 +39,7 @@ class SupportTicketController extends Controller
                 'password' => Str::password(32),
             ]);
             event(new Registered($user));
+            Password::sendResetLink(['email' => $user->email]);
             $isNewUser = true;
         }
 
@@ -55,7 +57,7 @@ class SupportTicketController extends Controller
         }
 
         $message = $isNewUser
-            ? 'Your support ticket has been submitted. We\'ve created an account for you — please check your email to verify it.'
+            ? 'Your support ticket has been submitted. We\'ve created an account for you — check your email to set your password, then verify your address.'
             : 'Your support ticket has been submitted. We\'ll be in touch soon.';
 
         return redirect()->route('support.create')->with('success', $message);
