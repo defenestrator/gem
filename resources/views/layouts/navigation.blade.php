@@ -43,8 +43,8 @@
                         {{ __('Classifieds') }}
                     </x-nav-link>
                     @endif
-                    <x-nav-link :href="route('sellers.index')" :active="request()->routeIs('sellers.*')">
-                        {{ __('Sellers') }}
+                    <x-nav-link :href="route('profiles.index')" :active="request()->routeIs('profiles.*')">
+                        {{ __('Profiles') }}
                     </x-nav-link>
                     <x-nav-link :href="route('species.index')" :active="request()->routeIs('species.*')">
                         {{ __('Species') }}
@@ -133,8 +133,8 @@
                 {{ __('Classifieds') }}
             </x-responsive-nav-link>
             @endif
-            <x-responsive-nav-link :href="route('sellers.index')" :active="request()->routeIs('sellers.*')">
-                {{ __('Sellers') }}
+            <x-responsive-nav-link :href="route('profiles.index')" :active="request()->routeIs('profiles.*')">
+                {{ __('Profiles') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('species.index')" :active="request()->routeIs('species.*')">
                 {{ __('Species') }}

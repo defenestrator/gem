@@ -33,7 +33,7 @@
                                 <li>Add a profile photo</li>
                             @endunless
                             @unless ($user->seller)
-                                <li>Set up your vendor profile so buyers can find you</li>
+                                <li>Add your social media links to your profile</li>
                             @endunless
                         </ul>
                         <a href="{{ route('profile.edit') }}"

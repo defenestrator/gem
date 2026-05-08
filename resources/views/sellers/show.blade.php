@@ -158,7 +158,7 @@
                     </div>
                 @else
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8 text-center">
-                        <p class="text-gray-500 dark:text-gray-400">This seller has no active listings at the moment.</p>
+                        <p class="text-gray-500 dark:text-gray-400">This breeder has no active listings at the moment.</p>
                     </div>
                 @endif
             </div>
@@ -166,9 +166,9 @@
 
             {{-- Back --}}
             <div>
-                <a href="{{ route('sellers.index') }}"
+                <a href="{{ route('profiles.index') }}"
                     class="text-orange-600 dark:text-orange-400 hover:underline font-semibold text-sm">
-                    ← Back to All Sellers
+                    ← Back to All Profiles
                 </a>
             </div>
 

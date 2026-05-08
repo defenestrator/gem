@@ -1,11 +1,11 @@
 <x-app-layout>
-@section('title', 'Breeders & Sellers')
+@section('title', 'Breeder Profiles')
     @push('meta')
-    <meta name="description" content="Browse reptile breeders and sellers on Gem Reptiles. Find captive-bred snakes, lizards, and more from trusted sellers.">
+    <meta name="description" content="Browse reptile breeder profiles on Gem Reptiles. Find captive-bred snakes, lizards, and more from trusted breeders.">
     @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Sellers
+            Profiles
         </h2>
     </x-slot>
 
@@ -14,10 +14,10 @@
 
             {{-- Search --}}
             <div class="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm mb-6">
-                <form method="GET" action="{{ route('sellers.index') }}" class="flex flex-col sm:flex-row gap-3">
+                <form method="GET" action="{{ route('profiles.index') }}" class="flex flex-col sm:flex-row gap-3">
                     <div class="flex-1">
                         <input type="text" name="search" value="{{ $search }}"
-                            placeholder="Search sellers by name or description…"
+                            placeholder="Search profiles by name or description…"
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500">
                     </div>
                     <div class="flex gap-2 shrink-0">
@@ -26,7 +26,7 @@
                             Search
                         </button>
                         @if ($search)
-                            <a href="{{ route('sellers.index') }}"
+                            <a href="{{ route('profiles.index') }}"
                                 class="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 py-2 px-5 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-semibold text-sm">
                                 Clear
                             </a>
@@ -44,7 +44,7 @@
                             $initial    = strtoupper(substr($seller->name, 0, 1));
                         @endphp
 
-                        <a href="{{ route('sellers.show', $seller) }}"
+                        <a href="{{ route('profiles.show', $seller) }}"
                             class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
 
                             {{-- Header strip --}}
@@ -124,9 +124,9 @@
                     </svg>
                     <p class="text-gray-500 dark:text-gray-400 font-medium">
                         @if ($search)
-                            No sellers found matching <span class="font-semibold text-gray-700 dark:text-gray-300">"{{ $search }}"</span>.
+                            No profiles found matching <span class="font-semibold text-gray-700 dark:text-gray-300">"{{ $search }}"</span>.
                         @else
-                            No sellers yet.
+                            No profiles yet.
                         @endif
                     </p>
                 </div>

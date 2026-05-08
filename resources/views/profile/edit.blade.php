@@ -23,7 +23,7 @@
                                 <li>Add a profile photo</li>
                             @endunless
                             @unless ($user->seller)
-                                <li>Set up your vendor profile so buyers can find you</li>
+                                <li>Add your social media links to your profile</li>
                             @endunless
                         </ul>
                     </div>
@@ -49,7 +49,7 @@
                 </div>
             </div>
 
-            {{-- Vendor Profile --}}
+            {{-- Social Media & Profile --}}
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     @include('profile.partials.update-vendor-profile-form')

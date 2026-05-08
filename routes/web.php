@@ -237,9 +237,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Sellers Routes
-Route::get('/sellers', [SellerController::class, 'index'])->name('sellers.index');
-Route::get('/sellers/{seller:slug}', [SellerController::class, 'show'])->name('sellers.show');
+// Breeder Profiles Routes
+Route::get('/profiles', [SellerController::class, 'index'])->name('profiles.index');
+Route::get('/profiles/{seller:slug}', [SellerController::class, 'show'])->name('profiles.show');
 
 // Classifieds Routes
 if (config('features.classifieds')) {

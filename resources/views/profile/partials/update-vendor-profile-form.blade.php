@@ -1,10 +1,10 @@
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            {{ __('Vendor Profile') }}
+            {{ __('Social Media & Profile') }}
         </h2>
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Set up your public seller profile so buyers can find and contact you.') }}
+            {{ __('Add your social media links and public profile details.') }}
         </p>
     </header>
 
@@ -149,7 +149,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save Vendor Profile') }}</x-primary-button>
+            <x-primary-button>{{ __('Save Profile') }}</x-primary-button>
 
             @if (session('status') === 'seller-updated')
                 <p x-data="{ show: true }" x-show="show" x-transition

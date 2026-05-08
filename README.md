@@ -79,6 +79,13 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-08 (rebrand Seller/Vendor → Social Media / Profiles)
+- Routes `/sellers` → `/profiles`, names `sellers.index/show` → `profiles.index/show`
+- Nav label "Sellers" → "Profiles"
+- Profile section heading "Vendor Profile" → "Social Media & Profile"; description and save button updated
+- Onboarding checklist item "Set up your vendor profile…" → "Add your social media links to your profile"
+- Sellers index/show: visible text and empty-state copy updated to "Profiles" / "breeder"
+
 #### 2026-05-07 (Open Graph / link previews)
 - Both layouts: default `og:site_name`, `og:type`, `og:url`, `og:title`, `og:description`, `og:image` + Twitter card tags using `og-default.jpg` from CDN
 - `animals/show`: overrides `og:type=product`, `og:title`, `og:description`, `og:image` with animal's first media photo
