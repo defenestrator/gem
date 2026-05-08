@@ -90,7 +90,22 @@ class WarmCache extends Command
         }
         $this->newLine();
 
-        // ── 4. Species search Redis cache ────────────────────────────────────
+        // ── 4. Species index + category pages ───────────────────────────────
+        $this->info('Species + category page cache:');
+        $this->warmHtml($base . '/species', [], 'species index');
+        foreach ([
+            '/categories',
+            '/categories/ball-pythons',
+            '/categories/carpet-pythons',
+            '/categories/corn-snakes',
+            '/categories/reticulated-pythons',
+            '/categories/western-hognose',
+        ] as $path) {
+            $this->warmHtml($base . $path, [], $path);
+        }
+        $this->newLine();
+
+        // ── 5. Species search Redis cache ────────────────────────────────────
         $this->info('Species search cache:');
         $searchUrl = $base . '/species/search';
 
