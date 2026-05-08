@@ -79,6 +79,12 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-07 (Open Graph / link previews)
+- Both layouts: default `og:site_name`, `og:type`, `og:url`, `og:title`, `og:description`, `og:image` + Twitter card tags using `og-default.jpg` from CDN
+- `animals/show`: overrides `og:type=product`, `og:title`, `og:description`, `og:image` with animal's first media photo
+- `species/show`: overrides `og:title`, `og:description`, `og:image` with first approved species media photo
+- Any page can add `@section('og_image', ...)` / `@section('og_title', ...)` / `@section('og_description', ...)` to customize
+
 #### 2026-05-07 (support ticket form)
 - New `support_tickets` table (name, email, type, message, user_id FK nullable)
 - `SupportTicketController`: validates input, creates a new `User` with a secure random password when the email is unknown, fires `Registered` event to send verification email, links existing users without re-registering, creates ticket, queues `SupportTicketAdminMail` to all admin users
