@@ -53,6 +53,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
                 <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 mb-4">Quick Actions</h3>
                 <div class="flex flex-wrap gap-3">
+                    @if($user->is_admin)
                     <a href="{{ route('dashboard.animals.index') }}"
                         class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 text-sm font-semibold">
                         My Animals
@@ -61,6 +62,7 @@
                         class="border border-orange-500 text-orange-600 dark:text-orange-400 py-2 px-4 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700 text-sm font-semibold">
                         + Add Animal
                     </a>
+                    @endif
                     @if(config('features.classifieds'))
                     <a href="{{ route('dashboard.classifieds.index') }}"
                         class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 text-sm font-semibold">
