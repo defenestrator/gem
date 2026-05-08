@@ -23,7 +23,8 @@ use App\Http\Controllers\ClassifiedInquiryController;
 use App\Http\Controllers\DashboardInquiryController;
 use App\Http\Controllers\ShippingQuoteController;
 use App\Http\Controllers\ShipCenterController;
-use App\Http\Controllers\InboundEmailController;
+use App\Http\Controllers\IncomingEmailController;
+use App\Http\Controllers\DashboardConversationController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
@@ -317,6 +318,13 @@ Route::middleware('auth')->group(function () {
         Route::patch('dashboard/submissions/{submission}/approve', [DashboardContentSubmissionController::class, 'approve'])->name('submissions.approve');
         Route::patch('dashboard/submissions/{submission}/reject', [DashboardContentSubmissionController::class, 'reject'])->name('submissions.reject');
 
+        // Email CRM (admin only)
+        Route::get('dashboard/conversations', [DashboardConversationController::class, 'index'])->name('conversations.index');
+        Route::get('dashboard/conversations/{conversation}', [DashboardConversationController::class, 'show'])->name('conversations.show');
+        Route::post('dashboard/conversations/{conversation}/reply', [DashboardConversationController::class, 'reply'])->name('conversations.reply');
+        Route::patch('dashboard/conversations/{conversation}/status', [DashboardConversationController::class, 'updateStatus'])->name('conversations.status');
+        Route::delete('dashboard/conversations/{conversation}', [DashboardConversationController::class, 'destroy'])->name('conversations.destroy');
+
     });
 });
 
@@ -329,6 +337,6 @@ Route::get('/privacy', fn () => view('legal.privacy'))->name('legal.privacy');
 Route::get('/terms', fn () => view('legal.terms'))->name('legal.terms');
 
 // SendGrid Inbound Email Webhook
-Route::post('/mail/inbound', [InboundEmailController::class, 'handle'])->name('mail.inbound');
+Route::post('/email/inbound', [IncomingEmailController::class, 'handle'])->name('email.inbound');
 
 require __DIR__.'/auth.php';

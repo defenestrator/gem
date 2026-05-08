@@ -79,6 +79,16 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-08 (IncomingEmailController + Email CRM)
+- `POST /email/inbound` (`email.inbound`) handles SendGrid Inbound Parse webhooks
+- Parses `from`/`to`/`subject`/`text`/`html` + SendGrid `envelope` JSON; deduplicates by `Message-ID` header
+- Threads messages by contact email + base subject (Re:/Fwd: stripped); reopens closed conversations on new mail
+- Forwards to all `is_admin` users via queued `ForwardedInboundEmailMail` (was hardcoded; now dynamic)
+- Admin CRM at `/dashboard/conversations`: list with status tabs (open/closed/spam/all), thread view, reply, status update, delete
+- `ConversationReplyMail` queues reply to contact with `Re: {subject}` threading
+- Fixed broken `VerifyCsrfToken::$except` (was array-of-array with route name; changed to URI string `email/inbound`)
+- `email_conversations` + `email_messages` tables; `EmailConversation` / `EmailMessage` models
+
 #### 2026-05-08 (support ticket: fix email verification flow)
 - New support ticket users now also receive a password reset link so they can log in before clicking the verification link
 - Without a known password, users had no path to authenticate and complete email verification

@@ -2,7 +2,7 @@
 
 **Forwarded Email**
 
-**From:** {{ $from }}  
+**From:** {{ $from }}
 **To:** {{ $to }}
 
 ---
@@ -12,7 +12,13 @@
 @elseif($text)
 {{ $text }}
 @else
-(No content)
+*(No content)*
 @endif
+
+---
+
+<x-mail::button :url="route('dashboard.conversations.index')" color="orange">
+View in CRM
+</x-mail::button>
 
 </x-mail::message>

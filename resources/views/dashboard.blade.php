@@ -81,6 +81,10 @@
                             <span class="bg-white text-orange-600 text-xs font-bold px-1.5 py-0.5 rounded-full leading-none">{{ $newInquiries }}</span>
                         @endif
                     </a>
+                    <a href="{{ route('dashboard.conversations.index') }}"
+                        class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 text-sm font-semibold">
+                        Conversations
+                    </a>
                     <a href="{{ route('pulse') }}"
                         class="bg-purple-500 text-white py-2 px-4 rounded-lg hover:bg-purple-700 text-sm font-semibold">
                         Monitoring
