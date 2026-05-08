@@ -109,7 +109,7 @@ class AnimalController extends Controller
             'thumbnail'    => $thumb?->thumbnail_url ?? $thumb?->url,
             'show_url'     => route('animals.show', $a->slug),
             'inquire_url'  => route('animals.inquiries.create', $a->slug),
-            'species_url'  => $a->species ? route('species.show', $a->species->slug) : null,
+            'species_url'  => ($a->species?->slug) ? route('species.show', $a->species->slug) : null,
         ];
     }
 
