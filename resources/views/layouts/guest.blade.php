@@ -8,6 +8,18 @@
         <title>{{ config('app.name', 'Gem Reptiles') }}@hasSection('title') — @yield('title')@endif</title>
         @stack('meta')
 
+        <!-- Open Graph / link previews -->
+        <meta property="og:site_name" content="{{ config('app.name', 'Gem Reptiles') }}">
+        <meta property="og:type" content="@yield('og_type', 'website')">
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:title" content="@yield('og_title', config('app.name', 'Gem Reptiles'))">
+        <meta property="og:description" content="@yield('og_description', 'Browse captive-bred reptiles for sale at Gem Reptiles. Ball pythons, corn snakes, carpet pythons, and more.')">
+        <meta property="og:image" content="@yield('og_image', 'https://gemx.sfo3.digitaloceanspaces.com/assets/og-default.jpg')">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="@yield('og_title', config('app.name', 'Gem Reptiles'))">
+        <meta name="twitter:description" content="@yield('og_description', 'Browse captive-bred reptiles for sale at Gem Reptiles. Ball pythons, corn snakes, carpet pythons, and more.')">
+        <meta name="twitter:image" content="@yield('og_image', 'https://gemx.sfo3.digitaloceanspaces.com/assets/og-default.jpg')">
+
         <!-- Favicons -->
         <link rel="icon" type="image/x-icon" href="https://gemx.sfo3.digitaloceanspaces.com/assets/favicon.ico">
         <link rel="icon" type="image/png" sizes="32x32" href="https://gemx.sfo3.digitaloceanspaces.com/assets/favicon-32x32.png">

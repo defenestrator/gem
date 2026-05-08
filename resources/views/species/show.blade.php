@@ -1,13 +1,18 @@
 <x-app-layout>
 @section('title', $species->species . ($species->common_name ? ' — ' . $species->common_name : ''))
+@php
+    $ogName  = $species->common_name ? "{$species->species} ({$species->common_name})" : $species->species;
+    $ogDesc  = $species->description
+        ? $ogName . ' — ' . \Illuminate\Support\Str::limit(strip_tags($species->description), 120)
+        : $ogName . ' — taxonomy, classification, subspecies, and photos.';
+    $ogImage = $species->media->where('moderation_status', 'approved')->first()?->url
+        ?? 'https://gemx.sfo3.digitaloceanspaces.com/assets/og-default.jpg';
+@endphp
+@section('og_title', $ogName . ' — ' . config('app.name', 'Gem Reptiles'))
+@section('og_description', $ogDesc)
+@section('og_image', $ogImage)
     @push('meta')
-    @php
-        $metaName = $species->common_name ? "{$species->species} ({$species->common_name})" : $species->species;
-        $metaDesc = $species->description
-            ? $metaName . ' — ' . \Illuminate\Support\Str::limit(strip_tags($species->description), 120)
-            : $metaName . ' — taxonomy, classification, subspecies, and photos.';
-    @endphp
-    <meta name="description" content="{{ $metaDesc }}">
+    <meta name="description" content="{{ $ogDesc }}">
     @endpush
     <x-slot name="header">
         <div class="flex items-center gap-3">

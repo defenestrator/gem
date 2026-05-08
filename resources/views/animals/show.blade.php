@@ -1,15 +1,21 @@
 <x-app-layout>
 @section('title', $animal->pet_name)
+@php
+    $ogParts = array_filter([
+        $animal->pet_name,
+        $animal->category ? $animal->category . ' · ' . ($animal->female ? 'Female' : 'Male') : null,
+        $animal->availability?->label(),
+        $animal->description ? \Illuminate\Support\Str::limit(strip_tags($animal->description), 100) : 'Captive-bred at Gem Reptiles.',
+    ]);
+    $ogDesc  = implode(' — ', $ogParts);
+    $ogImage = $animal->media->first()?->url ?? 'https://gemx.sfo3.digitaloceanspaces.com/assets/og-default.jpg';
+@endphp
+@section('og_type', 'product')
+@section('og_title', $animal->pet_name . ' — ' . config('app.name', 'Gem Reptiles'))
+@section('og_description', $ogDesc)
+@section('og_image', $ogImage)
     @push('meta')
-    @php
-        $parts = array_filter([
-            $animal->pet_name,
-            $animal->category ? $animal->category . ' · ' . ($animal->female ? 'Female' : 'Male') : null,
-            $animal->availability?->label(),
-            $animal->description ? \Illuminate\Support\Str::limit(strip_tags($animal->description), 100) : 'Captive-bred at Gem Reptiles.',
-        ]);
-    @endphp
-    <meta name="description" content="{{ implode(' — ', $parts) }}">
+    <meta name="description" content="{{ $ogDesc }}">
     @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
