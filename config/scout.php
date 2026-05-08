@@ -161,8 +161,32 @@ return [
                 'typoTolerance' => [
                     'enabled' => true,
                     'minWordSizeForTypos' => [
-                        'oneTypo'  => 5,
-                        'twoTypos' => 9,
+                        'oneTypo'  => 7,
+                        'twoTypos' => 12,
+                    ],
+                ],
+            ],
+            'animals' => [
+                'searchableAttributes' => [
+                    'pet_name',
+                    'category',
+                    'species',
+                    'common_name',
+                    'description',
+                ],
+                'rankingRules' => [
+                    'words',
+                    'exactness',
+                    'attribute',
+                    'typo',
+                    'proximity',
+                    'sort',
+                ],
+                'typoTolerance' => [
+                    'enabled' => true,
+                    'minWordSizeForTypos' => [
+                        'oneTypo'  => 7,
+                        'twoTypos' => 12,
                     ],
                 ],
             ],
