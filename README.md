@@ -79,6 +79,13 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-07 (support ticket form)
+- New `support_tickets` table (name, email, type, message, user_id FK nullable)
+- `SupportTicketController`: validates input, creates a new `User` with a secure random password when the email is unknown, fires `Registered` event to send verification email, links existing users without re-registering, creates ticket, queues `SupportTicketAdminMail` to all admin users
+- `SupportTicketAdminMail` + `emails/support-ticket-admin.blade.php` admin notification email
+- `GET /support` / `POST /support` (support.create / support.store)
+- Support link added to site footer under Legal column
+
 #### 2026-05-07 (performance: SSR species init + CDN preconnect)
 - Species search index: `SpeciesController::index()` pre-fetches page-1 results using same Redis cache key as `search()`; results injected as `window.__speciesInitial__`; Alpine `init()` consumes SSR data directly when in default state (no query/taxon/hasMedia/page=1), skipping the initial XHR entirely
 - Both layouts: `<link rel="preconnect" href="https://gemx.sfo3.digitaloceanspaces.com" crossorigin>` — browser opens TLS connection before first image request
