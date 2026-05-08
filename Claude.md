@@ -76,6 +76,10 @@ Tailwind CSS 3 + Alpine.js for reactive UI and component state.
 
 Before planning migrations or new tables, read `database/schema/pgsql-schema.sql` — it is the authoritative base schema and the existing migrations are appended to it.
 
+## Backlog
+
+`/backlog/` contains feature request markdown files. Implement features in file-creation order (FIFO) unless otherwise specified. Read both the title and contents of each file for full context before implementing. The backlog file's presence constitutes approval for any packages or infrastructure it requires.
+
 ## Core Rules
 
 - `Model::query()` not `DB::table()`
