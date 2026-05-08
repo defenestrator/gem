@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Animal;
 use App\Models\Media;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -81,7 +82,15 @@ class WarmCache extends Command
         }
         $this->newLine();
 
-        // ── 3. Species search Redis cache ────────────────────────────────────
+        // ── 3. Animal show pages ─────────────────────────────────────────────
+        $this->info('Animal show pages:');
+        $slugs = Animal::where('status', 'published')->pluck('slug');
+        foreach ($slugs as $slug) {
+            $this->warmHtml($base . '/animals/' . $slug, [], $slug);
+        }
+        $this->newLine();
+
+        // ── 4. Species search Redis cache ────────────────────────────────────
         $this->info('Species search cache:');
         $searchUrl = $base . '/species/search';
 
@@ -140,12 +149,16 @@ class WarmCache extends Command
             ORDER BY mediable_type, mediable_id, id DESC
         "), 'url');
 
-        $animalImages = Media::where('moderation_status', 'approved')
+        $animalMedia = Media::where('moderation_status', 'approved')
             ->where('mediable_type', 'App\Models\Animal')
-            ->pluck('url')
+            ->get(['url', 'thumbnail_url']);
+
+        $animalUrls = $animalMedia
+            ->flatMap(fn ($m) => array_filter([$m->url, $m->thumbnail_url]))
+            ->unique()
             ->all();
 
-        return array_merge($thumbs, $animalImages);
+        return array_merge($thumbs, $animalUrls);
     }
 
     // ── CDN image warming ────────────────────────────────────────────────────
