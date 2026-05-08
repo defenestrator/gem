@@ -337,6 +337,6 @@ Route::get('/privacy', fn () => view('legal.privacy'))->name('legal.privacy');
 Route::get('/terms', fn () => view('legal.terms'))->name('legal.terms');
 
 // SendGrid Inbound Email Webhook
-Route::post('/email/inbound', [IncomingEmailController::class, 'handle'])->name('email.inbound');
+Route::post('/mail/inbound', [IncomingEmailController::class, 'handle'])->name('email.inbound');
 
 require __DIR__.'/auth.php';
