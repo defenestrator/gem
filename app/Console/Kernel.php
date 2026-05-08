@@ -35,6 +35,12 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->runInBackground();
 
+        $schedule->command('media:process-species')
+            ->weeklyOn(0, '6:00')
+            ->timezone('America/Boise')
+            ->withoutOverlapping()
+            ->runInBackground();
+
         $schedule->command('logs:upload')
             ->monthlyOn(15, '00:00')
             ->withoutOverlapping()
