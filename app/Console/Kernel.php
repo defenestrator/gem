@@ -15,20 +15,11 @@ class Kernel extends ConsoleKernel
         $schedule->command('app:heartbeat')
             ->everyMinute()
             ->thenPing('https://heartbeats.laravel.com/01kqtm6dwrfgb3f9kmgd8chkzt/ping');
-
-        $schedule->command('animals:sync')->hourly()->withoutOverlapping()->runInBackground();
-
-        if (app()->isLocal()) {
-            $schedule->command('queue:work redis --queue=species-images --tries=3 --timeout=150 --stop-when-empty')
-                ->everyMinute()
-                ->withoutOverlapping(10)
-                ->runInBackground();
-            $schedule->command('queue:work redis --queue=default --tries=3 --timeout=3600 --stop-when-empty')
-                ->everyMinute()
-                ->withoutOverlapping(10)
-                ->runInBackground();
-        }
-
+        
+        $schedule->command('animals:sync')->dailyAt("9:00")->withoutOverlapping()->runInBackground();
+        
+        $schedule->command('media:process-animals')->dailyAt("11:00")->withoutOverlapping()->runInBackground();
+        
         $schedule->command('species:fetch-images --model=all --queue')
             ->weeklyOn(0, '0:00')
             ->timezone('America/Boise')
