@@ -74,4 +74,11 @@ class Species extends Model
             ->where('moderation_status', 'approved')
             ->latest();
     }
+
+    public function featuredApprovedMedia()
+    {
+        return $this->morphOne(Media::class, 'mediable')
+            ->where('moderation_status', 'approved')
+            ->where('is_featured', true);
+    }
 }

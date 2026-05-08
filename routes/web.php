@@ -302,6 +302,7 @@ Route::middleware('auth')->group(function () {
         Route::get('dashboard/media', [DashboardMediaModerationController::class, 'index'])->name('media.index');
         Route::patch('dashboard/media/{media}/approve', [DashboardMediaModerationController::class, 'approve'])->name('media.approve');
         Route::patch('dashboard/media/{media}/reject', [DashboardMediaModerationController::class, 'reject'])->name('media.reject');
+        Route::patch('dashboard/media/{media}/feature', [DashboardMediaModerationController::class, 'setFeatured'])->name('media.feature');
 
         // Species admin editing + media detach
         Route::get('dashboard/species/{species}/edit', [DashboardSpeciesController::class, 'edit'])->name('species.edit');

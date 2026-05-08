@@ -29,7 +29,10 @@
 
                 {{-- Photo Gallery --}}
                 @if ($animal->media->isNotEmpty())
-                    @php $photos = $animal->media; @endphp
+                    @php
+                        $photos     = $animal->media;
+                        $featuredId = $photos->firstWhere('is_featured', true)?->id ?? 0;
+                    @endphp
                     <div x-data="{ active: '{{ $photos->first()->url }}' }">
                         <div class="w-full aspect-square bg-black overflow-hidden">
                             <img :src="active" alt="{{ $animal->pet_name }}"
@@ -49,6 +52,17 @@
                                 @endforeach
                             </div>
                         @endif
+
+                        @auth
+                            @if (auth()->user()->is_admin)
+                                <livewire:featured-media-picker
+                                    :mediable-type="get_class($animal)"
+                                    :mediable-id="$animal->id"
+                                    :featured-id="$featuredId"
+                                    :key="'animal-featured-' . $animal->id"
+                                />
+                            @endif
+                        @endauth
                     </div>
                 @endif
 

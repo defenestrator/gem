@@ -10,4 +10,9 @@ trait HasMedia {
     {
         return $this->morphMany(Media::class, 'mediable');
     }
+
+    public function featuredMedia()
+    {
+        return $this->morphOne(Media::class, 'mediable')->where('is_featured', true);
+    }
 }

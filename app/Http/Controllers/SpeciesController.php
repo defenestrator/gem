@@ -22,7 +22,7 @@ class SpeciesController extends Controller
             $paginator = Species::query()
                 ->orderBy('species')
                 ->paginate(96, ['*'], 'page', 1);
-            $paginator->getCollection()->loadMissing('latestApprovedMedia');
+            $paginator->getCollection()->loadMissing(['featuredApprovedMedia', 'latestApprovedMedia']);
             return $this->paginatedPayload($paginator);
         });
 
@@ -107,7 +107,7 @@ class SpeciesController extends Controller
                     ->orderBy('species')
                     ->paginate($perPage, ['*'], 'page', $page);
 
-                $paginator->getCollection()->loadMissing('latestApprovedMedia');
+                $paginator->getCollection()->loadMissing(['featuredApprovedMedia', 'latestApprovedMedia']);
 
                 return $this->paginatedPayload($paginator);
             }
@@ -123,7 +123,7 @@ class SpeciesController extends Controller
                     })
                     ->get();
 
-                $rows->loadMissing('latestApprovedMedia');
+                $rows->loadMissing(['featuredApprovedMedia', 'latestApprovedMedia']);
 
                 return $this->flatPayload($rows);
             } catch (\Throwable $e) {
@@ -157,7 +157,7 @@ class SpeciesController extends Controller
                     ", [$exact, $exact, $start, $start, $any, $any])
                     ->get();
 
-                $rows->loadMissing('latestApprovedMedia');
+                $rows->loadMissing(['featuredApprovedMedia', 'latestApprovedMedia']);
 
                 return $this->flatPayload($rows);
             }
@@ -205,7 +205,8 @@ class SpeciesController extends Controller
             'common_name' => $s->common_name,
             'higher_taxa' => $s->higher_taxa,
             'author'      => $s->author,
-            'thumbnail'   => $s->latestApprovedMedia?->thumbnail_url ?? $s->latestApprovedMedia?->url,
+            'thumbnail'   => ($s->featuredApprovedMedia ?? $s->latestApprovedMedia)?->thumbnail_url
+                             ?? ($s->featuredApprovedMedia ?? $s->latestApprovedMedia)?->url,
         ];
     }
 }

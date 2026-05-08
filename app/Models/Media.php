@@ -16,7 +16,11 @@ class Media extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'url', 'user_id', 'license', 'license_url', 'source_url', 'copyright', 'author', 'title', 'moderation_status',
+        'url', 'thumbnail_url', 'is_featured', 'user_id', 'license', 'license_url', 'source_url', 'copyright', 'author', 'title', 'moderation_status',
+    ];
+
+    protected $casts = [
+        'is_featured' => 'boolean',
     ];
 
     public function mediable()

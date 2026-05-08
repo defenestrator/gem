@@ -91,7 +91,7 @@ class AnimalController extends Controller
 
     private function format(Animal $a): array
     {
-        $thumb = $a->media->first();
+        $thumb = $a->media->firstWhere('is_featured', true) ?? $a->media->first();
         return [
             'id'           => $a->id,
             'slug'         => $a->slug,

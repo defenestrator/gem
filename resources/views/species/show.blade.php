@@ -109,7 +109,8 @@
             {{-- Photo gallery --}}
             @if ($media->isNotEmpty())
                 @php
-                $mediaData = $media->map(fn($m) => [
+                $featuredId = $media->firstWhere('is_featured', true)?->id ?? 0;
+                $mediaData  = $media->map(fn($m) => [
                     'id'          => $m->id,
                     'url'         => $m->url,
                     'author'      => $m->author,
@@ -167,6 +168,15 @@
                             </div>
                         @endforeach
                     </div>
+
+                    @if ($isAdmin)
+                        <livewire:featured-media-picker
+                            :mediable-type="get_class($species)"
+                            :mediable-id="$species->id"
+                            :featured-id="$featuredId"
+                            :key="'species-featured-' . $species->id"
+                        />
+                    @endif
 
                     {{-- Reactive attribution for active image --}}
                     <template x-if="activeMedia && (activeMedia.author || activeMedia.license || activeMedia.source_url || activeMedia.title)">

@@ -38,4 +38,20 @@ class DashboardMediaModerationController extends Controller
 
         return back()->with('success', 'Photo rejected.');
     }
+
+    public function setFeatured(Media $media): RedirectResponse
+    {
+        abort_unless(auth()->user()->is_admin, 403);
+
+        Media::query()
+            ->where('mediable_type', $media->mediable_type)
+            ->where('mediable_id', $media->mediable_id)
+            ->where('id', '!=', $media->id)
+            ->where('is_featured', true)
+            ->update(['is_featured' => false]);
+
+        $media->update(['is_featured' => true]);
+
+        return back()->with('success', 'Featured image updated.');
+    }
 }

@@ -79,6 +79,14 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-08 (featured image selection for Animals and Species)
+- Added `is_featured` boolean to `media` table; one featured media per mediable entity
+- Admin star-picker UI on Animal and Species show pages via Livewire v3 `FeaturedMediaPicker` component + Alpine.js
+- Star is mutually exclusive per entity (radio-style): clicking sets featured, clears others for same mediable
+- `PATCH /dashboard/media/{media}/feature` route via `DashboardMediaModerationController::setFeatured`
+- Animal and Species index thumbnails now prefer featured media over first media
+- `featuredMedia()` + `featuredApprovedMedia()` relationships added to `HasMedia` trait and `Species` model
+
 #### 2026-05-08 (automated backups: spatie/laravel-backup)
 - Installed `spatie/laravel-backup` v9 with `spatie/db-dumper` (PostgreSQL support)
 - DB-only backup every 6 hours; full backup daily at 02:00; cleanup daily at 01:00
