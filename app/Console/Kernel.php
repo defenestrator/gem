@@ -36,6 +36,24 @@ class Kernel extends ConsoleKernel
             ->monthlyOn(15, '00:00')
             ->withoutOverlapping()
             ->runInBackground();
+
+        // Backups — production only
+        $schedule->command('backup:run --only-db')
+            ->everySixHours()
+            ->environments('production')
+            ->withoutOverlapping()
+            ->runInBackground();
+
+        $schedule->command('backup:run')
+            ->dailyAt('02:00')
+            ->environments('production')
+            ->withoutOverlapping()
+            ->runInBackground();
+
+        $schedule->command('backup:clean')
+            ->dailyAt('01:00')
+            ->environments('production')
+            ->withoutOverlapping();
     }
 
     /**

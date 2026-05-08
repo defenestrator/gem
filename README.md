@@ -79,6 +79,15 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-08 (automated backups: spatie/laravel-backup)
+- Installed `spatie/laravel-backup` v9 with `spatie/db-dumper` (PostgreSQL support)
+- DB-only backup every 6 hours; full backup daily at 02:00; cleanup daily at 01:00
+- All backups push to `private_s3` disk → DO Spaces "privates" bucket under `backups/` prefix
+- Retention: all backups kept for 12 days (~48 DB backups), then 1/day until 30 days, then pruned
+- Backups only run in the `production` environment; gzip compression on DB dumps
+- Added `BACKUP_ARCHIVE_PASSWORD` and `BACKUP_NOTIFICATION_EMAIL` to `.env.example`
+- Note: manually create `backups/db` and `backups/laravel` subdirectories in DO Spaces if desired
+
 #### 2026-05-08 (IncomingEmailController + Email CRM)
 - `POST /email/inbound` (`email.inbound`) handles SendGrid Inbound Parse webhooks
 - Parses `from`/`to`/`subject`/`text`/`html` + SendGrid `envelope` JSON; deduplicates by `Message-ID` header

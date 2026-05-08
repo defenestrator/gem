@@ -22,7 +22,8 @@
         "meilisearch/meilisearch-php": "^1.16",
         "predis/predis": "^2.2",
         "sendgrid/sendgrid": "^8.0",
-        "socialiteproviders/twitch": "^5.4"
+        "socialiteproviders/twitch": "^5.4",
+        "spatie/laravel-backup": "^9.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.9",
