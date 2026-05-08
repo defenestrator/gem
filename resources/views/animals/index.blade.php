@@ -178,15 +178,16 @@
     <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('animalSearch', () => ({
-            endpoint:     '',
-            query:        '',
-            sort:         'recent',
-            availability: '',
-            results:      [],
-            loading:      false,
-            searched:     false,
-            page:         1,
-            meta:         null,
+            endpoint:        '',
+            query:           '',
+            sort:            'recent',
+            availability:    '',
+            results:         [],
+            loading:         false,
+            searched:        false,
+            page:            1,
+            meta:            null,
+            _abortController: null,
 
             init(endpoint) {
                 this.endpoint     = endpoint;
@@ -206,6 +207,11 @@
             async doSearch(resetPage = false) {
                 if (resetPage) this.page = 1;
 
+                // Cancel any in-flight request before starting a new one
+                if (this._abortController) this._abortController.abort();
+                this._abortController = new AbortController();
+                const signal = this._abortController.signal;
+
                 sessionStorage.setItem('animals_query', this.query);
                 sessionStorage.setItem('animals_sort', this.sort);
                 sessionStorage.setItem('animals_availability', this.availability);
@@ -222,6 +228,7 @@
                     if (this.availability) params.set('availability', this.availability);
 
                     const res = await fetch(`${this.endpoint}?${params}`, {
+                        signal,
                         headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
                     });
 
@@ -240,11 +247,12 @@
                         document.head.appendChild(link);
                     }
                 } catch (e) {
+                    if (e.name === 'AbortError') return;
                     console.error('Animal search failed:', e);
                     this.results  = [];
                     this.searched = true;
                 } finally {
-                    this.loading = false;
+                    if (!signal.aborted) this.loading = false;
                 }
             },
         }));
