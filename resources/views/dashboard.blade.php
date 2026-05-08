@@ -75,14 +75,14 @@
                     @endif
                     @if($user->is_admin)
                     <a href="{{ route('dashboard.inquiries.index') }}"
-                        class="relative bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 text-sm font-semibold inline-flex items-center gap-2">
+                        class="relative bg-amber-500 text-white py-2 px-4 rounded-lg hover:bg-amber-700 text-sm font-semibold inline-flex items-center gap-2">
                         Inquiries
                         @if($newInquiries)
                             <span class="bg-white text-orange-600 text-xs font-bold px-1.5 py-0.5 rounded-full leading-none">{{ $newInquiries }}</span>
                         @endif
                     </a>
                     <a href="{{ route('dashboard.conversations.index') }}"
-                        class="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 text-sm font-semibold">
+                        class="bg-sky-500 text-white py-2 px-4 rounded-lg hover:bg-sky-700 text-sm font-semibold">
                         Conversations
                     </a>
                     <a href="{{ route('pulse') }}"
