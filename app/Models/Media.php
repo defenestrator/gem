@@ -33,6 +33,14 @@ class Media extends Model
         return $query->where('moderation_status', 'approved');
     }
 
+    public function scopeApprovedThumbnail(Builder $query): Builder
+    {
+        return $query->where('moderation_status', 'approved')
+                     ->orderBy('is_featured', 'desc')
+                     ->orderBy('id', 'desc')
+                     ->limit(1);
+    }
+
     public function scopePending(Builder $query): Builder
     {
         return $query->where('moderation_status', 'pending');

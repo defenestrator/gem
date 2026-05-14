@@ -79,6 +79,14 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### Changelog
 
+#### 2026-05-14 (performance: indexes, inventory service, slow query logging)
+- Migration `add_performance_indexes`: composite index on `animals(status, availability, created_at)`; composite on `classifieds(status, price, created_at)`; partial index on `media(mediable_type, mediable_id) WHERE moderation_status = 'approved'`; partial index on `animals(species_id) WHERE status = 'published'`; index on `species(higher_taxa)`; GIN trigram indexes on `animals.pet_name` and `animals.description` for fast fallback LIKE search (enables `pg_trgm` extension)
+- `AnimalInventoryService`: extracts JSON load/sort/filter logic from `routes/web.php`; per-sort-variant mtime-keyed Redis cache; active-only filtering moved to PHP before view render
+- `routes/web.php`: welcome, categories, and all 5 category routes now use `AnimalInventoryService`; cache keys normalized to `welcome:{sort}:{mtime}`, `categories:{mtime}`, `categories:{view}:{mtime}`; species eager-load selects only needed columns
+- `Media::scopeApprovedThumbnail()`: approved + featured-first + limit 1 for efficient single-thumbnail eager loads
+- `AppServiceProvider`: slow query listener logs queries >1s to `queries` channel in production only
+- `config/logging.php`: `queries` channel added (`storage/logs/queries.log`, warning level)
+
 #### 2026-05-14 (Turnstile hardening — botnet response)
 - Fixed Alpine/Turnstile race condition: replaced `@submit.prevent="submitWithTurnstile($el)"` with `onsubmit="return submitWithTurnstile(this)"` on all forms — no Alpine dependency, no event ordering issues
 - `submitWithTurnstile` now targets the specific `.cf-turnstile` DOM element (not `.cf-turnstile` class selector) for `turnstile.reset()` and `turnstile.execute()` — fixes multi-form pages

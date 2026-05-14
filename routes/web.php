@@ -25,6 +25,7 @@ use App\Http\Controllers\ShippingQuoteController;
 use App\Http\Controllers\ShipCenterController;
 use App\Http\Controllers\IncomingEmailController;
 use App\Http\Controllers\DashboardConversationController;
+use App\Services\AnimalInventoryService;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
@@ -40,28 +41,7 @@ use Illuminate\Http\Request;
 |
 */
 
-// Helper function to load animals from JSON and sort by most recent first
-$getAnimals = function() {
-    $file = storage_path('app/public/animals.json');
-    $mtime = filemtime($file);
-    $key = 'animals_' . $mtime;
-    $animals = Cache::remember($key, 30*60, function() use ($file) {
-        $animals = json_decode(file_get_contents($file), true);
-        if ($animals === null) {
-            return [];
-        }
-        
-        // Sort by Last_Update** in descending order (most recent first)
-        usort($animals, function($a, $b) {
-            $dateA = strtotime($a['Last_Update**'] ?? '1970-01-01');
-            $dateB = strtotime($b['Last_Update**'] ?? '1970-01-01');
-            return $dateB - $dateA;
-        });
-        
-        return $animals;
-    });
-    return $animals;
-};
+$inventory = app(AnimalInventoryService::class);
 
     // Animal import routes
     Route::middleware(['auth', 'verified'])->group(function () {
@@ -87,151 +67,86 @@ foreach ([
     )->header('Cache-Control', 'public, max-age=31536000, immutable'));
 }
 
-Route::get('/', function (Request $request) use ($getAnimals) {
-    $sort = $request->query('sort', 'recent');
-    $file = storage_path('app/public/animals.json');
-    $mtime = filemtime($file);
-    $responseKey = 'welcome_' . $sort . '_' . $mtime;
-    $response = Cache::remember($responseKey, 30*60, function() use ($getAnimals, $sort) {
-        $animals = $getAnimals();
+Route::get('/', function (Request $request) use ($inventory) {
+    $sort        = $request->query('sort', 'recent');
+    $file        = storage_path('app/public/animals.json');
+    $mtime       = file_exists($file) ? filemtime($file) : 0;
+    $responseKey = "welcome:{$sort}:{$mtime}";
 
-        // Apply sorting based on filter
-        if ($sort === 'price-low') {
-            usort($animals, function($a, $b) {
-                return $a['Price'] - $b['Price'];
-            });
-        } elseif ($sort === 'price-high') {
-            usort($animals, function($a, $b) {
-                return $b['Price'] - $a['Price'];
-            });
-        } elseif ($sort === 'date-new') {
-            usort($animals, function($a, $b) {
-                $dateA = strtotime($a['Dob'] ?? '1970-01-01');
-                $dateB = strtotime($b['Dob'] ?? '1970-01-01');
-                return $dateB - $dateA;
-            });
-        } elseif ($sort === 'category') {
-            usort($animals, function($a, $b) {
-                return strcmp($a['Category*'], $b['Category*']);
-            });
-        } elseif ($sort === 'category-desc') {
-            usort($animals, function($a, $b) {
-                return strcmp($b['Category*'], $a['Category*']);
-            });
-        }
-        // 'recent' is the default, already sorted by Last_Update** from $getAnimals()
+    $response = Cache::remember($responseKey, 1800, function () use ($inventory, $sort) {
+        $animals = $inventory->getActiveAnimals($sort);
 
-        $slugs = array_column($animals, 'Animal_Id*');
-        $speciesMap = Animal::whereIn('slug', $slugs)
-            ->whereNotNull('species_id')
-            ->with('species')
-            ->get()
-            ->keyBy('slug')
-            ->map(fn ($a) => $a->species);
+        $slugs      = array_column($animals, 'Animal_Id*');
+        $speciesMap = $slugs
+            ? Animal::whereIn('slug', $slugs)
+                ->whereNotNull('species_id')
+                ->with('species:id,species,common_name,slug')
+                ->get()
+                ->keyBy('slug')
+                ->map(fn ($a) => $a->species)
+            : collect();
 
-        return view('welcome', ['animals' => $animals, 'currentSort' => $sort, 'speciesMap' => $speciesMap])->render();
+        return view('welcome', [
+            'animals'     => $animals,
+            'currentSort' => $sort,
+            'speciesMap'  => $speciesMap,
+        ])->render();
     });
+
     return response($response);
 })->name('welcome');
 
-Route::get('/categories', function () use ($getAnimals) {
-    $file = base_path('resources/js/animals.json');
-    $mtime = filemtime($file);
-    $responseKey = 'categories_' . $mtime;
-    $response = Cache::remember($responseKey, 30*60, function() use ($getAnimals) {
-        $animals = $getAnimals();
-        
-        // Build categories array with animal counts for each category
-        $categoryList = [
-            'Corn Snakes',
-            'Carpet Pythons',
-            'Ball Pythons',
-            'Reticulated Pythons',
-            'Western Hognose'
-        ];
-        
-        $categories = [];
-        foreach ($categoryList as $category) {
-            $count = count(array_filter($animals, function($animal) use ($category) {
-                return $animal['Category*'] === $category && $animal['State'] === 'For Sale' && $animal['Enabled'] === 'Active';
-            }));
-            $categories[$category] = $count;
+Route::get('/categories', function () use ($inventory) {
+    $file  = storage_path('app/public/animals.json');
+    $mtime = file_exists($file) ? filemtime($file) : 0;
+
+    $response = Cache::remember("categories:{$mtime}", 1800, function () use ($inventory) {
+        $animals = $inventory->getActiveAnimals();
+
+        $categoryList = ['Corn Snakes', 'Carpet Pythons', 'Ball Pythons', 'Reticulated Pythons', 'Western Hognose'];
+        $categories   = [];
+
+        foreach ($categoryList as $cat) {
+            $categories[$cat] = count(array_filter($animals, fn ($a) => ($a['Category*'] ?? '') === $cat));
         }
+
         return view('categories', ['categories' => $categories])->render();
     });
+
     return response($response);
 })->name('categories');
 
-Route::prefix('categories')->group(function () use ($getAnimals) {
-    Route::get('/corn-snakes', function () use ($getAnimals) {
-        $file = base_path('resources/js/animals.json');
-        $mtime = filemtime($file);
-        $responseKey = 'corn-snakes_' . $mtime;
-        $response = Cache::remember($responseKey, 30*60, function() use ($getAnimals) {
-            $animals = $getAnimals();
-            $filtered = array_filter($animals, function($animal) {
-                return $animal['Category*'] === 'Corn Snakes' && $animal['State'] === 'For Sale' && $animal['Enabled'] === 'Active';
-            });
-            return view('corn-snakes', ['animals' => array_values($filtered)])->render();
-        });
-        return response($response);
-    })->name('categories.corn-snakes');
+Route::prefix('categories')->group(function () use ($inventory) {
+    $file  = storage_path('app/public/animals.json');
+    $mtime = file_exists($file) ? filemtime($file) : 0;
 
-    Route::get('/carpet-pythons', function () use ($getAnimals) {
-        $file = base_path('resources/js/animals.json');
-        $mtime = filemtime($file);
-        $responseKey = 'carpet-pythons_' . $mtime;
-        $response = Cache::remember($responseKey, 30*60, function() use ($getAnimals) {
-            $animals = $getAnimals();
-            $filtered = array_filter($animals, function($animal) {
-                return $animal['Category*'] === 'Carpet Pythons' && $animal['State'] === 'For Sale' && $animal['Enabled'] === 'Active';
+    $categoryRoute = function (string $slug, string $category, string $view) use ($inventory, $mtime) {
+        return function () use ($inventory, $mtime, $category, $view) {
+            $response = Cache::remember("categories:{$view}:{$mtime}", 1800, function () use ($inventory, $category, $view) {
+                $animals = array_values(array_filter(
+                    $inventory->getActiveAnimals(),
+                    fn ($a) => ($a['Category*'] ?? '') === $category
+                ));
+                return view($view, ['animals' => $animals])->render();
             });
-            return view('carpet-pythons', ['animals' => array_values($filtered)])->render();
-        });
-        return response($response);
-    })->name('categories.carpet-pythons');
+            return response($response);
+        };
+    };
 
-    Route::get('/ball-pythons', function () use ($getAnimals) {
-        $file = base_path('resources/js/animals.json');
-        $mtime = filemtime($file);
-        $responseKey = 'ball-pythons_' . $mtime;
-        $response = Cache::remember($responseKey, 30*60, function() use ($getAnimals) {
-            $animals = $getAnimals();
-            $filtered = array_filter($animals, function($animal) {
-                return $animal['Category*'] === 'Ball Pythons' && $animal['State'] === 'For Sale' && $animal['Enabled'] === 'Active';
-            });
-            return view('ball-pythons', ['animals' => array_values($filtered)])->render();
-        });
-        return response($response);
-    })->name('categories.ball-pythons');
+    Route::get('/corn-snakes', $categoryRoute('corn-snakes', 'Corn Snakes', 'corn-snakes'))
+        ->name('categories.corn-snakes');
 
-    Route::get('/reticulated-pythons', function () use ($getAnimals) {
-        $file = base_path('resources/js/animals.json');
-        $mtime = filemtime($file);
-        $responseKey = 'reticulated-pythons_' . $mtime;
-        $response = Cache::remember($responseKey, 30*60, function() use ($getAnimals) {
-            $animals = $getAnimals();
-            $filtered = array_filter($animals, function($animal) {
-                return $animal['Category*'] === 'Reticulated Pythons' && $animal['State'] === 'For Sale' && $animal['Enabled'] === 'Active';
-            });
-            return view('reticulated-pythons', ['animals' => array_values($filtered)])->render();
-        });
-        return response($response);
-    })->name('categories.reticulated-pythons');
+    Route::get('/carpet-pythons', $categoryRoute('carpet-pythons', 'Carpet Pythons', 'carpet-pythons'))
+        ->name('categories.carpet-pythons');
 
-    Route::get('/western-hognose', function () use ($getAnimals) {
-        $file = base_path('resources/js/animals.json');
-        $mtime = filemtime($file);
-        $responseKey = 'western-hognose_' . $mtime;
-        $response = Cache::remember($responseKey, 30*60, function() use ($getAnimals) {
-            $animals = $getAnimals();
-            $filtered = array_filter($animals, function($animal) {
-                return $animal['Category*'] === 'Western Hognose' && $animal['State'] === 'For Sale' && $animal['Enabled'] === 'Active';
-            });
-            return view('western-hognose', ['animals' => array_values($filtered)])->render();
-        });
-        return response($response);
-    })->name('categories.western-hognose');
+    Route::get('/ball-pythons', $categoryRoute('ball-pythons', 'Ball Pythons', 'ball-pythons'))
+        ->name('categories.ball-pythons');
+
+    Route::get('/reticulated-pythons', $categoryRoute('reticulated-pythons', 'Reticulated Pythons', 'reticulated-pythons'))
+        ->name('categories.reticulated-pythons');
+
+    Route::get('/western-hognose', $categoryRoute('western-hognose', 'Western Hognose', 'western-hognose'))
+        ->name('categories.western-hognose');
 });
 
 Route::get('/dashboard', function () {
