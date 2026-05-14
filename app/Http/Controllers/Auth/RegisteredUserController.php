@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Concerns\ValidatesTurnstile;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
@@ -15,6 +16,7 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
+    use ValidatesTurnstile;
     public function create(): View
     {
         return view('auth.register');
@@ -26,6 +28,8 @@ class RegisteredUserController extends Controller
         if ($request->filled('website')) {
             return redirect(RouteServiceProvider::HOME);
         }
+
+        $this->verifyTurnstile($request);
 
         $request->validate([
             'name'                  => ['required', 'string', 'max:255'],

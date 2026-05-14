@@ -9,7 +9,7 @@
     <main class="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="bg-gray-800 text-gray-200 rounded-lg shadow-lg mx-auto max-w-lg p-8 space-y-6">
             <form method="POST" action="{{ route('register') }}"
-                  @submit.prevent="submitWithTurnstile($el)">
+                  onsubmit="return submitWithTurnstile(this)">
                 @csrf
 
                 {{-- Honeypot: hidden from humans, filled by bots --}}

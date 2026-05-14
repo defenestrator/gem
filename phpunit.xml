@@ -31,6 +31,7 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="SCOUT_DRIVER" value="null"/>
-        <env name="TURNSTILE_SECRET_KEY" value="1x0000000000000000000000000000000AA"/>
+        <env name="TURNSTILE_SECRET_KEY" value=""/>
+        <env name="TURNSTILE_SITE_KEY" value=""/>
     </php>
 </phpunit>

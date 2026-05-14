@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Concerns\ValidatesTurnstile;
 use App\Mail\SupportTicketAdminMail;
 use App\Models\SupportTicket;
 use App\Models\User;
@@ -15,6 +16,8 @@ use Illuminate\View\View;
 
 class SupportTicketController extends Controller
 {
+    use ValidatesTurnstile;
+
     public function create(): View
     {
         return view('support.create');
@@ -22,6 +25,8 @@ class SupportTicketController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $this->verifyTurnstile($request);
+
         $validated = $request->validate([
             'name'    => ['required', 'string', 'max:255'],
             'email'   => ['required', 'email', 'max:255'],

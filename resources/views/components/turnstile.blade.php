@@ -2,7 +2,7 @@
 
 @if ($siteKey)
 <div class="mb-2">
-    <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-token">
+    <input type="hidden" name="cf-turnstile-response">
     <div class="cf-turnstile"
          data-sitekey="{{ $siteKey }}"
          data-execution="execute"
@@ -21,9 +21,9 @@
 var _turnstileForm = null;
 
 function onTurnstileVerified(token) {
-    var el = document.getElementById('cf-turnstile-token');
-    if (el) el.value = token;
     if (_turnstileForm) {
+        var input = _turnstileForm.querySelector('[name="cf-turnstile-response"]');
+        if (input) input.value = token;
         var form = _turnstileForm;
         _turnstileForm = null;
         form.submit();
@@ -36,12 +36,16 @@ function onTurnstileError() {
 
 function submitWithTurnstile(form) {
     if (!window.turnstile) {
-        form.submit();
-        return;
+        return true;
+    }
+    var widget = form.querySelector('.cf-turnstile');
+    if (!widget) {
+        return true;
     }
     _turnstileForm = form;
-    window.turnstile.reset();
-    window.turnstile.execute('.cf-turnstile');
+    window.turnstile.reset(widget);
+    window.turnstile.execute(widget);
+    return false;
 }
 </script>
 @if ($siteKey)

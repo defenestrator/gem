@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Concerns\ValidatesTurnstile;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,6 +11,8 @@ use Illuminate\View\View;
 
 class PasswordResetLinkController extends Controller
 {
+    use ValidatesTurnstile;
+
     /**
      * Display the password reset link request view.
      */
@@ -25,6 +28,8 @@ class PasswordResetLinkController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $this->verifyTurnstile($request);
+
         $request->validate([
             'email' => ['required', 'email'],
         ]);

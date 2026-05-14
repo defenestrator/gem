@@ -10,7 +10,8 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
     <div class="bg-gray-800 text-gray-200 rounded-lg shadow-lg mx-auto max-w-lg p-8 space-y-6">
-        <form method="POST" action="{{ route('login') }}" class="p-4">
+        <form method="POST" action="{{ route('login') }}" class="p-4"
+              onsubmit="return submitWithTurnstile(this)">
             @csrf
 
             <!-- Email Address -->
@@ -34,6 +35,8 @@
                     <span class="ml-2 text-sm text-gray-300">{{ __('Remember me') }}</span>
                 </label>
             </div>
+
+            <x-turnstile />
 
             <div class="flex items-center justify-end mt-4">
                 @if (Route::has('password.request'))

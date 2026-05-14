@@ -22,7 +22,8 @@
                     Found a bug or have a feature idea? Submit a ticket and we'll follow up.
                 </p>
 
-                <form method="POST" action="{{ route('support.store') }}">
+                <form method="POST" action="{{ route('support.store') }}"
+                      onsubmit="return submitWithTurnstile(this)">
                     @csrf
 
                     {{-- Name --}}
@@ -81,6 +82,8 @@
                             <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <x-turnstile />
 
                     <button type="submit"
                             class="w-full bg-orange-500 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg transition text-sm">

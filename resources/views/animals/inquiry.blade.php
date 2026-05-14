@@ -30,7 +30,7 @@
                     </div>
 
                     <form method="POST" action="{{ route('animals.inquiries.store', $animal) }}"
-                          @submit.prevent="submitWithTurnstile($el)">
+                          onsubmit="return submitWithTurnstile(this)">
                         @csrf
 
                         <div class="mb-4">
