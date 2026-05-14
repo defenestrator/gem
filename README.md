@@ -95,6 +95,11 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 - ✅ Added server-side `verifyTurnstile()` via `ValidatesTurnstile` trait to 6 controllers: `RegisteredUserController`, `AuthenticatedSessionController`, `PasswordResetLinkController`, `SupportTicketController`, `InquiryController`, `ClassifiedInquiryController` (none had server-side verification before)
 - 🧪 `phpunit.xml`: override `TURNSTILE_SECRET_KEY` and `TURNSTILE_SITE_KEY` to empty so tests bypass Turnstile verification (auth tests don't test bot protection)
 
+#### 🎨 2026-05-08 (Gem Monitor rebrand + CI fixes)
+- 🏷️ Pulse dashboard rebranded to "Gem Monitor" with app logo; simplified header in `resources/views/vendor/pulse/components/pulse.blade.php`
+- 🐛 `config/backup.php`: `mail.to` fallback prevents null email error in CI
+- 🐛 `.env.example`: email validation fix resolves CI failures
+
 #### ⭐ 2026-05-08 (featured image selection for Animals and Species)
 - ➕ Added `is_featured` boolean to `media` table; one featured media per mediable entity
 - 🌟 Admin star-picker UI on Animal and Species show pages via Livewire v3 `FeaturedMediaPicker` component + Alpine.js
