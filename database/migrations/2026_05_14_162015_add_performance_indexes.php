@@ -34,11 +34,6 @@ return new class extends Migration
         Schema::table('species', function (Blueprint $table) {
             $table->index(['higher_taxa'], 'idx_species_higher_taxa');
         });
-
-        // GIN trigram indexes for full-text fallback LIKE search
-        DB::statement('CREATE EXTENSION IF NOT EXISTS pg_trgm');
-        DB::statement('CREATE INDEX idx_animals_pet_name_gin ON animals USING gin(pet_name gin_trgm_ops)');
-        DB::statement('CREATE INDEX idx_animals_description_gin ON animals USING gin(description gin_trgm_ops)');
     }
 
     public function down(): void
@@ -57,8 +52,5 @@ return new class extends Migration
         Schema::table('species', function (Blueprint $table) {
             $table->dropIndex('idx_species_higher_taxa');
         });
-
-        DB::statement('DROP INDEX IF EXISTS idx_animals_pet_name_gin');
-        DB::statement('DROP INDEX IF EXISTS idx_animals_description_gin');
     }
 };
