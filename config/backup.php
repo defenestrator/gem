@@ -18,6 +18,7 @@ return [
                     storage_path('app/backup-temp'),
                     storage_path('logs'),
                     storage_path('framework/cache'),
+                    storage_path('app/public')
                 ],
 
                 'follow_links' => false,
@@ -114,10 +115,10 @@ return [
 
         'default_strategy' => [
             // Keep all backups for 12 days (= ~48 DB backups at 4/day)
-            'keep_all_backups_for_days' => 12,
+            'keep_all_backups_for_days' => 7,
 
             // Keep one backup per day for the remaining 18 days (total 30 days)
-            'keep_daily_backups_for_days' => 18,
+            'keep_daily_backups_for_days' => 7,
 
             // No tiered weekly/monthly/yearly retention beyond 30 days
             'keep_weekly_backups_for_weeks'     => 0,

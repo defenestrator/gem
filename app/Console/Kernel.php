@@ -13,27 +13,35 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('app:heartbeat')
+            ->environments('production')
             ->everyMinute()
             ->thenPing('https://heartbeats.laravel.com/01kqtm6dwrfgb3f9kmgd8chkzt/ping');
         
         $schedule->command('animals:sync')->dailyAt("9:00")->withoutOverlapping()->runInBackground();
         
-        $schedule->command('media:process-animals')->dailyAt("11:00")->withoutOverlapping()->runInBackground();
+        $schedule->command('media:process-animals')
+            ->dailyAt("11:00")
+            ->environments('production')
+            ->withoutOverlapping()
+            ->runInBackground();
         
         $schedule->command('species:fetch-images --model=all --queue')
             ->weeklyOn(0, '0:00')
             ->timezone('America/Boise')
+            ->environments('production')
             ->withoutOverlapping()
             ->runInBackground();
 
         $schedule->command('media:process-species')
             ->weeklyOn(0, '6:00')
             ->timezone('America/Boise')
+            ->environments('production')
             ->withoutOverlapping()
             ->runInBackground();
 
         $schedule->command('logs:upload')
             ->monthlyOn(15, '00:00')
+            ->environments('production')
             ->withoutOverlapping()
             ->runInBackground();
 
@@ -51,7 +59,7 @@ class Kernel extends ConsoleKernel
             ->runInBackground();
 
         $schedule->command('backup:clean')
-            ->dailyAt('01:00')
+            ->dailyAt('05:00')
             ->environments('production')
             ->withoutOverlapping();
     }
