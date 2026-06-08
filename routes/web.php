@@ -80,7 +80,7 @@ Route::get('/', function (Request $request) use ($inventory) {
         $speciesMap = $slugs
             ? Animal::whereIn('slug', $slugs)
                 ->whereNotNull('species_id')
-                ->with('species:id,species,common_name')
+                ->with('species:id,species,common_name,slug')
                 ->get()
                 ->keyBy('slug')
                 ->map(fn ($a) => $a->species)
