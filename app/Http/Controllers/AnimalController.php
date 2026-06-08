@@ -105,11 +105,11 @@ class AnimalController extends Controller
             'female'       => $a->female,
             'date_of_birth' => $a->date_of_birth?->format('M d, Y'),
             'species_name' => $a->species?->species,
-            'species_slug' => $a->species?->slug,
+            'species_id'   => $a->species?->id,
             'thumbnail'    => $thumb?->thumbnail_url ?? $thumb?->url,
             'show_url'     => route('animals.show', $a->slug),
             'inquire_url'  => route('animals.inquiries.create', $a->slug),
-            'species_url'  => ($a->species?->slug) ? route('species.show', $a->species->slug) : null,
+            'species_url'  => $a->species?->id ? route('species.show', $a->species->id) : null,
         ];
     }
 
