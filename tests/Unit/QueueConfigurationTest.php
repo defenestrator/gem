@@ -9,8 +9,10 @@ use App\Models\Animal;
 use App\Models\Inquiry;
 use App\Models\Species;
 use App\Models\User;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
@@ -90,4 +92,15 @@ it('rejects workers returning a stale release revision', function () {
     Redis::shouldReceive('connection')->with('default')->andReturn($redis);
     $this->artisan('queue:verify-horizon', ['--wait' => 0])->assertFailed();
     Bus::assertDispatched(QueueHealthProbe::class, 6);
+});
+
+it('schedules the same unique import job as the admin upload', function () {
+    Queue::fake();
+    $event = collect(app(Schedule::class)->events())
+        ->first(fn ($event) => $event->description === SyncAnimalsJob::class);
+    expect($event)->not->toBeNull()->and($event->expression)->toBe('0 9 * * *');
+    $event->run(app());
+    SyncAnimalsJob::dispatch();
+    Queue::assertPushed(SyncAnimalsJob::class, 1);
+    Queue::assertPushed(SyncAnimalsJob::class, fn ($job) => $job->connection === 'redis-imports' && $job->queue === 'imports');
 });

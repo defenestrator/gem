@@ -14,7 +14,7 @@ This change does not clear, retry, or move existing jobs. Preserve `REDIS_PREFIX
 
 ## Capacity and timing
 
-Five fixed worker processes: legacy default (256 MiB), short/mail (128 MiB), imports (256 MiB), images (192 MiB), bios (128 MiB). Horizon master limit 64 MiB. These are worker recycling limits, not OS reservations or hard memory caps; budget all three apps plus PHP-FPM/database/Redis together before activation. Background workers have lower CPU priority. New imports use `redis-imports` / `imports`, timeout 3600, reservation 3700. Images/bios use `redis-short`, job timeout120, supervisor150, reservation180. Mail/short supervisor90, reservation180. Separate queues retain separate capacity from imports. Legacy default stays available until old payloads are gone; only then consider removing it in a later reviewed change.
+Five fixed worker processes: legacy default (256 MiB), short/mail (128 MiB), imports (256 MiB), images (192 MiB), bios (128 MiB). Horizon master limit 64 MiB. These are worker recycling limits, not OS reservations or hard memory caps; budget all three apps plus PHP-FPM/database/Redis together before activation. Background workers have lower CPU priority. Scheduled and admin imports use the same unique job; a shared persistent Redis cache owns their two-hour uniqueness lock. New imports use `redis-imports` / `imports`, timeout 3600, reservation 3700. Images/bios use `redis-short`, job timeout120, supervisor150, reservation180. Mail/short supervisor90, reservation180. Separate queues retain separate capacity from imports. Legacy default stays available until old payloads are gone; only then consider removing it in a later reviewed change.
 
 ## Rollback
 

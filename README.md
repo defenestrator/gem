@@ -82,6 +82,7 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 #### 2026-10-16 (Horizon queue ownership)
 - Synchronized the pre-existing npm lock mismatch so clean CI installs can build the declared frontend dependencies.
 - Added admin-only Horizon monitoring, snapshots, and fixed-capacity supervisors for legacy jobs, mail/short work, imports, species images, and biographies.
+- Scheduled and admin imports share a unique queued job, preventing duplicate dispatch while work is pending or running.
 - Imports use a 3,700-second reservation; short work uses 180 seconds. Existing default-queue imports retain safe drain capacity.
 - Deploy verifies replacement masters and probe processing on every queue; timeout fails without clearing or force-killing jobs. See `docs/horizon-rollout.md` before first activation.
 
