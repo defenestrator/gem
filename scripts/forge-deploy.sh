@@ -16,14 +16,20 @@ IFS=' ' read -r -a composer_command <<< "${FORGE_COMPOSER:-composer}"
 mkdir -p public/build
 curl -sf "https://gemx.sfo3.digitaloceanspaces.com/build/manifest.json" -o public/build/manifest.json
 
-# Clear stale config, migrate, then rebuild caches for the new schema.
-$FORGE_PHP artisan optimize:clear
+# Clear compiled metadata without flushing application data or import locks.
+$FORGE_PHP artisan config:clear
+$FORGE_PHP artisan route:clear
+$FORGE_PHP artisan view:clear
+$FORGE_PHP artisan event:clear
 $FORGE_PHP artisan migrate --force
 export GEM_DEPLOY_REVISION="$(git rev-parse HEAD)"
 $FORGE_PHP artisan optimize
 
 # Restart queue workers
 $FORGE_PHP artisan queue:verify-horizon --restart --wait=90
+
+# Reload PHP-FPM before warming so requests use the deployed release.
+sudo -n service "${FORGE_PHP_FPM:-php8.3-fpm}" reload
 
 # Warm app + CDN image thumbnail cache (hits app over localhost to avoid SSL)
 $FORGE_PHP artisan app:warm --base-url=http://127.0.0.1 --images=thumbs --concurrency=25

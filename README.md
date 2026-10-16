@@ -86,6 +86,7 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 - Require public visibility for storefront listings, matching database publication rules; version the inventory cache to discard previously cached private listings.
 
 #### 2026-10-16 (Horizon queue ownership)
+- Preserve active import locks during deployment with targeted metadata clears; reload PHP-FPM before cache warming.
 - Synchronized the pre-existing npm lock mismatch so clean CI installs can build the declared frontend dependencies.
 - Added admin-only Horizon monitoring, snapshots, and fixed-capacity supervisors for legacy jobs, mail/short work, imports, species images, and biographies.
 - Scheduled and admin imports share a unique queued job, preventing duplicate dispatch while work is pending or running; busy uploads are rejected before replacing inventory.
