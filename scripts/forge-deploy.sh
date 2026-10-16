@@ -7,7 +7,10 @@ cd "${FORGE_SITE_PATH:-/home/gemreptiles/gemreptiles.com}"
 git pull --ff-only origin main
 
 # PHP dependencies
-"$FORGE_COMPOSER" install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+# Forge may supply "php8.3 /usr/local/bin/composer" rather than one executable.
+# Split words into an array; never evaluate shell syntax from environment values.
+IFS=' ' read -r -a composer_command <<< "${FORGE_COMPOSER:-composer}"
+"${composer_command[@]}" install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
 # Fetch Vite manifest from CDN (built and uploaded by CI before this hook fires)
 mkdir -p public/build

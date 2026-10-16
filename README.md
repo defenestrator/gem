@@ -84,6 +84,7 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 - Added admin-only Horizon monitoring, snapshots, and fixed-capacity supervisors for legacy jobs, mail/short work, imports, species images, and biographies.
 - Scheduled and admin imports share a unique queued job, preventing duplicate dispatch while work is pending or running; busy uploads are rejected before replacing inventory.
 - Imports use a 3,700-second reservation; short work uses 180 seconds. Existing default-queue imports retain safe drain capacity.
+- Parse Forge Composer commands safely as shell arrays, supporting both executable paths and PHP-plus-Composer commands; cover deploy invocation in CI.
 - Deploy verifies replacement masters and probe processing on every queue; timeout fails without clearing or force-killing jobs. See `docs/horizon-rollout.md` before first activation.
 
 #### ⚡ 2026-05-14 (performance: indexes, inventory service, slow query logging)

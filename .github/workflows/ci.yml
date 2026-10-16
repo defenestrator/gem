@@ -41,6 +41,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Verify Forge deployment command handling
+        run: bash scripts/test-forge-deploy.sh
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
