@@ -17,7 +17,9 @@ class InquiryAdminNotificationMail extends Mailable
     public function __construct(
         public readonly Inquiry $inquiry,
         public readonly Animal $animal,
-    ) {}
+    ) {
+        $this->onConnection('redis-short')->onQueue('mail');
+    }
 
     public function envelope(): Envelope
     {

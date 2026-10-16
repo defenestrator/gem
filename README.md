@@ -21,7 +21,7 @@ The primary marketplace for selling reptiles online is morphmarket.com. This sit
 
 The app has two data paths for animal listings:
 
-1. **📦 JSON import (public storefront):** An admin uploads a JSON export from MorphMarket via the dashboard. This file is saved to `storage/app/public/animals.json` and drives the homepage, category pages, and category filtering. These routes are cached by file mtime (30 min TTL) and never hit the database.
+1. **📦 JSON import (public storefront):** An admin uploads a JSON export from MorphMarket via the dashboard. This file is saved to `storage/app/public/animals.json` and drives the homepage, category pages, and category filtering. Inventory data is cached by file mtime (30 min TTL); request-specific HTML is rendered for each visitor. The homepage loads linked species from the database. Only active, public, for-sale records appear in the storefront.
 
 2. **🗄️ Database-backed listings:** The `/animals` and `/classifieds` routes serve Eloquent-backed records with full search, filtering, and pagination. Animals are synced from the JSON import into the `animals` table via `AnimalImportController`.
 
@@ -78,6 +78,20 @@ The source is open. Our content, logos, and UI designs are &copy; All Rights Res
 Everything except secrets belongs in git. Blobs go in S3 or similar — not in the database, not in git. 🗑️
 
 ### 📜 Changelog
+
+#### 2026-10-16 (storefront safety)
+- Retain previous hashed CDN assets during deployment so existing pages can still load their styles and scripts.
+- Render navigation and CSRF tokens for each visitor while retaining cached inventory data.
+- Correct linked-species projection to match the existing schema; cover a nonempty homepage in regression tests.
+- Require public visibility for storefront listings, matching database publication rules; version the inventory cache to discard previously cached private listings.
+
+#### 2026-10-16 (Horizon queue ownership)
+- Synchronized the pre-existing npm lock mismatch so clean CI installs can build the declared frontend dependencies.
+- Added admin-only Horizon monitoring, snapshots, and fixed-capacity supervisors for legacy jobs, mail/short work, imports, species images, and biographies.
+- Scheduled and admin imports share a unique queued job, preventing duplicate dispatch while work is pending or running; busy uploads are rejected before replacing inventory.
+- Imports use a 3,700-second reservation; short work uses 180 seconds. Existing default-queue imports retain safe drain capacity.
+- Parse Forge Composer commands safely as shell arrays, supporting both executable paths and PHP-plus-Composer commands; cover deploy invocation in CI.
+- Deploy verifies replacement masters and probe processing on every queue; timeout fails without clearing or force-killing jobs. See `docs/horizon-rollout.md` before first activation.
 
 #### ⚡ 2026-05-14 (performance: indexes, inventory service, slow query logging)
 - 🗂️ Migration `add_performance_indexes`: composite index on `animals(status, availability, created_at)`; composite on `classifieds(status, price, created_at)`; partial index on `media(mediable_type, mediable_id) WHERE moderation_status = 'approved'`; partial index on `animals(species_id) WHERE status = 'published'`; index on `species(higher_taxa)`

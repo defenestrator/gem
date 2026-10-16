@@ -17,7 +17,9 @@ class ClassifiedInquiryAdminNotificationMail extends Mailable
     public function __construct(
         public readonly Inquiry $inquiry,
         public readonly Classified $classified,
-    ) {}
+    ) {
+        $this->onConnection('redis-short')->onQueue('mail');
+    }
 
     public function envelope(): Envelope
     {

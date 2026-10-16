@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
+use App\Jobs\SyncAnimalsJob;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -12,12 +13,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        $schedule->command('horizon:snapshot')->everyFiveMinutes()->environments('production');
+
         $schedule->command('app:heartbeat')
             ->environments('production')
             ->everyMinute()
             ->thenPing('https://heartbeats.laravel.com/01kqtm6dwrfgb3f9kmgd8chkzt/ping');
         
-        $schedule->command('animals:sync')->dailyAt("9:00")->withoutOverlapping()->runInBackground();
+        $schedule->job(new SyncAnimalsJob)->dailyAt('09:00');
         
         $schedule->command('media:process-animals')
             ->dailyAt("11:00")

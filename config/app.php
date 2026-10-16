@@ -127,6 +127,8 @@ return [
 
     'key' => env('APP_KEY'),
 
+    'deployment_revision' => env('GEM_DEPLOY_REVISION'),
+
     'cipher' => 'AES-256-CBC',
     'admin_password' => env('ADMIN_PASSWORD'),
     /*
@@ -168,6 +170,7 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
+        App\Providers\HorizonServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,

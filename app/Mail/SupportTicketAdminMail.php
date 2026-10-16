@@ -16,11 +16,14 @@ class SupportTicketAdminMail extends Mailable
     public function __construct(
         public readonly SupportTicket $ticket,
         public readonly bool $isNewUser,
-    ) {}
+    ) {
+        $this->onConnection('redis-short')->onQueue('mail');
+    }
 
     public function envelope(): Envelope
     {
         $typeLabel = $this->ticket->type === 'suggestion' ? 'Suggestion' : 'Bug Report';
+
         return new Envelope(
             subject: "New {$typeLabel}: {$this->ticket->name}",
         );

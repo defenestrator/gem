@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SyncAnimalsJob;
 use App\Models\Animal;
+use Illuminate\Bus\UniqueLock;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
 
 class AnimalImportController extends Controller
@@ -29,9 +32,22 @@ class AnimalImportController extends Controller
             return back()->withErrors(['animals_json' => 'Invalid JSON structure.']);
         }
 
-        Storage::disk('public')->put('animals.json', $json);
+        $job = new SyncAnimalsJob;
+        $lock = new UniqueLock(app(CacheRepository::class));
+        if (! $lock->acquire($job)) {
+            return back()->withErrors(['animals_json' => 'An animal import is already pending or running. Try again after it finishes.']);
+        }
 
-        SyncAnimalsJob::dispatch();
+        try {
+            if (! Storage::disk('public')->put('animals.json', $json)) {
+                throw new \RuntimeException('Could not store the animal import.');
+            }
+            // Ownership is already acquired before changing the shared inventory.
+            Bus::dispatch($job);
+        } catch (\Throwable $exception) {
+            $lock->release($job);
+            throw $exception;
+        }
 
         return redirect()->route('dashboard')->with('import_success', 'Import queued — animals will sync in the background.');
     }
