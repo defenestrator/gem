@@ -154,8 +154,7 @@ jobs:
           aws s3 sync public/build/assets/ s3://gemx/build/assets/ \
             --endpoint-url=https://sfo3.digitaloceanspaces.com \
             --acl public-read \
-            --cache-control "public, max-age=31536000, immutable" \
-            --delete
+            --cache-control "public, max-age=31536000, immutable"
           aws s3 cp public/build/manifest.json s3://gemx/build/manifest.json \
             --endpoint-url=https://sfo3.digitaloceanspaces.com \
             --acl public-read \

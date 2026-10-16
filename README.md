@@ -80,6 +80,7 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 ### 📜 Changelog
 
 #### 2026-10-16 (storefront safety)
+- Retain previous hashed CDN assets during deployment so existing pages can still load their styles and scripts.
 - Render navigation and CSRF tokens for each visitor while retaining cached inventory data.
 - Correct linked-species projection to match the existing schema; cover a nonempty homepage in regression tests.
 - Require public visibility for storefront listings, matching database publication rules; version the inventory cache to discard previously cached private listings.
