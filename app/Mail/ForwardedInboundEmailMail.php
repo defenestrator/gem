@@ -19,7 +19,9 @@ class ForwardedInboundEmailMail extends Mailable
         public readonly ?string $text,
         public readonly ?string $html,
         public readonly array $attachments = [],
-    ) {}
+    ) {
+        $this->onConnection('redis-short')->onQueue('mail');
+    }
 
     public function envelope(): Envelope
     {

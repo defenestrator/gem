@@ -26,7 +26,7 @@ class GenerateSpeciesBiographyJob implements ShouldQueue
         public readonly int    $recordId,
         public readonly bool   $force = false,
     ) {
-        $this->onQueue('species-bios');
+        $this->onConnection('redis-short')->onQueue('species-bios');
     }
 
     public function handle(): void

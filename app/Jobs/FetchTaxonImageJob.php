@@ -21,7 +21,7 @@ class FetchTaxonImageJob implements ShouldQueue
         public readonly int    $recordId,
         public readonly int    $max = 1,
     ) {
-        $this->onQueue('species-images');
+        $this->onConnection('redis-short')->onQueue('species-images');
     }
 
     public function handle(): void

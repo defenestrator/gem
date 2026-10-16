@@ -12,6 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        $schedule->command('horizon:snapshot')->everyFiveMinutes()->environments('production');
+
         $schedule->command('app:heartbeat')
             ->environments('production')
             ->everyMinute()

@@ -79,6 +79,11 @@ Everything except secrets belongs in git. Blobs go in S3 or similar — not in t
 
 ### 📜 Changelog
 
+#### 2026-10-16 (Horizon queue ownership)
+- Added admin-only Horizon monitoring, snapshots, and fixed-capacity supervisors for legacy jobs, mail/short work, imports, species images, and biographies.
+- Imports use a 3,700-second reservation; short work uses 180 seconds. Existing default-queue imports retain safe drain capacity.
+- Deploy verifies replacement masters and probe processing on every queue; timeout fails without clearing or force-killing jobs. See `docs/horizon-rollout.md` before first activation.
+
 #### ⚡ 2026-05-14 (performance: indexes, inventory service, slow query logging)
 - 🗂️ Migration `add_performance_indexes`: composite index on `animals(status, availability, created_at)`; composite on `classifieds(status, price, created_at)`; partial index on `media(mediable_type, mediable_id) WHERE moderation_status = 'approved'`; partial index on `animals(species_id) WHERE status = 'published'`; index on `species(higher_taxa)`
 - 🏭 `AnimalInventoryService`: extracts JSON load/sort/filter logic from `routes/web.php`; per-sort-variant mtime-keyed Redis cache; active-only filtering moved to PHP before view render

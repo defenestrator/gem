@@ -14,10 +14,18 @@ class SyncAnimalsJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $timeout = 3600;
-    public int $tries   = 1;
+
+    public int $tries = 1;
+
+    public function __construct()
+    {
+        $this->onConnection('redis-imports')->onQueue('imports');
+    }
 
     public function handle(): void
     {
-        Artisan::call('animals:sync');
+        if (Artisan::call('animals:sync') !== 0) {
+            throw new \RuntimeException('Animal import failed; see the command output and application logs.');
+        }
     }
 }

@@ -66,9 +66,28 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => env('REDIS_QUEUE', 'default'),
-            'retry_after' => 180,
+            // Keep old default-queue import payloads safe during migration.
+            'retry_after' => 3700,
             'block_for' => null,
             'after_commit' => false,
+        ],
+
+        'redis-short' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'short',
+            'retry_after' => 180,
+            'block_for' => 5,
+            'after_commit' => true,
+        ],
+
+        'redis-imports' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'imports',
+            'retry_after' => 3700,
+            'block_for' => 5,
+            'after_commit' => true,
         ],
 
     ],

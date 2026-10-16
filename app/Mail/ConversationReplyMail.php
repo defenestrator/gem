@@ -18,13 +18,15 @@ class ConversationReplyMail extends Mailable
         public readonly EmailConversation $conversation,
         public readonly string $body,
         public readonly User $admin,
-    ) {}
+    ) {
+        $this->onConnection('redis-short')->onQueue('mail');
+    }
 
     public function envelope(): Envelope
     {
         return new Envelope(
             replyTo: [config('mail.from.address')],
-            subject: 'Re: ' . $this->conversation->subject,
+            subject: 'Re: '.$this->conversation->subject,
         );
     }
 
