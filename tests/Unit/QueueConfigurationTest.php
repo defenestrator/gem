@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\VerifyCsrfToken;
 use App\Jobs\FetchTaxonImageJob;
 use App\Jobs\GenerateSpeciesBiographyJob;
 use App\Jobs\QueueHealthProbe;
@@ -10,10 +11,12 @@ use App\Models\Inquiry;
 use App\Models\Species;
 use App\Models\User;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
@@ -103,4 +106,24 @@ it('schedules the same unique import job as the admin upload', function () {
     SyncAnimalsJob::dispatch();
     Queue::assertPushed(SyncAnimalsJob::class, 1);
     Queue::assertPushed(SyncAnimalsJob::class, fn ($job) => $job->connection === 'redis-imports' && $job->queue === 'imports');
+});
+
+it('rejects another admin import before overwriting pending inventory', function () {
+    $this->withoutMiddleware(VerifyCsrfToken::class);
+    Storage::fake('public');
+    Queue::fake();
+    $user = new User(['name' => 'Admin', 'email' => 'admin@example.test']);
+    $user->is_admin = true;
+    $user->email_verified_at = now();
+    $this->actingAs($user);
+    $first = json_encode([['Animal_Id*' => 'first']]);
+    $second = json_encode([['Animal_Id*' => 'second']]);
+    $this->post(route('dashboard.animals.import.upload'), [
+        'animals_json' => UploadedFile::fake()->createWithContent('animals.json', $first),
+    ])->assertSessionHasNoErrors()->assertRedirect(route('dashboard'));
+    $this->from('/dashboard/animals/import')->post(route('dashboard.animals.import.upload'), [
+        'animals_json' => UploadedFile::fake()->createWithContent('animals.json', $second),
+    ])->assertSessionHasErrors('animals_json');
+    expect(Storage::disk('public')->get('animals.json'))->toBe($first);
+    Queue::assertPushed(SyncAnimalsJob::class, 1);
 });
