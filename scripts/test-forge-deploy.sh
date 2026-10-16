@@ -46,6 +46,6 @@ for mode in compound plain fallback; do
         expected='composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev'
     fi
     [[ "$first" == "$expected" ]] || { printf 'Wrong Composer invocation: %s\n' "$first" >&2; exit 1; }
-    rg -q '^artisan queue:verify-horizon --restart --wait=90$' "$DEPLOY_TEST_LOG"
+    grep -Fxq 'artisan queue:verify-horizon --restart --wait=90' "$DEPLOY_TEST_LOG"
 done
 printf 'Forge deploy shell regression passed: compound, plain, and fallback Composer commands.\n'
